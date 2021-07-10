@@ -5,7 +5,7 @@
 ```
 npm i svelte-tables-tailwind
 ```
-    
+
     
 <hr><br><br><a href="https://www.npmjs.com/package/svelte-tables-tailwind"><img width=50% src="https://user-images.githubusercontent.com/56549294/125153433-49c2f680-e171-11eb-93ec-7e0fba7703a8.png" alt="npm"/></a><br><br></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/125154425-a2958d80-e177-11eb-8741-68707caf8156.png" alt="Svelte-Tailwind-Table"/></td></tr>
 </table>
