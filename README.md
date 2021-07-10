@@ -12,8 +12,8 @@ npm i svelte-tables-tailwind
 <br>
 <br>
 <br>
+  <hr>
 <br>
-<hr>
 <br>
 <br>
 
@@ -32,9 +32,24 @@ npm i svelte-tables-tailwind
 
 <br>
 <br>
+<br>
   <hr>
 <br>
 <br>
+<br>
+  
+  
+https://user-images.githubusercontent.com/56549294/125157928-6835eb80-e18b-11eb-9809-f7cb87293c60.mov
+  
+  
+<br>
+<br>
+<br>
+  <hr>
+<br>
+<br>
+<br>
+  
   <h1 align="center">Steps To Use thus Plugin:</h1>
   </div>
   <br>
@@ -121,7 +136,9 @@ import Tables from "svelte-tailwind-table";
   </ul>
 <br>
 <br>
+<br>
   <hr>
+<br>
 <br>
 <br>
 
