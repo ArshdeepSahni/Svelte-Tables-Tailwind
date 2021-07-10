@@ -1,7 +1,12 @@
 <h1 align="center">
-  <table><tr><th><img width=100% src="https://user-images.githubusercontent.com/56549294/124975713-eb502800-e04b-11eb-98b0-03ababedf474.png" alt="Svelte-Tailwind-Table"/></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/124974079-01f57f80-e04a-11eb-98fc-b9d3944053d5.png" alt="Svelte-Tailwind-Table"/></td></tr></table>
+  <table><tr><th><img width=100% src="https://user-images.githubusercontent.com/56549294/124975713-eb502800-e04b-11eb-98b0-03ababedf474.png" alt="Svelte-Tailwind-Table"/></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/124974079-01f57f80-e04a-11eb-98fc-b9d3944053d5.png" alt="Svelte-Tailwind-Table"/></td></tr>
+</table>
 <br>
 <br>
+  <a href="https://www.npmjs.com/package/svelte-tables-tailwind"><img width=30% src="https://user-images.githubusercontent.com/56549294/125153433-49c2f680-e171-11eb-93ec-7e0fba7703a8.png" alt="npm"/></a>
+<br>
+<br>
+<hr>
 <br>
 <br>
 
@@ -20,6 +25,7 @@
 
 <br>
 <br>
+  <hr>
 <br>
 <br>
   <code align="center">Steps To Use thus Plugin:</code>
@@ -108,6 +114,7 @@ import Tables from "svelte-tailwind-table";
   </ul>
 <br>
 <br>
+  <hr>
 <br>
 <br>
 
