@@ -3,7 +3,7 @@
 </table>
 <br>
 <br>
-  <table><tr><th><a href="https://www.npmjs.com/package/svelte-tables-tailwind"><img width=30% src="https://user-images.githubusercontent.com/56549294/125153433-49c2f680-e171-11eb-93ec-7e0fba7703a8.png" alt="npm"/></a></th></tr><tr><th>
+  <table><tr><th><a href="https://www.npmjs.com/package/svelte-tables-tailwind"><img width=50% src="https://user-images.githubusercontent.com/56549294/125153433-49c2f680-e171-11eb-93ec-7e0fba7703a8.png" alt="npm"/></a><br></th><th><br><br>
     
     
 ```
@@ -11,7 +11,7 @@ npm i svelte-tables-tailwind
 ```
 
 
-</th></tr></table>
+<br></th></tr></table>
 <br>
 <hr>
 <br>
