@@ -1,5 +1,5 @@
 <h1 align="center">
-  <table><tr><th><img width=100% src="https://user-images.githubusercontent.com/56549294/124975713-eb502800-e04b-11eb-98b0-03ababedf474.png" alt="Svelte-Tailwind-Table"/></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/124974079-01f57f80-e04a-11eb-98fc-b9d3944053d5.png" alt="Svelte-Tailwind-Table"/></td></tr>
+  <table><tr><th><img width=100% src="https://user-images.githubusercontent.com/56549294/125154417-94477180-e177-11eb-8772-0167bdd7d3b4.png" alt="Svelte-Tailwind-Table"/></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/125154425-a2958d80-e177-11eb-8741-68707caf8156.png" alt="Svelte-Tailwind-Table"/></td></tr>
 </table>
 <br>
 <br>
