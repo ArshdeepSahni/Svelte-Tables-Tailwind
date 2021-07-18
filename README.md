@@ -37,6 +37,35 @@ npm i svelte-tables-tailwind
 <br>
 <br>
 <br>
+  
+
+
+<h1 align="center">Props</h1>
+
+<br>
+<br><div align="center">
+
+
+|Prop|About|Default Value|Formal|
+|---|---|---|---|
+|colname|JSON of Headers of Table with dataTypes as Keys|{ "string" : "Column1" , "number" : "0" }|{ "DataType" : "Header" , ...}|
+|rowdata|List of Lists of row's Data of Table|[ [ "String1" , "1" ] , [ "String2" , "2" ] ]|[ [] , ... ]|
+|url|Link to Redirect when Clicked on Table Data|NA|String|
+|click|Call a Function when Clicked on Table Data|NA|() => {}|
+
+
+
+<br>
+<br>
+<br>
+  <hr>
+<br>
+<br>
+<br>
+
+
+  
+  
   <h1 align="center">Steps To Use thus Plugin:</h1>
   </div>
   <br>
