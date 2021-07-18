@@ -1,6 +1,6 @@
 <script>
-  export let colname;
-  export let rowdata;
+  export let colname = {"string":"Column1","number":"0"};
+  export let rowdata = [["String1","1"],["String2","2"]];
   export let url;
   export let click;
   let datatypelist = [];
