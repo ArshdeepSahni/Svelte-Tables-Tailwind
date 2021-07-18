@@ -54,17 +54,7 @@ https://user-images.githubusercontent.com/56549294/125157928-6835eb80-e18b-11eb-
   </div>
   <br>
 <ul>
-<li><h3> 1. Import Tailwind via CDN</h3> <br>
-
-
-```html
-<!-- index.html file -->
-<link href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css" rel="stylesheet">
-```
-
-</li>
-  <br>
-<li><h3> 2. Install</h3> <br>
+<li><h3> 1. Install</h3> <br>
 
 
 ```bash
@@ -74,17 +64,17 @@ npm i svelte-tailwind-table
 </li>
 <br>
 
-<li><h3> 3. Import</h3> <br>
+<li><h3> 2. Import</h3> <br>
 
 
 ```javascript
 // in .js file where you want to use this component
-import Tables from "svelte-tailwind-table";
+import Tables from "svelte-tables-tailwind";
 ```
 
 </li>
   <br>
-<li><h3> 4. Using Component</h3> <br>
+<li><h3> 3. Usage</h3> <br>
 
 ```javascript
 // in the same.js file where you want to use this component outside <script></script> tag
