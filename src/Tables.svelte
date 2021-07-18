@@ -123,6 +123,12 @@
   };
 </script>
 
+<svelte:head>
+  <link
+    href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+    rel="stylesheet"
+  />
+</svelte:head>
 <div class="flex flex-col rounded ">
   <div class="-my-2 overflow-x-auto sm:-mx-6 lg:-mx-8 rounded ">
     <div

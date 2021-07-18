@@ -1,6 +1,6 @@
 {
   "name": "svelte-tables-tailwind",
-  "version": "1.0.0",
+  "version": "1.0.6",
   "description": "Svelte Tables Tailwind",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -17,7 +17,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/ArshdeepSahni/Svelte-Tailwind-Table"
+    "url": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind"
   },
   "author": "Arshdeep Singh <arsh22sahni@gmail.com>",
   "license": "ISC",
@@ -29,8 +29,8 @@
     "rollup-plugin-svelte": "^7.1.0",
     "svelte": "^3.37.0"
   },
-  "homepage": "https://github.com/ArshdeepSahni/Svelte-Tailwind-Table",
+  "homepage": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind",
   "bugs": {
-    "url": "https://github.com/ArshdeepSahni/Svelte-Tailwind-Table/issues"
+    "url": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind/issues"
   }
 }
