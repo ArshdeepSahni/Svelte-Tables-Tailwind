@@ -38,9 +38,20 @@ npm i svelte-tables-tailwind
 <br>
 <br>
   
+  
+  
+https://user-images.githubusercontent.com/56549294/126066556-8485e044-760b-4239-aec6-eed5aca3f3a6.mov
+  
 
 
-<h1 align="center">Props</h1>
+<br>
+<br>
+<br>
+  <hr>
+<br>
+<br>
+<br>
+  <h1 align="center">Props</h1>
 
 <br>
 <br><div align="center">
@@ -69,6 +80,7 @@ npm i svelte-tables-tailwind
   <h1 align="center">Steps To Use thus Plugin:</h1>
   </div>
   <br>
+  </div>
 <ul>
 <li><h3> 1. Import Tailwind via CDN</h3> <br>
 
