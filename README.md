@@ -10,6 +10,14 @@ npm i svelte-tables-tailwind
 <hr><br><br><a href="https://www.npmjs.com/package/svelte-tables-tailwind"><img width=50% src="https://user-images.githubusercontent.com/56549294/125153433-49c2f680-e171-11eb-93ec-7e0fba7703a8.png" alt="npm"/></a><br><br></th></tr><tr><td><img width=100% src="https://user-images.githubusercontent.com/56549294/125154425-a2958d80-e177-11eb-8741-68707caf8156.png" alt="Svelte-Tailwind-Table"/></td></tr>
 </table>
 <br>
+  <hr>
+<br>
+<br>
+<img width="100%" src="https://user-images.githubusercontent.com/56549294/126125455-3f9c782e-10d8-4da0-9b3d-48e42e1d1042.gif"/>
+  
+  
+  
+<br>
 <br>
 <br>
   <hr>
@@ -28,19 +36,6 @@ npm i svelte-tables-tailwind
 |✅Checkbox|✍️Input|🔤String|🌐URL|✉️Mail|
 |☎️Phone|[ , ] list|🖼Image|🔽Dropdown|🔢Number|
 |⌨Code|<span><</span>HTML/>|🗓Date|🕘Time|🏷Tag|
-
-
-<br>
-<br>
-<br>
-  <hr>
-<br>
-<br>
-<br>
-  
-  
-  
-https://user-images.githubusercontent.com/56549294/126066556-8485e044-760b-4239-aec6-eed5aca3f3a6.mov
   
 
 
