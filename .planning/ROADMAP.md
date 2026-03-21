@@ -149,7 +149,14 @@ Plans:
 4. Setting `document.querySelector('tc-table').data = rows` in the browser console of a plain HTML file (no framework) updates the rendered table — the Web Component property API works in vanilla JS.
 5. Playwright smoke tests pass for both the React wrapper and the Vue wrapper rendering 100 rows — tables are visible, headers are present, cells contain expected values.
 
-**Plans:** TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 05-01-PLAN.md — Infrastructure + Wave 0 stubs: install lit in @tablecraft/core, install @lit/react in @tablecraft/react, switch @tablecraft/vue to Vite + @vitejs/plugin-vue, create vite.config.element.ts (UMD), create element.test.ts and wc-smoke.spec.ts Wave 0 stubs
+- [ ] 05-02-PLAN.md — Lit Element implementation: packages/core/src/element.ts (TcTable LitElement, Light DOM, static properties, renderCell mirroring Cell.svelte, all 5 CustomEvents, SSR guards), make element.test.ts stubs pass GREEN
+- [ ] 05-03-PLAN.md — React wrapper: packages/react/src/index.ts (createComponent() with @lit/react, all 5 event mappings, TypeScript types)
+- [ ] 05-04-PLAN.md — Vue wrapper: packages/vue/src/Table.vue (Vue 3 SFC, imperative ref+watch for data, addEventListener event forwarding), packages/vue/src/index.ts export
+- [ ] 05-05-PLAN.md — Build verification + Playwright smoke tests: run all builds (UMD + ESM+CJS for all 4 packages), implement full wc-smoke.spec.ts (vanilla/React/Vue 100-row tests), human visual checkpoint
 
 ---
 
@@ -320,4 +327,4 @@ Plans:
 ---
 
 _Created: 2026-03-20_
-_Last updated: 2026-03-22 — Phase 4 plans created (6 plans, 6 waves)_
+_Last updated: 2026-03-22 — Phase 5 plans created (5 plans, 4 waves)_
