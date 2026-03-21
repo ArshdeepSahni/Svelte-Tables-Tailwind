@@ -13,7 +13,7 @@
 - [x] **Phase 1: Foundation** - Monorepo scaffold, dependency upgrades, toolchain modernization, and blocker resolution (completed 2026-03-21)
 - [x] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers (completed 2026-03-21)
 - [x] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end (completed 2026-03-21)
-- [ ] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation
+- [x] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation (completed 2026-03-21)
 - [ ] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper
 - [ ] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence
 - [ ] **Phase 7: Docs Site + Release** - SvelteKit docs, live REPL playground, npm publish, v1 deprecation notice
@@ -121,7 +121,7 @@ Plans:
 4. A table with 25 columns activates column virtualization automatically — only visible columns are rendered, confirmed by inspecting the DOM.
 5. DevTools computed styles on a table row show `contain: layout style` and on a table cell show `contain: layout style paint` — CSS containment is applied.
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 - [ ] 04-01-PLAN.md — Infrastructure + Wave 0 tests: install @tanstack/svelte-virtual, add playwright webServer, create bench page (100k rows), sort.worker.ts, and failing test stubs for all PERF-* requirements
@@ -200,7 +200,7 @@ Plans:
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 4     | 5/6 | In Progress|  | Pending |
+| 4     | 6/6 | Complete   | 2026-03-21 | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
