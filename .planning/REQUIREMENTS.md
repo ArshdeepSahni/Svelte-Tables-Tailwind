@@ -55,16 +55,16 @@ What v1.0.6 ships today. These are the baselines, not goals.
 - [x] **SVLT-02**: One-prop type override API: `columns={{ avatar: 'image', price: 'currency' }}` (short form) and full column descriptor objects (long form)
 - [x] **SVLT-03**: Column sorting — click header to sort ascending/descending/off, visual sort indicator
 - [x] **SVLT-04**: Global search filter — single text input searches all columns
-- [ ] **SVLT-05**: Per-column filtering — filter inputs per column with type-appropriate controls (text, date range, number range, enum select)
+- [x] **SVLT-05**: Per-column filtering — filter inputs per column with type-appropriate controls (text, date range, number range, enum select)
 - [x] **SVLT-06**: Pagination — configurable page size, first/prev/next/last controls, total count display
 - [x] **SVLT-07**: Empty state — configurable message and slot when `data` is empty
 - [x] **SVLT-08**: Loading state — skeleton animation when `loading` prop is true
 - [x] **SVLT-09**: Row selection — `selectable` prop enables checkbox column; `selectedRows` bindable store; `select-all` header checkbox
-- [ ] **SVLT-10**: Responsive display — horizontal scroll on narrow viewports; column hiding configurable per breakpoint
+- [x] **SVLT-10**: Responsive display — horizontal scroll on narrow viewports; column hiding configurable per breakpoint
 - [x] **SVLT-11**: Keyboard navigation — arrow keys between cells, Tab moves focus, Enter/Space activates cell actions
 - [x] **SVLT-12**: WCAG 2.1 AA accessibility — ARIA `grid` role, `rowheader`/`columnheader`/`gridcell` roles, `aria-sort`, `aria-selected`, `aria-busy` for loading
 - [x] **SVLT-13**: Row click event (`on:rowclick`) and cell click event (`on:cellclick`) with row data payload
-- [ ] **SVLT-14**: `@sveltejs/package` build produces correct `exports` map with Svelte, ESM, and types entries verified
+- [x] **SVLT-14**: `@sveltejs/package` build produces correct `exports` map with Svelte, ESM, and types entries verified
 - [x] **SVLT-15**: v1 backward compatibility verified — existing `colname`/`rowdata` consumers get deprecation warnings, not errors
 
 ### PERFORMANCE (Phase 4)
@@ -189,16 +189,16 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | SVLT-02     | Phase 3 | Complete |
 | SVLT-03     | Phase 3 | Complete |
 | SVLT-04     | Phase 3 | Complete |
-| SVLT-05     | Phase 3 | Pending  |
+| SVLT-05     | Phase 3 | Complete |
 | SVLT-06     | Phase 3 | Complete |
 | SVLT-07     | Phase 3 | Complete |
 | SVLT-08     | Phase 3 | Complete |
 | SVLT-09     | Phase 3 | Complete |
-| SVLT-10     | Phase 3 | Pending  |
+| SVLT-10     | Phase 3 | Complete |
 | SVLT-11     | Phase 3 | Complete |
 | SVLT-12     | Phase 3 | Complete |
 | SVLT-13     | Phase 3 | Complete |
-| SVLT-14     | Phase 3 | Pending  |
+| SVLT-14     | Phase 3 | Complete |
 | SVLT-15     | Phase 3 | Complete |
 | PERF-01     | Phase 4 | Pending  |
 | PERF-02     | Phase 4 | Pending  |
