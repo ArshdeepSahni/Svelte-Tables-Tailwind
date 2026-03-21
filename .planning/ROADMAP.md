@@ -93,7 +93,15 @@ Plans:
 4. A screen reader using NVDA or VoiceOver can navigate the table with arrow keys, hears column header role and sort direction via `aria-sort`, and hears `aria-busy` during loading — WCAG 2.1 AA is satisfied.
 5. `@sveltejs/package` produces a dist folder with correct `exports` map entries for `.svelte`, `.js`, and `.d.ts` — TypeScript consumers get full type inference on the `columns` prop.
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 03-01-PLAN.md — Test scaffold: Svelte-layer types.ts, vitest-axe install, full failing test stubs for all 12 test-covered requirements
+- [ ] 03-02-PLAN.md — Sub-components: Cell.svelte (CellDescriptor → safe markup dispatcher), SearchInput.svelte (debounced filter)
+- [ ] 03-03-PLAN.md — Sub-components: TableHeader.svelte (sortable thead + aria-sort), Checkbox.svelte (three-state with indeterminate via bind:this)
+- [ ] 03-04-PLAN.md — Sub-components: TableBody.svelte (rows/empty/loading/keyboard nav), TableFooter.svelte (pagination controls)
+- [ ] 03-05-PLAN.md — Table.svelte complete rewrite + index.ts update (wires all sub-components, two-phase inference, v1 compat)
+- [ ] 03-06-PLAN.md — Build verification + exports map confirmed + responsive visual checkpoint
 
 ---
 
@@ -274,4 +282,4 @@ Plans:
 ---
 
 _Created: 2026-03-20_
-_Last updated: 2026-03-21 — Phase 1 plans created (4 plans, 4 waves)_
+_Last updated: 2026-03-21 — Phase 3 plans created (6 plans, 4 waves)_
