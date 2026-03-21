@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-03-PLAN.md
-last_updated: "2026-03-21T18:58:59.360Z"
+stopped_at: Completed 04-04-PLAN.md
+last_updated: "2026-03-21T19:03:30.026Z"
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 22
-  completed_plans: 19
+  completed_plans: 20
 ---
 
 # Project State
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 4 — Virtual Scrolling + Performance |
-| Plan     | 03 complete (event delegation on tbody, CSS containment, 3 PERF-04 delegation tests green) |
-| Status   | Phase 4 IN PROGRESS (3/6 plans done)                 |
-| Progress | 19/22 plans complete across phases 1-4               |
+| Plan     | 04 complete (Web Worker sort wired, sortLoading state, aria-busy on thead, 10k threshold, SSR guard) |
+| Status   | Phase 4 IN PROGRESS (4/6 plans done)                 |
+| Progress | 20/22 plans complete across phases 1-4               |
 
 ```
 Phase progress: [████___] 4/7
-Plan progress:  [█████████░] 86% (19/22 plans)
+Plan progress:  [█████████░] 91% (20/22 plans)
 ```
 
 ---
@@ -61,7 +61,7 @@ Plan progress:  [█████████░] 86% (19/22 plans)
 | 1     | Foundation                                       | Complete | 4/4   |
 | 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
-| 4     | Virtual Scrolling + Performance                  | In Progress | 3/6   |
+| 4     | Virtual Scrolling + Performance                  | In Progress | 4/6   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
 | 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
 | 7     | Docs Site + Release                              | Pending  | 0/0   |
@@ -100,6 +100,7 @@ Plan progress:  [█████████░] 86% (19/22 plans)
 | Phase 04-virtual-scrolling-performance P01 | 179 | 3 tasks | 9 files |
 | Phase 04-virtual-scrolling-performance P02 | 268 | 2 tasks | 3 files |
 | Phase 04-virtual-scrolling-performance P03 | 96 | 2 tasks | 2 files |
+| Phase 04-virtual-scrolling-performance P04 | 113 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -173,6 +174,9 @@ Plan progress:  [█████████░] 86% (19/22 plans)
 | PERF-02 test needs pageSize=200 for 200-row assertion (04-02) | Default pageSize=50 truncates DOM to 50 rows; test must override to verify all 200 render in non-virtual mode |
 | handleBodyClick reads visibleRows[rowIndex] normal / sortedRows[rowIndex] virtual (04-03) | data-row is direct index into the active array; no additional lookup needed |
 | No e.stopPropagation() on td after removing per-td onclick handlers (04-03) | Delegation handler on tbody routes all clicks; stopPropagation was only needed to prevent td click bubbling to per-tr handler |
+| Worker created once in $effect (not per-sort) (04-04) | Avoids Worker constructor overhead on every sort key change; single lifecycle effect with cleanup |
+| Identity map (Map<_original, ProcessedRow>) for Worker response re-ordering (04-04) | Avoids re-running processRows on sorted originals from Worker; O(n) lookup by object identity |
+| typeof Worker === 'undefined' SSR guard inside lifecycle $effect (04-04) | Worker instantiation must be runtime-guarded not module-level; new Worker() fails in Node/SSR |
 
 ### Active Todos
 
@@ -203,9 +207,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T18:58:59.358Z
+**Last session:** 2026-03-21T19:03:30.024Z
 
-**Stopped at:** Completed 04-03-PLAN.md
+**Stopped at:** Completed 04-04-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance.
 
