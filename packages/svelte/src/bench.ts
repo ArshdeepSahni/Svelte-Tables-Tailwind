@@ -15,5 +15,5 @@ const data = Array.from({ length: ROWS }, (_, i) => ({
 
 mount(Table, {
   target: document.getElementById('app')!,
-  props: { data, pageSize: 50 },
+  props: { data, pageSize: 50, filterable: false },
 });
