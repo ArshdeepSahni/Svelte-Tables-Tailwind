@@ -100,6 +100,12 @@ Plan progress:  [██████████] 100% (16/16 plans)
 
 ## Accumulated Context
 
+
+### Roadmap Evolution
+- Phase 8 added: AI-Augmented Intelligence — NL filtering, smart column detection, AI summaries
+- Phase 9 added: Real-Time Data Streams — stream prop, async iterable support, live updates
+- Phase 10 added: Developer Ecosystem — CLI, VS Code extension, no-code builder, plugin marketplace
+
 ### Key Decisions Made
 
 | Decision                                                   | Rationale |
