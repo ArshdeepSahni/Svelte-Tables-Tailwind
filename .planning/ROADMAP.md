@@ -200,7 +200,7 @@ Plans:
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 4     | 6/6 | Complete   | 2026-03-21 | Pending |
+| 4     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
