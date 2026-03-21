@@ -26,6 +26,116 @@
         "types": "./dist/index.d.cts",
         "default": "./dist/index.cjs"
       }
+    },
+    "./renderers/text": {
+      "import": {
+        "types": "./dist/renderers/text.d.ts",
+        "default": "./dist/renderers/text.js"
+      }
+    },
+    "./renderers/number": {
+      "import": {
+        "types": "./dist/renderers/number.d.ts",
+        "default": "./dist/renderers/number.js"
+      }
+    },
+    "./renderers/integer": {
+      "import": {
+        "types": "./dist/renderers/integer.d.ts",
+        "default": "./dist/renderers/integer.js"
+      }
+    },
+    "./renderers/currency": {
+      "import": {
+        "types": "./dist/renderers/currency.d.ts",
+        "default": "./dist/renderers/currency.js"
+      }
+    },
+    "./renderers/percentage": {
+      "import": {
+        "types": "./dist/renderers/percentage.d.ts",
+        "default": "./dist/renderers/percentage.js"
+      }
+    },
+    "./renderers/boolean": {
+      "import": {
+        "types": "./dist/renderers/boolean.d.ts",
+        "default": "./dist/renderers/boolean.js"
+      }
+    },
+    "./renderers/date": {
+      "import": {
+        "types": "./dist/renderers/date.d.ts",
+        "default": "./dist/renderers/date.js"
+      }
+    },
+    "./renderers/datetime": {
+      "import": {
+        "types": "./dist/renderers/datetime.d.ts",
+        "default": "./dist/renderers/datetime.js"
+      }
+    },
+    "./renderers/time": {
+      "import": {
+        "types": "./dist/renderers/time.d.ts",
+        "default": "./dist/renderers/time.js"
+      }
+    },
+    "./renderers/email": {
+      "import": {
+        "types": "./dist/renderers/email.d.ts",
+        "default": "./dist/renderers/email.js"
+      }
+    },
+    "./renderers/url": {
+      "import": {
+        "types": "./dist/renderers/url.d.ts",
+        "default": "./dist/renderers/url.js"
+      }
+    },
+    "./renderers/phone": {
+      "import": {
+        "types": "./dist/renderers/phone.d.ts",
+        "default": "./dist/renderers/phone.js"
+      }
+    },
+    "./renderers/image": {
+      "import": {
+        "types": "./dist/renderers/image.d.ts",
+        "default": "./dist/renderers/image.js"
+      }
+    },
+    "./renderers/badge": {
+      "import": {
+        "types": "./dist/renderers/badge.d.ts",
+        "default": "./dist/renderers/badge.js"
+      }
+    },
+    "./renderers/status": {
+      "import": {
+        "types": "./dist/renderers/status.d.ts",
+        "default": "./dist/renderers/status.js"
+      }
+    },
+    "./renderers/code": {
+      "import": {
+        "types": "./dist/renderers/code.d.ts",
+        "default": "./dist/renderers/code.js"
+      }
+    },
+    "./renderers/html": {
+      "import": {
+        "types": "./dist/renderers/html.d.ts",
+        "default": "./dist/renderers/html.js"
+      }
+    }
+  },
+  "peerDependencies": {
+    "dompurify": ">=3.0.0"
+  },
+  "peerDependenciesMeta": {
+    "dompurify": {
+      "optional": true
     }
   },
   "files": [
