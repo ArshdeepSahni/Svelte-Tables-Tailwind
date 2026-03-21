@@ -9,23 +9,23 @@
 
 /** All supported column renderer types — union of all Tier 1 renderer names */
 export type ColumnType =
-  | 'text'        // fallback — plain string display
-  | 'number'      // numeric with locale formatting
-  | 'integer'     // integer, no decimal
-  | 'currency'    // locale currency with symbol
-  | 'percentage'  // 0-1 or 0-100 value shown as N%
-  | 'boolean'     // true/false → checkmark/cross icon
-  | 'date'        // ISO date → locale date string
-  | 'datetime'    // ISO datetime → locale datetime string
-  | 'time'        // time string → locale time display
-  | 'email'       // mailto: anchor
-  | 'url'         // anchor with external link icon
-  | 'phone'       // tel: anchor
-  | 'image'       // <img> with alt text
-  | 'badge'       // colored pill/tag
-  | 'status'      // enum value → colored status indicator
-  | 'code'        // monospace code block (no at-html — uses <code> element)
-  | 'html';       // EXPLICIT OPT-IN ONLY: sanitized HTML (DOMPurify in Phase 2)
+  | 'text' // fallback — plain string display
+  | 'number' // numeric with locale formatting
+  | 'integer' // integer, no decimal
+  | 'currency' // locale currency with symbol
+  | 'percentage' // 0-1 or 0-100 value shown as N%
+  | 'boolean' // true/false → checkmark/cross icon
+  | 'date' // ISO date → locale date string
+  | 'datetime' // ISO datetime → locale datetime string
+  | 'time' // time string → locale time display
+  | 'email' // mailto: anchor
+  | 'url' // anchor with external link icon
+  | 'phone' // tel: anchor
+  | 'image' // <img> with alt text
+  | 'badge' // colored pill/tag
+  | 'status' // enum value → colored status indicator
+  | 'code' // monospace code block (no at-html — uses <code> element)
+  | 'html'; // EXPLICIT OPT-IN ONLY: sanitized HTML (DOMPurify in Phase 2)
 
 /** Short-form column override: { columnKey: ColumnType } */
 export type ColumnOverrideShort = Record<string, ColumnType>;

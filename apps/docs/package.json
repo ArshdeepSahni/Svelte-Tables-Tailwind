@@ -11,5 +11,8 @@
     "dev": "echo 'Docs site not yet implemented — Phase 7'",
     "build": "echo 'Docs site not yet implemented — Phase 7'"
   },
-  "keywords": ["tablecraft", "docs"]
+  "keywords": [
+    "tablecraft",
+    "docs"
+  ]
 }

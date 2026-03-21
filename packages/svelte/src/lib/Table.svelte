@@ -47,7 +47,7 @@
       }
       // Zero-config: derive from first row
       return data.length > 0 ? Object.keys(data[0] as Record<string, unknown>) : [];
-    })()
+    })(),
   );
 
   /** Get display label for a column key — Phase 3 will use ColumnDefinition.label */

@@ -3,9 +3,7 @@
   "changelog": "@changesets/cli/changelog",
   "commit": false,
   "fixed": [],
-  "linked": [
-    ["@tablecraft/core", "@tablecraft/svelte", "@tablecraft/react", "@tablecraft/vue"]
-  ],
+  "linked": [["@tablecraft/core", "@tablecraft/svelte", "@tablecraft/react", "@tablecraft/vue"]],
   "access": "public",
   "baseBranch": "main",
   "updateInternalDependencies": "patch",

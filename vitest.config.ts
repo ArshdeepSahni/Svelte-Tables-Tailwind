@@ -2,8 +2,9 @@ import { defineConfig } from 'vitest/config';
 
 export default defineConfig({
   test: {
-    // Workspace mode: run all package test suites from one command
-    workspace: [
+    // Projects mode: run all package test suites from one command
+    // Note: Vitest 4 renamed `workspace` to `projects`
+    projects: [
       'packages/core/vitest.config.ts',
       'packages/svelte/vitest.config.ts',
       'packages/react/vitest.config.ts',

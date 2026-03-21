@@ -28,7 +28,10 @@
       }
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -47,5 +50,11 @@
     "vue": "^3.5.0",
     "vitest": "^4.1.0"
   },
-  "keywords": ["tablecraft", "vue", "vue3", "table", "data-grid"]
+  "keywords": [
+    "tablecraft",
+    "vue",
+    "vue3",
+    "table",
+    "data-grid"
+  ]
 }

@@ -49,5 +49,11 @@
     "vitest": "^4.1.0",
     "@testing-library/svelte": "^5.2.7"
   },
-  "keywords": ["tablecraft", "svelte", "svelte5", "table", "data-grid"]
+  "keywords": [
+    "tablecraft",
+    "svelte",
+    "svelte5",
+    "table",
+    "data-grid"
+  ]
 }

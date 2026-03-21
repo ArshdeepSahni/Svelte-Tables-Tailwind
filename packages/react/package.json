@@ -28,7 +28,10 @@
       }
     }
   },
-  "files": ["dist", "src"],
+  "files": [
+    "dist",
+    "src"
+  ],
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",
@@ -50,5 +53,10 @@
     "typescript": "^5.8.3",
     "vitest": "^4.1.0"
   },
-  "keywords": ["tablecraft", "react", "table", "data-grid"]
+  "keywords": [
+    "tablecraft",
+    "react",
+    "table",
+    "data-grid"
+  ]
 }
