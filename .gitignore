@@ -1,3 +1,35 @@
+# Dependencies
 node_modules/
+.pnpm-store/
+
+# Build outputs
 dist/
-.npmignore
+.svelte-kit/
+build/
+packages/*/dist/
+packages/*/.svelte-kit/
+apps/*/build/
+apps/*/.svelte-kit/
+
+# TypeScript
+*.tsbuildinfo
+packages/*/tsconfig.tsbuildinfo
+
+# Test outputs
+coverage/
+playwright-report/
+test-results/
+
+# Editor
+.DS_Store
+.vscode/settings.json
+*.swp
+
+# Env
+.env
+.env.local
+.env.*.local
+
+# Changeset
+.changeset/*.md
+!.changeset/config.json
