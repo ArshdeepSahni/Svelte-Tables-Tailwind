@@ -22,10 +22,10 @@ What v1.0.6 ships today. These are the baselines, not goals.
 ### FOUNDATION (Phase 1)
 
 - [x] **FOUND-01**: Project restructures as pnpm monorepo with `packages/core`, `packages/svelte`, `packages/react`, `packages/vue` skeleton packages
-- [ ] **FOUND-02**: Build pipeline migrated from Rollup 2 to Vite 5 + `@sveltejs/package` for the Svelte package
-- [ ] **FOUND-03**: TypeScript 5 configured across all packages with strict mode and correct `exports` map
-- [ ] **FOUND-04**: Svelte upgraded from 3.37 to 5.x with runes-based reactivity (`$props`, `$state`, `$derived`, `$effect`)
-- [ ] **FOUND-05**: All npm dependencies upgraded to latest stable versions safely
+- [x] **FOUND-02**: Build pipeline migrated from Rollup 2 to Vite 5 + `@sveltejs/package` for the Svelte package
+- [x] **FOUND-03**: TypeScript 5 configured across all packages with strict mode and correct `exports` map
+- [x] **FOUND-04**: Svelte upgraded from 3.37 to 5.x with runes-based reactivity (`$props`, `$state`, `$derived`, `$effect`)
+- [x] **FOUND-05**: All npm dependencies upgraded to latest stable versions safely
 - [x] **FOUND-06**: License reconciled to MIT across `package.json` and `LICENSE` file
 - [x] **FOUND-07**: XSS vulnerability eliminated — all cell rendering uses typed Svelte components instead of `{@html}` string concatenation
 - [x] **FOUND-08**: Tailwind CDN injection removed from component — replaced with CSS custom property design tokens (`--tc-*`)
@@ -162,10 +162,10 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | FOUND-01 | Phase 1 | Complete |
-| FOUND-02 | Phase 1 | Pending |
-| FOUND-03 | Phase 1 | Pending |
-| FOUND-04 | Phase 1 | Pending |
-| FOUND-05 | Phase 1 | Pending |
+| FOUND-02 | Phase 1 | Complete |
+| FOUND-03 | Phase 1 | Complete |
+| FOUND-04 | Phase 1 | Complete |
+| FOUND-05 | Phase 1 | Complete |
 | FOUND-06 | Phase 1 | Complete |
 | FOUND-07 | Phase 1 | Complete |
 | FOUND-08 | Phase 1 | Complete |
