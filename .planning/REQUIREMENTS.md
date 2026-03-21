@@ -79,16 +79,16 @@ What v1.0.6 ships today. These are the baselines, not goals.
 
 ### WEB COMPONENTS + FRAMEWORK WRAPPERS (Phase 5)
 
-- [ ] **WC-01**: `@tablecraft/core` ships `<tc-table>` Lit 3 Custom Element in Light DOM mode (`createRenderRoot() { return this; }`)
+- [x] **WC-01**: `@tablecraft/core` ships `<tc-table>` Lit 3 Custom Element in Light DOM mode (`createRenderRoot() { return this; }`)
 - [ ] **WC-02**: Web Component properties API for complex data: `element.data = rows`, `element.columns = [...]`
 - [ ] **WC-03**: Web Component attributes API for scalars: `row-height`, `sort-by`, `bordered`, `striped`, `loading`
 - [ ] **WC-04**: CustomEvents dispatched with `bubbles: true, composed: true`: `tc-cell-click`, `tc-row-click`, `tc-sort-change`, `tc-filter-change`
-- [ ] **WC-05**: SSR guards on all browser-only APIs (`customElements.define`, `ResizeObserver`, `window.scrollY`)
+- [x] **WC-05**: SSR guards on all browser-only APIs (`customElements.define`, `ResizeObserver`, `window.scrollY`)
 - [ ] **WC-06**: SvelteKit SSR integration test passes in CI
-- [ ] **WC-07**: `@tablecraft/react` wraps `<tc-table>` via `@lit/react` — all CustomEvents forwarded as React props (`onCellClick`, `onSort`, etc.)
-- [ ] **WC-08**: `@tablecraft/vue` wraps `<tc-table>` as Vue 3 SFC with native custom element support — all events forwarded via `v-on`
-- [ ] **WC-09**: Vite 5 + `vite-plugin-dts` builds `@tablecraft/core` to ESM + CJS + UMD
-- [ ] **WC-10**: Playwright smoke tests pass for React and Vue wrappers rendering 100 rows correctly
+- [x] **WC-07**: `@tablecraft/react` wraps `<tc-table>` via `@lit/react` — all CustomEvents forwarded as React props (`onCellClick`, `onSort`, etc.)
+- [x] **WC-08**: `@tablecraft/vue` wraps `<tc-table>` as Vue 3 SFC with native custom element support — all events forwarded via `v-on`
+- [x] **WC-09**: Vite 5 + `vite-plugin-dts` builds `@tablecraft/core` to ESM + CJS + UMD
+- [x] **WC-10**: Playwright smoke tests pass for React and Vue wrappers rendering 100 rows correctly
 
 ### COLUMN OPERATIONS + ADVANCED FEATURES (Phase 6)
 
@@ -207,16 +207,16 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | PERF-05     | Phase 4 | Complete |
 | PERF-06     | Phase 4 | Complete |
 | PERF-07     | Phase 4 | Complete |
-| WC-01       | Phase 5 | Pending  |
+| WC-01       | Phase 5 | Complete |
 | WC-02       | Phase 5 | Pending  |
 | WC-03       | Phase 5 | Pending  |
 | WC-04       | Phase 5 | Pending  |
-| WC-05       | Phase 5 | Pending  |
+| WC-05       | Phase 5 | Complete |
 | WC-06       | Phase 5 | Pending  |
-| WC-07       | Phase 5 | Pending  |
-| WC-08       | Phase 5 | Pending  |
-| WC-09       | Phase 5 | Pending  |
-| WC-10       | Phase 5 | Pending  |
+| WC-07       | Phase 5 | Complete |
+| WC-08       | Phase 5 | Complete |
+| WC-09       | Phase 5 | Complete |
+| WC-10       | Phase 5 | Complete |
 | ADV-01      | Phase 6 | Pending  |
 | ADV-02      | Phase 6 | Pending  |
 | ADV-03      | Phase 6 | Pending  |
