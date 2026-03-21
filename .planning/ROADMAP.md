@@ -10,7 +10,7 @@
 
 ## Phases
 
-- [ ] **Phase 1: Foundation** - Monorepo scaffold, dependency upgrades, toolchain modernization, and blocker resolution
+- [x] **Phase 1: Foundation** - Monorepo scaffold, dependency upgrades, toolchain modernization, and blocker resolution (completed 2026-03-21)
 - [ ] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers
 - [ ] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end
 - [ ] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation
@@ -31,19 +31,21 @@
 **Requirements:** FOUND-01, FOUND-02, FOUND-03, FOUND-04, FOUND-05, FOUND-06, FOUND-07, FOUND-08, FOUND-09, FOUND-10, FOUND-11, FOUND-12
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A developer can clone the repo, run `pnpm install && pnpm build`, and get artifact outputs from all packages with zero errors.
 2. `pnpm test` runs Vitest across all packages without failures — the test infrastructure exists and is wired.
 3. No `{@html}` string concatenation remains in any component file — every cell renders through a typed Svelte component or safe binding.
 4. The v1 Tailwind CDN `<link>` and the runtime type-switcher `<select>` in column headers are gone — no trace in any source file.
 5. The `package.json` license field and the `LICENSE` file both read `MIT`, and `engines.node` is set to `>=20`.
 
-**Plans:** 3/4 plans executed
+**Plans:** 4/4 plans complete
 
 Plans:
+
 - [ ] 01-PLAN.md — Repository skeleton: delete v1 source, create pnpm-workspace.yaml, rewrite root package.json, tsconfig.base.json, eslint.config.js, .prettierrc, .changeset/config.json
 - [ ] 02-PLAN.md — Package scaffolds: packages/core (Vite 8 + types), packages/svelte (Svelte 5 runes stub), packages/react (tsup), packages/vue (tsup), apps/docs stub
 - [ ] 03-PLAN.md — Build pipeline verification: pnpm install, build all packages, fix errors, pnpm -r typecheck
-- [ ] 04-PLAN.md — Testing infrastructure: Vitest workspace, foundation test suite (FOUND-* spec), Playwright smoke, ESLint + Prettier clean
+- [ ] 04-PLAN.md — Testing infrastructure: Vitest workspace, foundation test suite (FOUND-\* spec), Playwright smoke, ESLint + Prettier clean
 
 ---
 
@@ -56,6 +58,7 @@ Plans:
 **Requirements:** CORE-01, CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-07, CORE-08, CORE-09, CORE-10, CORE-11, CORE-12
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A developer can call `createTableEngine({ data: rows })` in a plain Node.js script and get back inferred column types for all 14+ detector categories — no Svelte, no DOM required.
 2. Passing a column named `avatar` to the engine boosts its inference score toward `image` even when the field values alone are ambiguous — field-name heuristics demonstrably improve accuracy in the test suite.
 3. A developer can call `registerRenderer('sparkline', myFn)` and the custom renderer is invoked in place of the built-in fallback — the plugin API works end-to-end without touching core files.
@@ -75,6 +78,7 @@ Plans:
 **Requirements:** SVLT-01, SVLT-02, SVLT-03, SVLT-04, SVLT-05, SVLT-06, SVLT-07, SVLT-08, SVLT-09, SVLT-10, SVLT-11, SVLT-12, SVLT-13, SVLT-14, SVLT-15
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. `<Table data={rows} />` with no other props renders a complete table — column headers derived from data keys, cell types inferred, table visible immediately with text fallback before inference completes.
 2. `<Table data={rows} columns={{ avatar: 'image', price: 'currency' }} />` overrides only the specified columns, leaving all others inferred — the one-prop override API works without touching anything else.
 3. A developer using the v1 `colname`/`rowdata` props sees a browser console deprecation warning but the table still renders correctly — no breaking change for existing users.
@@ -94,6 +98,7 @@ Plans:
 **Requirements:** PERF-01, PERF-02, PERF-03, PERF-04, PERF-05, PERF-06, PERF-07
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A Playwright benchmark loading 100,000 rows passes: initial paint under 200ms, no layout jank during fast scroll on a mid-range hardware profile (CPU 4x throttle in DevTools equivalent).
 2. The browser DevTools Performance panel shows a constant ~30 DOM row nodes in the table body regardless of dataset size — virtual scrolling is active and DOM recycling is confirmed.
 3. Sorting a 100,000-row dataset triggers no main-thread freeze — the sort operation completes in a Web Worker and results appear in under 50ms.
@@ -113,6 +118,7 @@ Plans:
 **Requirements:** WC-01, WC-02, WC-03, WC-04, WC-05, WC-06, WC-07, WC-08, WC-09, WC-10
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A React developer can write `<TcTable data={rows} onCellClick={handler} />` in a React 18+ project and see a rendered table — the `@lit/react` wrapper forwards all CustomEvents as React props without manual `addEventListener` calls.
 2. A Vue 3 developer can write `<TcTable :data="rows" @tc-cell-click="handler" />` and see a rendered table — the Vue SFC wrapper handles native custom element event forwarding transparently.
 3. A SvelteKit project with SSR enabled builds without `window is not defined` or `customElements is not defined` errors — all browser-only APIs are guarded.
@@ -132,6 +138,7 @@ Plans:
 **Requirements:** ADV-01, ADV-02, ADV-03, ADV-04, ADV-05, ADV-06, ADV-07, ADV-08, ADV-09
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A developer can drag a column divider handle to resize the column — the width updates live, respects `minWidth`/`maxWidth` constraints, and the change does not trigger a full table re-render.
 2. A developer can drag a column header to a new position and drop it — the column order updates and the new order is reflected in the DOM without a page reload.
 3. Setting `pinned: 'left'` on a column definition causes that column to remain fixed during horizontal scroll — confirmed by scrolling a wide table in a narrow viewport.
@@ -151,6 +158,7 @@ Plans:
 **Requirements:** DOCS-01, DOCS-02, DOCS-03, DOCS-04, DOCS-05, DOCS-06, DOCS-07, DOCS-08
 
 **Success Criteria** (what must be TRUE when this phase completes):
+
 1. A developer can paste any JSON array into the live REPL playground on the docs site and immediately see the inferred column types highlighted alongside a rendered table — the playground works without any local setup.
 2. `npm install @tablecraft/svelte` succeeds and the Getting Started example from the docs README renders a table in a fresh SvelteKit project — the published package is functional.
 3. A developer running `npm install svelte-tables-tailwind` (the v1 package) sees a deprecation notice in the install output or console pointing to `@tablecraft/svelte` — the migration path is explicit.
@@ -163,15 +171,15 @@ Plans:
 
 ## Milestone Summary
 
-| Phase | Name | Goal | Requirements | Status |
-|-------|------|------|--------------|--------|
-| 1 | 3/4 | In Progress|  | Pending |
-| 2 | Core Engine + Type Inference + Renderer Registry | Inference engine and renderer registry fully tested | CORE-01–12 (12 reqs) | Pending |
-| 3 | Svelte 5 Component + Zero-Config API | `<Table data={rows} />` works end-to-end | SVLT-01–15 (15 reqs) | Pending |
-| 4 | Virtual Scrolling + Performance | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs) | Pending |
-| 5 | Web Components Core + Framework Wrappers | React + Vue wrappers working, SSR-safe | WC-01–10 (10 reqs) | Pending |
-| 6 | Column Operations + Advanced Features | Resize, reorder, pin, group, persist, density | ADV-01–09 (9 reqs) | Pending |
-| 7 | Docs Site + Release | Live playground, npm publish, v1 deprecation | DOCS-01–08 (8 reqs) | Pending |
+| Phase | Name                                             | Goal                                                | Requirements         | Status  |
+| ----- | ------------------------------------------------ | --------------------------------------------------- | -------------------- | ------- |
+| 1     | 4/4 | Complete   | 2026-03-21 | Pending |
+| 2     | Core Engine + Type Inference + Renderer Registry | Inference engine and renderer registry fully tested | CORE-01–12 (12 reqs) | Pending |
+| 3     | Svelte 5 Component + Zero-Config API             | `<Table data={rows} />` works end-to-end            | SVLT-01–15 (15 reqs) | Pending |
+| 4     | Virtual Scrolling + Performance                  | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs)  | Pending |
+| 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
+| 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
+| 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
 **Total: 64 requirements mapped across 7 phases — 100% coverage**
 
@@ -180,82 +188,82 @@ Plans:
 ## Coverage Map
 
 | Requirement | Phase |
-|-------------|-------|
-| FOUND-01 | 1 |
-| FOUND-02 | 1 |
-| FOUND-03 | 1 |
-| FOUND-04 | 1 |
-| FOUND-05 | 1 |
-| FOUND-06 | 1 |
-| FOUND-07 | 1 |
-| FOUND-08 | 1 |
-| FOUND-09 | 1 |
-| FOUND-10 | 1 |
-| FOUND-11 | 1 |
-| FOUND-12 | 1 |
-| CORE-01 | 2 |
-| CORE-02 | 2 |
-| CORE-03 | 2 |
-| CORE-04 | 2 |
-| CORE-05 | 2 |
-| CORE-06 | 2 |
-| CORE-07 | 2 |
-| CORE-08 | 2 |
-| CORE-09 | 2 |
-| CORE-10 | 2 |
-| CORE-11 | 2 |
-| CORE-12 | 2 |
-| SVLT-01 | 3 |
-| SVLT-02 | 3 |
-| SVLT-03 | 3 |
-| SVLT-04 | 3 |
-| SVLT-05 | 3 |
-| SVLT-06 | 3 |
-| SVLT-07 | 3 |
-| SVLT-08 | 3 |
-| SVLT-09 | 3 |
-| SVLT-10 | 3 |
-| SVLT-11 | 3 |
-| SVLT-12 | 3 |
-| SVLT-13 | 3 |
-| SVLT-14 | 3 |
-| SVLT-15 | 3 |
-| PERF-01 | 4 |
-| PERF-02 | 4 |
-| PERF-03 | 4 |
-| PERF-04 | 4 |
-| PERF-05 | 4 |
-| PERF-06 | 4 |
-| PERF-07 | 4 |
-| WC-01 | 5 |
-| WC-02 | 5 |
-| WC-03 | 5 |
-| WC-04 | 5 |
-| WC-05 | 5 |
-| WC-06 | 5 |
-| WC-07 | 5 |
-| WC-08 | 5 |
-| WC-09 | 5 |
-| WC-10 | 5 |
-| ADV-01 | 6 |
-| ADV-02 | 6 |
-| ADV-03 | 6 |
-| ADV-04 | 6 |
-| ADV-05 | 6 |
-| ADV-06 | 6 |
-| ADV-07 | 6 |
-| ADV-08 | 6 |
-| ADV-09 | 6 |
-| DOCS-01 | 7 |
-| DOCS-02 | 7 |
-| DOCS-03 | 7 |
-| DOCS-04 | 7 |
-| DOCS-05 | 7 |
-| DOCS-06 | 7 |
-| DOCS-07 | 7 |
-| DOCS-08 | 7 |
+| ----------- | ----- |
+| FOUND-01    | 1     |
+| FOUND-02    | 1     |
+| FOUND-03    | 1     |
+| FOUND-04    | 1     |
+| FOUND-05    | 1     |
+| FOUND-06    | 1     |
+| FOUND-07    | 1     |
+| FOUND-08    | 1     |
+| FOUND-09    | 1     |
+| FOUND-10    | 1     |
+| FOUND-11    | 1     |
+| FOUND-12    | 1     |
+| CORE-01     | 2     |
+| CORE-02     | 2     |
+| CORE-03     | 2     |
+| CORE-04     | 2     |
+| CORE-05     | 2     |
+| CORE-06     | 2     |
+| CORE-07     | 2     |
+| CORE-08     | 2     |
+| CORE-09     | 2     |
+| CORE-10     | 2     |
+| CORE-11     | 2     |
+| CORE-12     | 2     |
+| SVLT-01     | 3     |
+| SVLT-02     | 3     |
+| SVLT-03     | 3     |
+| SVLT-04     | 3     |
+| SVLT-05     | 3     |
+| SVLT-06     | 3     |
+| SVLT-07     | 3     |
+| SVLT-08     | 3     |
+| SVLT-09     | 3     |
+| SVLT-10     | 3     |
+| SVLT-11     | 3     |
+| SVLT-12     | 3     |
+| SVLT-13     | 3     |
+| SVLT-14     | 3     |
+| SVLT-15     | 3     |
+| PERF-01     | 4     |
+| PERF-02     | 4     |
+| PERF-03     | 4     |
+| PERF-04     | 4     |
+| PERF-05     | 4     |
+| PERF-06     | 4     |
+| PERF-07     | 4     |
+| WC-01       | 5     |
+| WC-02       | 5     |
+| WC-03       | 5     |
+| WC-04       | 5     |
+| WC-05       | 5     |
+| WC-06       | 5     |
+| WC-07       | 5     |
+| WC-08       | 5     |
+| WC-09       | 5     |
+| WC-10       | 5     |
+| ADV-01      | 6     |
+| ADV-02      | 6     |
+| ADV-03      | 6     |
+| ADV-04      | 6     |
+| ADV-05      | 6     |
+| ADV-06      | 6     |
+| ADV-07      | 6     |
+| ADV-08      | 6     |
+| ADV-09      | 6     |
+| DOCS-01     | 7     |
+| DOCS-02     | 7     |
+| DOCS-03     | 7     |
+| DOCS-04     | 7     |
+| DOCS-05     | 7     |
+| DOCS-06     | 7     |
+| DOCS-07     | 7     |
+| DOCS-08     | 7     |
 
 ---
 
-*Created: 2026-03-20*
-*Last updated: 2026-03-21 — Phase 1 plans created (4 plans, 4 waves)*
+_Created: 2026-03-20_
+_Last updated: 2026-03-21 — Phase 1 plans created (4 plans, 4 waves)_

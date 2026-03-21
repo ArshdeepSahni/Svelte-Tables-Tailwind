@@ -31,8 +31,8 @@ What v1.0.6 ships today. These are the baselines, not goals.
 - [x] **FOUND-08**: Tailwind CDN injection removed from component — replaced with CSS custom property design tokens (`--tc-*`)
 - [x] **FOUND-09**: Runtime type-switcher dropdown removed from column headers
 - [x] **FOUND-10**: Node 20 LTS minimum declared in `engines` field; `@changesets/cli` configured for versioned releases
-- [ ] **FOUND-11**: Vitest 2.x + Playwright 1.x testing infrastructure configured across the monorepo
-- [ ] **FOUND-12**: ESLint + Prettier configured with Svelte 5 plugin
+- [x] **FOUND-11**: Vitest 2.x + Playwright 1.x testing infrastructure configured across the monorepo
+- [x] **FOUND-12**: ESLint + Prettier configured with Svelte 5 plugin
 
 ### CORE ENGINE (Phase 2)
 
@@ -142,104 +142,106 @@ What v1.0.6 ships today. These are the baselines, not goals.
 
 ## Out of Scope
 
-| Feature | Reason |
-|---------|--------|
-| Formula engine (Excel-like) | Handsontable-tier complexity; out of category for this library |
-| Server-side data model in v2 core | Client-side only for v2; `onFetch` hook in v3 |
-| XLSX export (SheetJS) | SheetJS licensing risk (AGPL); ship CSV only |
-| Right-click context menus | Conflicts with browser defaults; fire events, let app handle |
-| Real-time collaboration | Different product category entirely |
-| Mobile-native (iOS/Android) | Web-first for v2 |
-| Backend/ORM integrations | Library stays UI-layer only |
-| Shadow DOM for Web Components | Fundamentally incompatible with Tailwind host integration |
-| Dynamic row heights in virtual scroller | Prefix-sum + ResizeObserver complexity; defer to v3 |
-| Built-in charting | Out of scope — use a chart library |
+| Feature                                 | Reason                                                         |
+| --------------------------------------- | -------------------------------------------------------------- |
+| Formula engine (Excel-like)             | Handsontable-tier complexity; out of category for this library |
+| Server-side data model in v2 core       | Client-side only for v2; `onFetch` hook in v3                  |
+| XLSX export (SheetJS)                   | SheetJS licensing risk (AGPL); ship CSV only                   |
+| Right-click context menus               | Conflicts with browser defaults; fire events, let app handle   |
+| Real-time collaboration                 | Different product category entirely                            |
+| Mobile-native (iOS/Android)             | Web-first for v2                                               |
+| Backend/ORM integrations                | Library stays UI-layer only                                    |
+| Shadow DOM for Web Components           | Fundamentally incompatible with Tailwind host integration      |
+| Dynamic row heights in virtual scroller | Prefix-sum + ResizeObserver complexity; defer to v3            |
+| Built-in charting                       | Out of scope — use a chart library                             |
 
 ---
 
 ## Traceability
 
-| Requirement | Phase | Status |
-|-------------|-------|--------|
-| FOUND-01 | Phase 1 | Complete |
-| FOUND-02 | Phase 1 | Complete |
-| FOUND-03 | Phase 1 | Complete |
-| FOUND-04 | Phase 1 | Complete |
-| FOUND-05 | Phase 1 | Complete |
-| FOUND-06 | Phase 1 | Complete |
-| FOUND-07 | Phase 1 | Complete |
-| FOUND-08 | Phase 1 | Complete |
-| FOUND-09 | Phase 1 | Complete |
-| FOUND-10 | Phase 1 | Complete |
-| FOUND-11 | Phase 1 | Pending |
-| FOUND-12 | Phase 1 | Pending |
-| CORE-01 | Phase 2 | Pending |
-| CORE-02 | Phase 2 | Pending |
-| CORE-03 | Phase 2 | Pending |
-| CORE-04 | Phase 2 | Pending |
-| CORE-05 | Phase 2 | Pending |
-| CORE-06 | Phase 2 | Pending |
-| CORE-07 | Phase 2 | Pending |
-| CORE-08 | Phase 2 | Pending |
-| CORE-09 | Phase 2 | Pending |
-| CORE-10 | Phase 2 | Pending |
-| CORE-11 | Phase 2 | Pending |
-| CORE-12 | Phase 2 | Pending |
-| SVLT-01 | Phase 3 | Pending |
-| SVLT-02 | Phase 3 | Pending |
-| SVLT-03 | Phase 3 | Pending |
-| SVLT-04 | Phase 3 | Pending |
-| SVLT-05 | Phase 3 | Pending |
-| SVLT-06 | Phase 3 | Pending |
-| SVLT-07 | Phase 3 | Pending |
-| SVLT-08 | Phase 3 | Pending |
-| SVLT-09 | Phase 3 | Pending |
-| SVLT-10 | Phase 3 | Pending |
-| SVLT-11 | Phase 3 | Pending |
-| SVLT-12 | Phase 3 | Pending |
-| SVLT-13 | Phase 3 | Pending |
-| SVLT-14 | Phase 3 | Pending |
-| SVLT-15 | Phase 3 | Pending |
-| PERF-01 | Phase 4 | Pending |
-| PERF-02 | Phase 4 | Pending |
-| PERF-03 | Phase 4 | Pending |
-| PERF-04 | Phase 4 | Pending |
-| PERF-05 | Phase 4 | Pending |
-| PERF-06 | Phase 4 | Pending |
-| PERF-07 | Phase 4 | Pending |
-| WC-01 | Phase 5 | Pending |
-| WC-02 | Phase 5 | Pending |
-| WC-03 | Phase 5 | Pending |
-| WC-04 | Phase 5 | Pending |
-| WC-05 | Phase 5 | Pending |
-| WC-06 | Phase 5 | Pending |
-| WC-07 | Phase 5 | Pending |
-| WC-08 | Phase 5 | Pending |
-| WC-09 | Phase 5 | Pending |
-| WC-10 | Phase 5 | Pending |
-| ADV-01 | Phase 6 | Pending |
-| ADV-02 | Phase 6 | Pending |
-| ADV-03 | Phase 6 | Pending |
-| ADV-04 | Phase 6 | Pending |
-| ADV-05 | Phase 6 | Pending |
-| ADV-06 | Phase 6 | Pending |
-| ADV-07 | Phase 6 | Pending |
-| ADV-08 | Phase 6 | Pending |
-| ADV-09 | Phase 6 | Pending |
-| DOCS-01 | Phase 7 | Pending |
-| DOCS-02 | Phase 7 | Pending |
-| DOCS-03 | Phase 7 | Pending |
-| DOCS-04 | Phase 7 | Pending |
-| DOCS-05 | Phase 7 | Pending |
-| DOCS-06 | Phase 7 | Pending |
-| DOCS-07 | Phase 7 | Pending |
-| DOCS-08 | Phase 7 | Pending |
+| Requirement | Phase   | Status   |
+| ----------- | ------- | -------- |
+| FOUND-01    | Phase 1 | Complete |
+| FOUND-02    | Phase 1 | Complete |
+| FOUND-03    | Phase 1 | Complete |
+| FOUND-04    | Phase 1 | Complete |
+| FOUND-05    | Phase 1 | Complete |
+| FOUND-06    | Phase 1 | Complete |
+| FOUND-07    | Phase 1 | Complete |
+| FOUND-08    | Phase 1 | Complete |
+| FOUND-09    | Phase 1 | Complete |
+| FOUND-10    | Phase 1 | Complete |
+| FOUND-11    | Phase 1 | Complete |
+| FOUND-12    | Phase 1 | Complete |
+| CORE-01     | Phase 2 | Pending  |
+| CORE-02     | Phase 2 | Pending  |
+| CORE-03     | Phase 2 | Pending  |
+| CORE-04     | Phase 2 | Pending  |
+| CORE-05     | Phase 2 | Pending  |
+| CORE-06     | Phase 2 | Pending  |
+| CORE-07     | Phase 2 | Pending  |
+| CORE-08     | Phase 2 | Pending  |
+| CORE-09     | Phase 2 | Pending  |
+| CORE-10     | Phase 2 | Pending  |
+| CORE-11     | Phase 2 | Pending  |
+| CORE-12     | Phase 2 | Pending  |
+| SVLT-01     | Phase 3 | Pending  |
+| SVLT-02     | Phase 3 | Pending  |
+| SVLT-03     | Phase 3 | Pending  |
+| SVLT-04     | Phase 3 | Pending  |
+| SVLT-05     | Phase 3 | Pending  |
+| SVLT-06     | Phase 3 | Pending  |
+| SVLT-07     | Phase 3 | Pending  |
+| SVLT-08     | Phase 3 | Pending  |
+| SVLT-09     | Phase 3 | Pending  |
+| SVLT-10     | Phase 3 | Pending  |
+| SVLT-11     | Phase 3 | Pending  |
+| SVLT-12     | Phase 3 | Pending  |
+| SVLT-13     | Phase 3 | Pending  |
+| SVLT-14     | Phase 3 | Pending  |
+| SVLT-15     | Phase 3 | Pending  |
+| PERF-01     | Phase 4 | Pending  |
+| PERF-02     | Phase 4 | Pending  |
+| PERF-03     | Phase 4 | Pending  |
+| PERF-04     | Phase 4 | Pending  |
+| PERF-05     | Phase 4 | Pending  |
+| PERF-06     | Phase 4 | Pending  |
+| PERF-07     | Phase 4 | Pending  |
+| WC-01       | Phase 5 | Pending  |
+| WC-02       | Phase 5 | Pending  |
+| WC-03       | Phase 5 | Pending  |
+| WC-04       | Phase 5 | Pending  |
+| WC-05       | Phase 5 | Pending  |
+| WC-06       | Phase 5 | Pending  |
+| WC-07       | Phase 5 | Pending  |
+| WC-08       | Phase 5 | Pending  |
+| WC-09       | Phase 5 | Pending  |
+| WC-10       | Phase 5 | Pending  |
+| ADV-01      | Phase 6 | Pending  |
+| ADV-02      | Phase 6 | Pending  |
+| ADV-03      | Phase 6 | Pending  |
+| ADV-04      | Phase 6 | Pending  |
+| ADV-05      | Phase 6 | Pending  |
+| ADV-06      | Phase 6 | Pending  |
+| ADV-07      | Phase 6 | Pending  |
+| ADV-08      | Phase 6 | Pending  |
+| ADV-09      | Phase 6 | Pending  |
+| DOCS-01     | Phase 7 | Pending  |
+| DOCS-02     | Phase 7 | Pending  |
+| DOCS-03     | Phase 7 | Pending  |
+| DOCS-04     | Phase 7 | Pending  |
+| DOCS-05     | Phase 7 | Pending  |
+| DOCS-06     | Phase 7 | Pending  |
+| DOCS-07     | Phase 7 | Pending  |
+| DOCS-08     | Phase 7 | Pending  |
 
 **Coverage:**
+
 - v1 requirements: 64 total
 - Mapped to phases: 64
 - Unmapped: 0
 
 ---
-*Requirements defined: 2026-03-20*
-*Last updated: 2026-03-20 — traceability expanded to individual requirement rows after roadmap creation*
+
+_Requirements defined: 2026-03-20_
+_Last updated: 2026-03-20 — traceability expanded to individual requirement rows after roadmap creation_
