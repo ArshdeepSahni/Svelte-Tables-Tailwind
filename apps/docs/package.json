@@ -1,18 +1,31 @@
 {
   "name": "@tablecraft/docs",
-  "version": "0.0.1",
-  "description": "Documentation site for @tablecraft — SvelteKit (stub — implemented in Phase 7)",
+  "version": "2.0.0",
+  "description": "Interactive documentation dashboard for @tablecraft — Vite + Svelte 5 SPA",
   "license": "MIT",
   "private": true,
+  "type": "module",
   "engines": {
     "node": ">=20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "echo 'Docs site not yet implemented — Phase 7'",
-    "build": "echo 'Docs site not yet implemented — Phase 7'"
+    "dev": "vite --port 5175",
+    "build": "vite build",
+    "preview": "vite preview --port 5175",
+    "typecheck": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@tablecraft/svelte": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "svelte": "^5.0.0",
+    "typescript": "^5.8.3",
+    "vite": "^7.3.1"
   },
   "keywords": [
     "tablecraft",
-    "docs"
+    "docs",
+    "dashboard"
   ]
 }
