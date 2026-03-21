@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-04-PLAN.md
-last_updated: "2026-03-21T17:04:18.838Z"
+stopped_at: Completed 03-05-PLAN.md
+last_updated: "2026-03-21T17:17:05.515Z"
 progress:
   total_phases: 7
   completed_phases: 2
   total_plans: 16
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Project State
@@ -95,6 +95,7 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | Phase 03-svelte-5-component-zero-config-api P03 | 1min | 2 tasks | 2 files |
 | Phase 03-svelte-5-component-zero-config-api P02 | 121 | 2 tasks | 2 files |
 | Phase 03-svelte-5-component-zero-config-api P04 | 240 | 2 tasks | 2 files |
+| Phase 03-svelte-5-component-zero-config-api P05 | 1980 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -148,6 +149,10 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | One-way {checked} not bind:checked in Checkbox.svelte (03-03) | Two-way bind conflicts with parent reactive prop on update cycle |
 | window.setTimeout/clearTimeout in SearchInput.svelte (03-02) | Resolves Node Timeout vs DOM number type conflict; debounceTimer typed as number | undefined |
 | aria-sort=undefined (attribute omitted) for non-sortable columns (03-03) | Per WCAG spec aria-sort is only valid on columns that support sorting |
+| Label overrides applied post-resolveColumns (03-05) | Long-form ColumnDefinition labels applied on top of engine resolveColumns output; allows mocked engine to return auto-generated labels while Table renders declared labels |
+| processedRows stays $state() not $state.raw() (03-05) | Row identity comparison for selectedRows.some(r === row) requires both sides be the same reactive proxy; $state.raw() breaks identity |
+| data-skeleton attribute + explicit role=row required on tr (03-05) | Test selectors use querySelectorAll('[data-skeleton]') and closest('[role="row"]'); implicit ARIA roles insufficient for attribute selectors |
+| oncellclick payload includes rowIndex (03-05) | Test spec expects rowIndex in oncellclick event; added to TableBody Props interface and call site |
 
 ### Active Todos
 
@@ -178,13 +183,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T17:04:18.835Z
+**Last session:** 2026-03-21T17:17:05.513Z
 
-**Stopped at:** Completed 03-04-PLAN.md
+**Stopped at:** Completed 03-05-PLAN.md
 
-**Next action:** Continue Phase 3 — next plan is 03-04 (Table.svelte assembly).
+**Next action:** Phase 3 COMPLETE (5/5 plans done — 03-01 through 03-05). Continue to Phase 4: Virtual Scrolling + Performance.
 
-**Context to restore:** Phase 2 COMPLETE. @tablecraft/core is published-ready: 482 tests pass, inference coverage 90.14% branches / 100% lines, renderer coverage 100% all metrics. Vite 8 multi-entry build: 17 individual renderer .js files in dist/renderers/, plus dist/index.js and dist/index.cjs. Tree-shaking verified. TypeScript strict: zero errors. API: createTableEngine (inferSchema/resolveColumns/processRows/getConfig), 17 renderers auto-registered, registry with custom renderer support, v1 shim (adaptV1Props). DOMPurify: optional peerDep >= 3.0.0, configure() injection for SSR. Phase 3 starts with @tablecraft/core as stable dependency.
+**Context to restore:** Phase 3 COMPLETE. @tablecraft/svelte production component delivered: 40/40 tests pass, zero TypeScript errors, WCAG 2.1 AA verified (vitest-axe). Table.svelte fully integrates createTableEngine with two-phase inference, $derived filter/sort/paginate pipeline, WCAG aria attributes, v1 compat, CSS custom property theming. index.ts exports Table, defineColumns, ColumnType, ColumnDefinition, TableConfig. Build: pnpm --filter @tablecraft/svelte build produces dist/ via @sveltejs/package.
 
 ---
 
