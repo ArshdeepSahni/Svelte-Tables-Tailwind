@@ -7,7 +7,14 @@ export default defineConfig({
   retries: process.env['CI'] ? 2 : 0,
   workers: process.env['CI'] ? 1 : undefined,
   reporter: 'html',
+  webServer: {
+    command: 'pnpm --filter @tablecraft/svelte bench',
+    url: 'http://localhost:5174',
+    reuseExistingServer: !process.env['CI'],
+    timeout: 60_000,
+  },
   use: {
+    baseURL: 'http://localhost:5174',
     trace: 'on-first-retry',
   },
   projects: [
