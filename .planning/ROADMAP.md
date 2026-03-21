@@ -37,7 +37,7 @@
 4. The v1 Tailwind CDN `<link>` and the runtime type-switcher `<select>` in column headers are gone — no trace in any source file.
 5. The `package.json` license field and the `LICENSE` file both read `MIT`, and `engines.node` is set to `>=20`.
 
-**Plans:** 4 plans
+**Plans:** 1/4 plans executed
 
 Plans:
 - [ ] 01-PLAN.md — Repository skeleton: delete v1 source, create pnpm-workspace.yaml, rewrite root package.json, tsconfig.base.json, eslint.config.js, .prettierrc, .changeset/config.json
@@ -165,7 +165,7 @@ Plans:
 
 | Phase | Name | Goal | Requirements | Status |
 |-------|------|------|--------------|--------|
-| 1 | Foundation | Monorepo compiles, tests run, v1 defects eliminated | FOUND-01–12 (12 reqs) | Pending |
+| 1 | 1/4 | In Progress|  | Pending |
 | 2 | Core Engine + Type Inference + Renderer Registry | Inference engine and renderer registry fully tested | CORE-01–12 (12 reqs) | Pending |
 | 3 | Svelte 5 Component + Zero-Config API | `<Table data={rows} />` works end-to-end | SVLT-01–15 (15 reqs) | Pending |
 | 4 | Virtual Scrolling + Performance | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs) | Pending |
