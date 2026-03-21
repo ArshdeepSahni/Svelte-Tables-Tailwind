@@ -28,7 +28,7 @@
     bordered?: boolean;
     empty?: Snippet;
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
-    oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown }) => void;
+    oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown; rowIndex: number }) => void;
     onrowtoggle?: (row: Row, selected: boolean) => void;
   }
 
@@ -92,7 +92,7 @@
 <tbody onkeydown={handleKeyDown}>
   {#if loading}
     {#each { length: skeletonRows } as _}
-      <tr class="tc-tr tc-tr--skeleton" aria-hidden="true">
+      <tr class="tc-tr tc-tr--skeleton" role="row" data-skeleton aria-hidden="true">
         {#if selectable}
           <td class="tc-td tc-td--checkbox"><div class="tc-skeleton-cell"></div></td>
         {/if}
@@ -122,6 +122,7 @@
         class="tc-tr"
         class:tc-tr--striped={striped && rowIndex % 2 === 1}
         class:tc-tr--selected={isSelected}
+        role="row"
         aria-selected={selectable ? isSelected : undefined}
         onclick={() => onrowclick?.({ row, rowIndex })}
       >
@@ -143,7 +144,7 @@
             tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
             onclick={(e) => {
               e.stopPropagation();
-              oncellclick?.({ row, column: col, value: row[col.key] });
+              oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
             }}
           >
             <Cell {descriptor} />

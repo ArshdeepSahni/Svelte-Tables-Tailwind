@@ -1,154 +1,385 @@
 <script lang="ts">
   /**
-   * @tablecraft/svelte — Table component stub
+   * @tablecraft/svelte — Table component (Phase 3 production rewrite)
    *
-   * Phase 1 scaffold: Svelte 5 runes, zero defects.
-   * Full implementation in Phase 3.
+   * Full integration with @tablecraft/core engine:
+   * - Two-phase inference: immediate text columns + typed via requestIdleCallback
+   * - $state() reactive pipeline: filter → sort → paginate → visibleRows
+   * - WCAG 2.1 AA: role="grid", aria-colcount, aria-rowcount, aria-sort, aria-selected, aria-busy
+   * - v1 colname/rowdata backward compat via adaptV1Props()
    *
-   * FOUND-07: No at-html — all cell values rendered via text binding
-   * FOUND-08: No CDN Tailwind — CSS custom properties (--tc-*) used instead
-   * FOUND-09: No type-switcher select — column types are inferred/declared, never runtime-switched
-   * FOUND-04: Svelte 5 runes ($props, $state, $derived) — not Svelte 3 reactive declarations
+   * FOUND-07: No {@html} — all cell rendering delegated to Cell.svelte
+   * FOUND-08: CSS custom properties (--tc-*) only — no Tailwind CDN
+   * FOUND-09: No type-switcher select — column types inferred or declared
+   * FOUND-04: Svelte 5 runes ($props, $state, $derived, $effect) only
    */
 
-  import type { ColumnDefinition, ColumnType } from '@tablecraft/core';
+  import type { Snippet } from 'svelte';
+  import type {
+    ColumnDefinition,
+    ColumnType,
+    ResolvedColumn,
+    ProcessedRow,
+  } from '@tablecraft/core';
+  import { createTableEngine, adaptV1Props } from '@tablecraft/core';
+  import type { Row, SortState } from './types.js';
+  import TableHeader from './TableHeader.svelte';
+  import TableBody from './TableBody.svelte';
+  import TableFooter from './TableFooter.svelte';
+  import SearchInput from './SearchInput.svelte';
 
-  type Row = Record<string, unknown>;
+  type ColumnOverrideShort = Record<string, ColumnType>;
 
   interface Props {
-    /** Source data rows */
-    data: Row[];
-    /**
-     * Column definitions or short-form type overrides.
-     * Short: { avatar: 'image', price: 'currency' }
-     * Long: [{ key: 'avatar', type: 'image', label: 'Photo' }]
-     * Omit for zero-config auto-inference (Phase 2).
-     */
-    columns?: Record<string, ColumnType> | ColumnDefinition<Row>[];
-    /** Accessible label for the table */
+    // Primary API
+    data?: Row[];
+    columns?: ColumnOverrideShort | ColumnDefinition<Row>[];
     caption?: string;
+
+    // Display options
+    loading?: boolean;
+    skeletonRows?: number;
+    selectable?: boolean;
+    filterable?: boolean;
+    pageSize?: number;
+    striped?: boolean;
+    bordered?: boolean;
+    emptyMessage?: string;
+
+    // v1 backward compat (typed as unknown to avoid TS errors for existing consumers)
+    colname?: unknown;
+    rowdata?: unknown;
+
+    // Bindable
+    selectedRows?: Row[];
+
+    // Callback events (Svelte 5 — no createEventDispatcher)
+    onselect?: (event: { rows: Row[]; allSelected: boolean }) => void;
+    onrowclick?: (event: { row: Row; rowIndex: number }) => void;
+    oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown }) => void;
+
+    // Snippets (Svelte 5 — not slots)
+    empty?: Snippet;
   }
 
-  let { data = [], columns, caption }: Props = $props();
+  let {
+    data = [],
+    columns,
+    caption,
+    loading = false,
+    skeletonRows = 5,
+    selectable = false,
+    filterable = true,
+    pageSize = 50,
+    striped = false,
+    bordered = false,
+    emptyMessage = 'No data',
+    colname,
+    rowdata,
+    selectedRows = $bindable([]),
+    onselect,
+    onrowclick,
+    oncellclick,
+    empty,
+  }: Props = $props();
 
-  /**
-   * Derive column keys from column config (if provided) or from first data row.
-   * Phase 3 will expand this to support ColumnDefinition[] ordering and label overrides.
-   */
-  const columnKeys = $derived(
-    (() => {
-      if (columns && !Array.isArray(columns)) {
-        // Short-form Record<string, ColumnType> — use declared key order
-        return Object.keys(columns as Record<string, ColumnType>);
+  // ---------------------------------------------------------------------------
+  // v1 backward compat: detect colname/rowdata and adapt to v2 format
+  // ---------------------------------------------------------------------------
+
+  const effectiveData = $derived.by((): Row[] => {
+    if (data && data.length > 0) return data;
+    if (rowdata !== undefined || colname !== undefined) {
+      console.warn(
+        '[tablecraft] colname/rowdata API is deprecated. Use data={rows} and columns={...} instead. ' +
+          'See https://tablecraft.dev/migrate/v1 for migration guide.',
+      );
+      // If rowdata is an array of objects (test-friendly format), use directly
+      if (Array.isArray(rowdata) && rowdata.length > 0 && typeof rowdata[0] === 'object' && !Array.isArray(rowdata[0])) {
+        return rowdata as Row[];
       }
-      if (columns && Array.isArray(columns)) {
-        // Long-form ColumnDefinition[] — use declared order
-        return (columns as ColumnDefinition<Row>[]).map((c) => c.key);
+      // If rowdata is the classic v1 array-of-arrays format
+      if (Array.isArray(rowdata) && Array.isArray(colname)) {
+        try {
+          const adapted = adaptV1Props(
+            colname as unknown as Record<string, string>,
+            rowdata as unknown[][],
+          );
+          return adapted.data as Row[];
+        } catch {
+          return rowdata as Row[];
+        }
       }
-      // Zero-config: derive from first row
-      return data.length > 0 ? Object.keys(data[0] as Record<string, unknown>) : [];
-    })(),
+      if (Array.isArray(rowdata)) {
+        return rowdata as Row[];
+      }
+      return data;
+    }
+    return data;
+  });
+
+  const effectiveColumns = $derived.by(() => {
+    if (data && data.length > 0) return columns;
+    if (rowdata !== undefined || colname !== undefined) {
+      // If we have v1-style colname as Record<string, string>, extract columns
+      if (colname && typeof colname === 'object' && !Array.isArray(colname)) {
+        try {
+          const adapted = adaptV1Props(
+            colname as Record<string, string>,
+            (rowdata ?? []) as unknown[][],
+          );
+          return columns ?? (adapted.columns.length > 0 ? (adapted.columns as ColumnDefinition<Row>[]) : undefined);
+        } catch {
+          return columns;
+        }
+      }
+    }
+    return columns;
+  });
+
+  // ---------------------------------------------------------------------------
+  // Reactive state
+  // ---------------------------------------------------------------------------
+
+  let resolvedColumns = $state<ResolvedColumn[]>([]);
+  let processedRows = $state<ProcessedRow[]>([]);
+  let sortState = $state<SortState>({ key: null, dir: null });
+  let filterQuery = $state('');
+  let currentPage = $state(1);
+
+  // ---------------------------------------------------------------------------
+  // Two-phase inference $effect
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    // Snapshot raw data to avoid proxy identity issues with selectedRows comparison
+    const rawData: Row[] = Array.isArray(effectiveData) ? effectiveData : [];
+
+    const engine = createTableEngine({
+      data: rawData,
+      columns: effectiveColumns,
+    });
+
+    // Phase 1: immediate text columns (no inference — fast path)
+    const textCols = engine.resolveColumns(rawData, effectiveColumns ?? undefined);
+
+    // Apply label overrides from long-form columns prop (mock compatibility)
+    const applyLabelOverrides = (cols: ResolvedColumn[]): ResolvedColumn[] => {
+      if (!Array.isArray(effectiveColumns) || effectiveColumns.length === 0) return cols;
+      const overrideMap = new Map<string, string>();
+      for (const colDef of effectiveColumns as ColumnDefinition<Row>[]) {
+        if (colDef.label) overrideMap.set(colDef.key, colDef.label);
+      }
+      if (overrideMap.size === 0) return cols;
+      return cols.map((col) =>
+        overrideMap.has(col.key) ? { ...col, label: overrideMap.get(col.key)! } : col,
+      );
+    };
+
+    resolvedColumns = applyLabelOverrides(textCols);
+    processedRows = engine.processRows(rawData, textCols);
+
+    // Phase 2: async typed columns via requestIdleCallback
+    const schedule =
+      typeof requestIdleCallback !== 'undefined'
+        ? requestIdleCallback
+        : (cb: () => void) => setTimeout(cb, 1);
+    const cancel =
+      typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout;
+
+    const idleId = schedule(() => {
+      const schema = engine.inferSchema(rawData);
+      const typedCols = engine.resolveColumns(rawData, effectiveColumns ?? undefined, schema);
+      resolvedColumns = applyLabelOverrides(typedCols);
+      processedRows = engine.processRows(rawData, typedCols);
+    });
+
+    return () => cancel(idleId as number);
+  });
+
+  // ---------------------------------------------------------------------------
+  // Derived pipeline: filter → sort → paginate → visibleRows
+  // ---------------------------------------------------------------------------
+
+  const filteredRows = $derived.by(() => {
+    if (!filterQuery.trim()) return processedRows;
+    const q = filterQuery.toLowerCase();
+    return processedRows.filter((row) =>
+      Object.values(row.cells).some((cell) => {
+        const v =
+          'value' in cell
+            ? String((cell as { value: unknown }).value)
+            : 'label' in cell
+              ? (cell as { label: string }).label
+              : 'formatted' in cell
+                ? (cell as { formatted: string }).formatted
+                : '';
+        return v.toLowerCase().includes(q);
+      }),
+    );
+  });
+
+  const sortedRows = $derived.by(() => {
+    if (!sortState.key || !sortState.dir) return filteredRows;
+    const col = resolvedColumns.find((c) => c.key === sortState.key);
+    if (!col) return filteredRows;
+    return [...filteredRows].sort((a, b) => {
+      const av = a._original[sortState.key!];
+      const bv = b._original[sortState.key!];
+      const dir = sortState.dir === 'asc' ? 1 : -1;
+      if (av == null) return dir;
+      if (bv == null) return -dir;
+      if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * dir;
+      return String(av).localeCompare(String(bv)) * dir;
+    });
+  });
+
+  const totalPages = $derived(Math.max(1, Math.ceil(filteredRows.length / pageSize)));
+  const visibleRows = $derived(
+    sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
   );
 
-  /** Get display label for a column key — Phase 3 will use ColumnDefinition.label */
-  function getLabel(key: string): string {
-    return key.replace(/_/g, ' ').replace(/\b\w/g, (c) => c.toUpperCase());
+  // ---------------------------------------------------------------------------
+  // Reset page on data or filter change
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    void effectiveData;
+    void filterQuery;
+    currentPage = 1;
+  });
+
+  // ---------------------------------------------------------------------------
+  // Sort handler: unsorted → asc → desc → unsorted
+  // ---------------------------------------------------------------------------
+
+  function handleSortChange(key: string) {
+    if (sortState.key === key) {
+      if (sortState.dir === null) sortState = { key, dir: 'asc' };
+      else if (sortState.dir === 'asc') sortState = { key, dir: 'desc' };
+      else sortState = { key: null, dir: null };
+    } else {
+      sortState = { key, dir: 'asc' };
+    }
   }
 
-  /** Render a cell value safely — Phase 2 replaces with typed renderer components */
-  function renderCell(value: unknown): string {
-    if (value === null || value === undefined) return '';
-    if (typeof value === 'boolean') return value ? 'Yes' : 'No';
-    if (typeof value === 'object') return JSON.stringify(value);
-    return String(value);
+  // ---------------------------------------------------------------------------
+  // Selection helpers
+  // ---------------------------------------------------------------------------
+
+  const allSelected = $derived(
+    selectedRows.length > 0 && selectedRows.length === effectiveData.length,
+  );
+  const someSelected = $derived(
+    selectedRows.length > 0 && selectedRows.length < effectiveData.length,
+  );
+
+  function handleSelectAll(checked: boolean) {
+    // Use _original refs from processedRows for consistent identity with TableBody comparisons
+    selectedRows = checked ? processedRows.map((pr) => pr._original as Row) : [];
+    onselect?.({ rows: selectedRows, allSelected: checked });
+  }
+
+  function handleRowToggle(row: Row, checked: boolean) {
+    if (checked) {
+      selectedRows = [...selectedRows, row];
+    } else {
+      selectedRows = selectedRows.filter((r) => r !== row);
+    }
+    onselect?.({ rows: selectedRows, allSelected: allSelected });
   }
 </script>
 
-<!--
-  @tablecraft/svelte Phase 1 stub.
-  Uses CSS custom properties (--tc-*) instead of Tailwind CDN (FOUND-08).
-  No at-html — all values are text (FOUND-07).
-  No type-switcher select in headers (FOUND-09).
-  Svelte 5 runes: $props, $derived (FOUND-04).
--->
 <div class="tc-table-wrapper" role="region" aria-label={caption ?? 'Data table'}>
-  {#if data.length === 0}
-    <p class="tc-empty-state">No data to display.</p>
-  {:else}
-    <table class="tc-table" role="grid">
+  {#if filterable}
+    <SearchInput onfilter={(val) => { filterQuery = val; }} />
+  {/if}
+
+  <div class="tc-table-scroll">
+    <table
+      class="tc-table"
+      class:tc-table--bordered={bordered}
+      class:tc-table--striped={striped}
+      role="grid"
+      aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
+      aria-rowcount={effectiveData.length}
+      aria-busy={loading ? 'true' : 'false'}
+      aria-label={caption}
+    >
       {#if caption}
         <caption class="tc-caption">{caption}</caption>
       {/if}
-      <thead>
-        <tr>
-          {#each columnKeys as key}
-            <th scope="col" class="tc-th">{getLabel(key)}</th>
-          {/each}
-        </tr>
-      </thead>
-      <tbody>
-        {#each data as row}
-          <tr class="tc-tr">
-            {#each columnKeys as key}
-              <td class="tc-td">
-                {renderCell((row as Record<string, unknown>)[key])}
-              </td>
-            {/each}
-          </tr>
-        {/each}
-      </tbody>
+
+      <TableHeader
+        columns={resolvedColumns}
+        {sortState}
+        {selectable}
+        {allSelected}
+        {someSelected}
+        onsortchange={handleSortChange}
+        onselectall={handleSelectAll}
+      />
+
+      <TableBody
+        {visibleRows}
+        columns={resolvedColumns}
+        {loading}
+        {skeletonRows}
+        {selectable}
+        {selectedRows}
+        {emptyMessage}
+        {striped}
+        {bordered}
+        {empty}
+        {onrowclick}
+        {oncellclick}
+        onrowtoggle={handleRowToggle}
+      />
     </table>
-  {/if}
+  </div>
+
+  <TableFooter
+    {currentPage}
+    {totalPages}
+    totalRows={filteredRows.length}
+    onpagechange={(page) => { currentPage = page; }}
+  />
 </div>
 
 <style>
-  /* CSS custom property design tokens — replaces Tailwind CDN (FOUND-08) */
   .tc-table-wrapper {
-    overflow-x: auto;
+    font-family: var(--tc-font-family, inherit);
+    font-size: var(--tc-font-size, 0.875rem);
+    color: var(--tc-color-text, #111827);
     border: 1px solid var(--tc-border-color, #e5e7eb);
     border-radius: var(--tc-border-radius, 0.5rem);
+    overflow: hidden;
+  }
+
+  .tc-table-scroll {
+    overflow-x: auto;
   }
 
   .tc-table {
     width: 100%;
     border-collapse: collapse;
-    font-size: var(--tc-font-size, 0.875rem);
-    font-family: var(--tc-font-family, inherit);
-  }
-
-  .tc-th {
-    padding: var(--tc-spacing-3, 0.75rem) var(--tc-spacing-4, 1rem);
-    text-align: left;
-    font-weight: 600;
-    background-color: var(--tc-header-bg, #f9fafb);
-    color: var(--tc-header-color, #374151);
-    border-bottom: 1px solid var(--tc-border-color, #e5e7eb);
-  }
-
-  .tc-td {
-    padding: var(--tc-spacing-3, 0.75rem) var(--tc-spacing-4, 1rem);
-    border-bottom: 1px solid var(--tc-border-color, #e5e7eb);
-    color: var(--tc-cell-color, #111827);
-  }
-
-  .tc-tr:last-child .tc-td {
-    border-bottom: none;
-  }
-
-  .tc-tr:hover {
-    background-color: var(--tc-row-hover-bg, #f3f4f6);
-  }
-
-  .tc-empty-state {
-    padding: var(--tc-spacing-4, 1rem);
-    text-align: center;
-    color: var(--tc-muted-color, #6b7280);
+    min-width: max-content;
   }
 
   .tc-caption {
-    padding: var(--tc-spacing-3, 0.75rem);
-    font-weight: 600;
     text-align: left;
+    font-weight: 600;
+    padding: var(--tc-spacing-3, 0.75rem) var(--tc-spacing-4, 1rem);
+    caption-side: top;
     color: var(--tc-header-color, #374151);
+  }
+
+  @media (prefers-color-scheme: dark) {
+    .tc-table-wrapper {
+      --tc-color-text: #f9fafb;
+      --tc-border-color: #374151;
+      --tc-header-bg: #1f2937;
+      --tc-color-bg-hover: #374151;
+    }
   }
 </style>
