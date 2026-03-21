@@ -69,13 +69,13 @@ What v1.0.6 ships today. These are the baselines, not goals.
 
 ### PERFORMANCE (Phase 4)
 
-- [ ] **PERF-01**: `@tanstack/virtual` row virtualization integrated — only ~30 DOM rows rendered regardless of dataset size
-- [ ] **PERF-02**: Fixed row height (48px default, configurable via `--tc-row-height` CSS variable) enables O(1) scroll position calculation
-- [ ] **PERF-03**: CSS containment applied — `contain: layout style` on rows, `contain: layout style paint` on cells
-- [ ] **PERF-04**: Single delegated event listener on container element using `data-row`/`data-col` attributes — no per-cell listeners
-- [ ] **PERF-05**: Playwright E2E benchmark passes: 100k rows renders < 200ms initial paint, scrolls at 60fps on mid-range hardware
-- [ ] **PERF-06**: Column virtualization activates automatically when column count > 20 — reduces layout thrash for wide tables
-- [ ] **PERF-07**: Sort operation for 100k rows completes in Web Worker in < 50ms, does not block main thread
+- [x] **PERF-01**: `@tanstack/virtual` row virtualization integrated — only ~30 DOM rows rendered regardless of dataset size
+- [x] **PERF-02**: Fixed row height (48px default, configurable via `--tc-row-height` CSS variable) enables O(1) scroll position calculation
+- [x] **PERF-03**: CSS containment applied — `contain: layout style` on rows, `contain: layout style paint` on cells
+- [x] **PERF-04**: Single delegated event listener on container element using `data-row`/`data-col` attributes — no per-cell listeners
+- [x] **PERF-05**: Playwright E2E benchmark passes: 100k rows renders < 200ms initial paint, scrolls at 60fps on mid-range hardware
+- [x] **PERF-06**: Column virtualization activates automatically when column count > 20 — reduces layout thrash for wide tables
+- [x] **PERF-07**: Sort operation for 100k rows completes in Web Worker in < 50ms, does not block main thread
 
 ### WEB COMPONENTS + FRAMEWORK WRAPPERS (Phase 5)
 
@@ -200,13 +200,13 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | SVLT-13     | Phase 3 | Complete |
 | SVLT-14     | Phase 3 | Complete |
 | SVLT-15     | Phase 3 | Complete |
-| PERF-01     | Phase 4 | Pending  |
-| PERF-02     | Phase 4 | Pending  |
-| PERF-03     | Phase 4 | Pending  |
-| PERF-04     | Phase 4 | Pending  |
-| PERF-05     | Phase 4 | Pending  |
-| PERF-06     | Phase 4 | Pending  |
-| PERF-07     | Phase 4 | Pending  |
+| PERF-01     | Phase 4 | Complete |
+| PERF-02     | Phase 4 | Complete |
+| PERF-03     | Phase 4 | Complete |
+| PERF-04     | Phase 4 | Complete |
+| PERF-05     | Phase 4 | Complete |
+| PERF-06     | Phase 4 | Complete |
+| PERF-07     | Phase 4 | Complete |
 | WC-01       | Phase 5 | Pending  |
 | WC-02       | Phase 5 | Pending  |
 | WC-03       | Phase 5 | Pending  |

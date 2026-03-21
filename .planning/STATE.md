@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-06-PLAN.md — Phase 3 complete (6/6 plans done)
-last_updated: "2026-03-21T17:54:16.662Z"
+stopped_at: Completed 04-01-PLAN.md
+last_updated: "2026-03-21T18:47:10.759Z"
 progress:
-  total_phases: 7
+  total_phases: 10
   completed_phases: 3
-  total_plans: 16
-  completed_plans: 16
+  total_plans: 22
+  completed_plans: 17
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 3: Svelte 5 Component + Zero-Config API — COMPLETE (6/6 plans done)
+Phase 4: Virtual Scrolling + Performance — In Progress (1/6 plans done)
 
 ---
 
@@ -42,14 +42,14 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
-| Phase    | 3 — Svelte 5 Component + Zero-Config API |
-| Plan     | 06 complete (build verified, 40/40 tests GREEN, typecheck 0 errors, dist/ clean) |
-| Status   | Phase 3 COMPLETE (6/6 plans done)                    |
-| Progress | 16/16 plans complete across phases 1-3                |
+| Phase    | 4 — Virtual Scrolling + Performance |
+| Plan     | 01 complete (infrastructure: @tanstack/svelte-virtual, bench page, sort.worker.ts, 12 RED stubs) |
+| Status   | Phase 4 IN PROGRESS (1/6 plans done)                 |
+| Progress | 17/22 plans complete across phases 1-4               |
 
 ```
-Phase progress: [███____] 3/7
-Plan progress:  [██████████] 100% (16/16 plans)
+Phase progress: [████___] 4/7
+Plan progress:  [████████░░] 77% (17/22 plans)
 ```
 
 ---
@@ -61,7 +61,7 @@ Plan progress:  [██████████] 100% (16/16 plans)
 | 1     | Foundation                                       | Complete | 4/4   |
 | 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
-| 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
+| 4     | Virtual Scrolling + Performance                  | In Progress | 1/6   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
 | 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
 | 7     | Docs Site + Release                              | Pending  | 0/0   |
@@ -97,6 +97,7 @@ Plan progress:  [██████████] 100% (16/16 plans)
 | Phase 03-svelte-5-component-zero-config-api P04 | 240 | 2 tasks | 2 files |
 | Phase 03-svelte-5-component-zero-config-api P05 | 1980 | 2 tasks | 3 files |
 | Phase 03-svelte-5-component-zero-config-api P06 | 8min | 1 tasks | 3 files |
+| Phase 04-virtual-scrolling-performance P01 | 179 | 3 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -162,6 +163,9 @@ Plan progress:  [██████████] 100% (16/16 plans)
 | processedRows stays $state() not $state.raw() (03-05) | Row identity comparison for selectedRows.some(r === row) requires both sides be the same reactive proxy; $state.raw() breaks identity |
 | data-skeleton attribute + explicit role=row required on tr (03-05) | Test selectors use querySelectorAll('[data-skeleton]') and closest('[role="row"]'); implicit ARIA roles insufficient for attribute selectors |
 | oncellclick payload includes rowIndex (03-05) | Test spec expects rowIndex in oncellclick event; added to TableBody Props interface and call site |
+| sort.worker.ts uses /// reference lib webworker (04-01) | Resolves DedicatedWorkerGlobalScope for self.addEventListener without tsconfig lib changes; keeps worker isolated from DOM types |
+| void [render, Table] in delegation.test.ts (04-01) | Satisfies noUnusedLocals on Wave 0 stub imports; Wave 3 will replace with actual render() calls |
+| bench script uses vite --port 5174 explicitly (04-01) | Avoids port collision — dev script runs svelte-package (no port); 5174 is stable for playwright webServer config |
 
 ### Active Todos
 
@@ -192,9 +196,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T22:57:00.000Z
+**Last session:** 2026-03-21T18:47:10.757Z
 
-**Stopped at:** Completed 03-06-PLAN.md — Phase 3 complete (6/6 plans done)
+**Stopped at:** Completed 04-01-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance.
 
