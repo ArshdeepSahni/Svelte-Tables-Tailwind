@@ -65,7 +65,15 @@ Plans:
 4. Importing only the `currency` renderer does not include the `code` or `image` renderers in the output bundle — tree-shaking works per individual renderer module.
 5. Vitest reports > 95% line coverage on the inference engine and > 90% on all Tier 1 renderers.
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 02-01-PLAN.md — Types + Infrastructure: extend types.ts (CellDescriptor, ResolvedColumn, RendererFn, ProcessedRow), create tokens.ts (18 --tc-* tokens), scheduler.ts (requestIdleCallback/setImmediate), update vite.config.ts (rolldownOptions, multi-entry), vitest.config.ts (coverage thresholds), Wave 0 test stubs
+- [ ] 02-02-PLAN.md — Inference Engine: 15 detector functions (detectors.ts), inferSchema pipeline with systematic sampling (inference/index.ts), full detector and pipeline tests
+- [ ] 02-03-PLAN.md — Renderer Registry: Map-based registry with register/get/has/unregister/clear API (registry/index.ts), full registry tests
+- [ ] 02-04-PLAN.md — All 17 Tier 1 Renderers: individually tree-shakable renderer files (renderers/*.ts), renderers/index.ts barrel, 17 test files with null/undefined/edge-case coverage
+- [ ] 02-05-PLAN.md — Engine Factory + v1 Shim: createTableEngine() factory (engine/index.ts), adaptV1Props() shim (compat/v1.ts), state separation README.md, updated index.ts + package.json exports map
+- [ ] 02-06-PLAN.md — Coverage + Build Verification: run coverage (inference >= 95%, renderers >= 90%), run multi-entry build, verify 17 dist/renderers/ files, tree-shaking assertion
 
 ---
 
