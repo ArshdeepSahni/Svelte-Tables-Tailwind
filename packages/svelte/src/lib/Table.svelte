@@ -31,9 +31,23 @@
 
   let { data = [], columns, caption }: Props = $props();
 
-  /** Derive column keys from first row when no column config provided */
+  /**
+   * Derive column keys from column config (if provided) or from first data row.
+   * Phase 3 will expand this to support ColumnDefinition[] ordering and label overrides.
+   */
   const columnKeys = $derived(
-    data.length > 0 ? Object.keys(data[0] as Record<string, unknown>) : []
+    (() => {
+      if (columns && !Array.isArray(columns)) {
+        // Short-form Record<string, ColumnType> — use declared key order
+        return Object.keys(columns as Record<string, ColumnType>);
+      }
+      if (columns && Array.isArray(columns)) {
+        // Long-form ColumnDefinition[] — use declared order
+        return (columns as ColumnDefinition<Row>[]).map((c) => c.key);
+      }
+      // Zero-config: derive from first row
+      return data.length > 0 ? Object.keys(data[0] as Record<string, unknown>) : [];
+    })()
   );
 
   /** Get display label for a column key — Phase 3 will use ColumnDefinition.label */
