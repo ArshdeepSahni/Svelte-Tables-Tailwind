@@ -63,13 +63,14 @@ Zero-config data display with smart type inference — `<Table data={rows} />` j
 
 ## Key Decisions
 
-| Decision | Rationale | Outcome |
-|----------|-----------|---------|
-| Upgrade deps before v2 feature work | Old toolchain blocks Svelte 5 and modern features | — Pending |
-| Web Components as framework-agnostic core | Maximum reach without framework-specific rewrites | — Pending |
-| Vite + @sveltejs/package for build | Industry standard for Svelte library authoring in 2025 | — Pending |
-| Zero-config as primary API | The single biggest DX differentiator vs. all competitors | — Pending |
-| Monorepo structure | Separate packages for core, svelte, react, vue wrappers | — Pending |
+| Decision                                  | Rationale                                                | Outcome   |
+| ----------------------------------------- | -------------------------------------------------------- | --------- |
+| Upgrade deps before v2 feature work       | Old toolchain blocks Svelte 5 and modern features        | — Pending |
+| Web Components as framework-agnostic core | Maximum reach without framework-specific rewrites        | — Pending |
+| Vite + @sveltejs/package for build        | Industry standard for Svelte library authoring in 2025   | — Pending |
+| Zero-config as primary API                | The single biggest DX differentiator vs. all competitors | — Pending |
+| Monorepo structure                        | Separate packages for core, svelte, react, vue wrappers  | — Pending |
 
 ---
-*Last updated: 2026-03-20 after initialization*
+
+_Last updated: 2026-03-20 after initialization_

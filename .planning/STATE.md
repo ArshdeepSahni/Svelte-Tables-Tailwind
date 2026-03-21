@@ -4,7 +4,7 @@ milestone: v2.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 01-foundation-04-PLAN.md
-last_updated: "2026-03-21T13:07:47Z"
+last_updated: '2026-03-21T13:07:47Z'
 progress:
   total_phases: 7
   completed_phases: 1
@@ -40,12 +40,12 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 ## Current Position
 
-| Field    | Value                                    |
-| -------- | ---------------------------------------- |
-| Phase    | 1 — Foundation (COMPLETE)                |
-| Plan     | 04 complete (testing infrastructure)     |
-| Status   | Phase 1 done; ready for Phase 2          |
-| Progress | 1/7 phases complete                      |
+| Field    | Value                                |
+| -------- | ------------------------------------ |
+| Phase    | 1 — Foundation (COMPLETE)            |
+| Plan     | 04 complete (testing infrastructure) |
+| Status   | Phase 1 done; ready for Phase 2      |
+| Progress | 1/7 phases complete                  |
 
 ```
 Phase progress: [█______] 1/7
@@ -56,15 +56,15 @@ Plan progress:  [██████████] 100% (4/4 plans)
 
 ## Phase Progress
 
-| Phase | Name                                             | Status      | Plans |
-| ----- | ------------------------------------------------ | ----------- | ----- |
-| 1     | Foundation                                       | Complete    | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | Pending     | 0/0   |
-| 3     | Svelte 5 Component + Zero-Config API             | Pending     | 0/0   |
-| 4     | Virtual Scrolling + Performance                  | Pending     | 0/0   |
-| 5     | Web Components Core + Framework Wrappers         | Pending     | 0/0   |
-| 6     | Column Operations + Advanced Features            | Pending     | 0/0   |
-| 7     | Docs Site + Release                              | Pending     | 0/0   |
+| Phase | Name                                             | Status   | Plans |
+| ----- | ------------------------------------------------ | -------- | ----- |
+| 1     | Foundation                                       | Complete | 4/4   |
+| 2     | Core Engine + Type Inference + Renderer Registry | Pending  | 0/0   |
+| 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
+| 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
+| 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
+| 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
+| 7     | Docs Site + Release                              | Pending  | 0/0   |
 
 ---
 
@@ -109,9 +109,9 @@ Plan progress:  [██████████] 100% (4/4 plans)
 | packages/svelte tsconfig uses Bundler moduleResolution     | Required for @sveltejs/package and Vite compatibility; overrides NodeNext from base tsconfig                    |
 | CSS custom properties (--tc-\*) replace Tailwind CDN       | Table.svelte uses design tokens with hardcoded fallbacks; satisfies FOUND-08 and allows theme customization     |
 | columns $derived uses IIFE branch (short/long/zero-config) | noUnusedLocals required columns to be read; IIFE correctly implements Phase 3 column key ordering ahead of time |
-| Vitest 4 uses test.projects not test.workspace | Plan used removed API; auto-fixed — Vitest 4 renamed workspace to projects |
-| resolve.conditions browser in svelte vitest config | Svelte 5 default export is index-server.js; browser condition selects index-client.js for jsdom mount |
-| jsdom must be explicitly installed for Vitest jsdom env | Not bundled with Vitest; must be added to root devDependencies |
+| Vitest 4 uses test.projects not test.workspace             | Plan used removed API; auto-fixed — Vitest 4 renamed workspace to projects                                      |
+| resolve.conditions browser in svelte vitest config         | Svelte 5 default export is index-server.js; browser condition selects index-client.js for jsdom mount           |
+| jsdom must be explicitly installed for Vitest jsdom env    | Not bundled with Vitest; must be added to root devDependencies                                                  |
 
 ### Active Todos
 
@@ -148,7 +148,7 @@ None currently. Phase 1 has no dependencies.
 
 **Next action:** Begin Phase 2 — Core Engine + Type Inference + Renderer Registry.
 
-**Context to restore:** Phase 1 complete. All 4 plans done. Vitest workspace (projects mode) runs 44 tests across 4 packages (pnpm test exits 0). Playwright smoke test passes on Chromium. ESLint exits 0. Prettier exits 0. foundation.test.ts codifies all FOUND-* requirements as permanent machine-verified assertions. All Phase 1 success criteria satisfied.
+**Context to restore:** Phase 1 complete. All 4 plans done. Vitest workspace (projects mode) runs 44 tests across 4 packages (pnpm test exits 0). Playwright smoke test passes on Chromium. ESLint exits 0. Prettier exits 0. foundation.test.ts codifies all FOUND-\* requirements as permanent machine-verified assertions. All Phase 1 success criteria satisfied.
 
 ---
 

@@ -21,41 +21,41 @@ requirements:
 
 must_haves:
   truths:
-    - "pnpm install succeeds with zero errors and zero peer dependency warnings that block the build"
-    - "pnpm --filter @tablecraft/core build exits 0 and produces packages/core/dist/index.js, index.cjs, index.umd.js, index.d.ts"
-    - "pnpm --filter @tablecraft/svelte build exits 0 and produces packages/svelte/dist/index.js"
-    - "pnpm --filter @tablecraft/react build exits 0 and produces packages/react/dist/index.js and index.cjs"
-    - "pnpm --filter @tablecraft/vue build exits 0 and produces packages/vue/dist/index.js and index.cjs"
-    - "pnpm -r typecheck exits 0 with zero TypeScript errors"
-    - "pnpm -r build exits 0 (all packages in one command)"
+    - 'pnpm install succeeds with zero errors and zero peer dependency warnings that block the build'
+    - 'pnpm --filter @tablecraft/core build exits 0 and produces packages/core/dist/index.js, index.cjs, index.umd.js, index.d.ts'
+    - 'pnpm --filter @tablecraft/svelte build exits 0 and produces packages/svelte/dist/index.js'
+    - 'pnpm --filter @tablecraft/react build exits 0 and produces packages/react/dist/index.js and index.cjs'
+    - 'pnpm --filter @tablecraft/vue build exits 0 and produces packages/vue/dist/index.js and index.cjs'
+    - 'pnpm -r typecheck exits 0 with zero TypeScript errors'
+    - 'pnpm -r build exits 0 (all packages in one command)'
   artifacts:
-    - path: "packages/core/dist/index.js"
-      provides: "ESM build of @tablecraft/core"
-    - path: "packages/core/dist/index.cjs"
-      provides: "CJS build of @tablecraft/core"
-    - path: "packages/core/dist/index.umd.js"
-      provides: "UMD build of @tablecraft/core"
-    - path: "packages/core/dist/index.d.ts"
-      provides: "TypeScript declarations for @tablecraft/core"
-    - path: "packages/svelte/dist/index.js"
-      provides: "ESM build of @tablecraft/svelte"
-    - path: "packages/react/dist/index.js"
-      provides: "ESM build of @tablecraft/react"
-    - path: "packages/react/dist/index.cjs"
-      provides: "CJS build of @tablecraft/react"
-    - path: "packages/vue/dist/index.js"
-      provides: "ESM build of @tablecraft/vue"
-    - path: "packages/vue/dist/index.cjs"
-      provides: "CJS build of @tablecraft/vue"
+    - path: 'packages/core/dist/index.js'
+      provides: 'ESM build of @tablecraft/core'
+    - path: 'packages/core/dist/index.cjs'
+      provides: 'CJS build of @tablecraft/core'
+    - path: 'packages/core/dist/index.umd.js'
+      provides: 'UMD build of @tablecraft/core'
+    - path: 'packages/core/dist/index.d.ts'
+      provides: 'TypeScript declarations for @tablecraft/core'
+    - path: 'packages/svelte/dist/index.js'
+      provides: 'ESM build of @tablecraft/svelte'
+    - path: 'packages/react/dist/index.js'
+      provides: 'ESM build of @tablecraft/react'
+    - path: 'packages/react/dist/index.cjs'
+      provides: 'CJS build of @tablecraft/react'
+    - path: 'packages/vue/dist/index.js'
+      provides: 'ESM build of @tablecraft/vue'
+    - path: 'packages/vue/dist/index.cjs'
+      provides: 'CJS build of @tablecraft/vue'
   key_links:
-    - from: "packages/svelte/package.json"
-      to: "packages/core/dist/index.js"
-      via: "workspace:* dep resolved by pnpm link"
-      pattern: "@tablecraft/core"
-    - from: "packages/core/vite.config.ts"
-      to: "packages/core/dist/"
-      via: "vite build library mode"
-      pattern: "vite build"
+    - from: 'packages/svelte/package.json'
+      to: 'packages/core/dist/index.js'
+      via: 'workspace:* dep resolved by pnpm link'
+      pattern: '@tablecraft/core'
+    - from: 'packages/core/vite.config.ts'
+      to: 'packages/core/dist/'
+      via: 'vite build library mode'
+      pattern: 'vite build'
 ---
 
 <objective>
@@ -64,6 +64,7 @@ Install all dependencies and verify every package builds to its expected dist/ o
 Purpose: Wave 3 is the first time the full tool chain runs end-to-end. If Vite 8 + vite-plugin-dts, @sveltejs/package, and tsup all succeed, the monorepo scaffold is proven correct. TypeScript typecheck across all packages confirms the tsconfig.base.json extends chain and the cross-package type imports (packages/svelte importing from @tablecraft/core) resolve correctly.
 
 Output:
+
 - dist/ directories under each package with the correct format outputs
 - Confirmed zero TypeScript errors across all 4 packages
 - Any build errors diagnosed and fixed inline (missing peer deps, config corrections, import path issues)
@@ -108,12 +109,8 @@ This plan is primarily diagnostic and corrective — it runs the builds, observe
 <task type="auto">
   <name>Task 1: Install all dependencies and verify workspace linking</name>
 
-  <read_first>
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/package.json (root devDependencies — verify all tools are listed)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/pnpm-workspace.yaml (confirm workspace config before running install)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/package.json (verify @tablecraft/core devDependencies for Vite 8)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/package.json (verify svelte devDependencies and workspace:* dep on core)
-  </read_first>
+<read_first> - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/package.json (root devDependencies — verify all tools are listed) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/pnpm-workspace.yaml (confirm workspace config before running install) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/package.json (verify @tablecraft/core devDependencies for Vite 8) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/package.json (verify svelte devDependencies and workspace:\* dep on core)
+</read_first>
 
   <files>
     package.json
@@ -127,6 +124,7 @@ This plan is primarily diagnostic and corrective — it runs the builds, observe
 Step 1 — Before running install, verify root package.json has the missing ESLint deps that eslint.config.js requires (added in plan 01, task 3). If `@eslint/js` and `globals` and `svelte-eslint-parser` are not in root devDependencies, add them now:
 
 Check root package.json devDependencies. If any of these are missing, add them:
+
 ```json
 "@eslint/js": "^9.24.0",
 "globals": "^16.0.0",
@@ -149,18 +147,21 @@ test -d packages/react/node_modules/@tablecraft/core && echo "react→core link:
 test -d packages/vue/node_modules/@tablecraft/core && echo "vue→core link: OK" || echo "vue→core link: MISSING"
 ```
 
-If workspace links are missing after install, it means pnpm-workspace.yaml was not found or packages don't have workspace:* dep correctly. Debug by checking `pnpm ls --filter @tablecraft/core`.
+If workspace links are missing after install, it means pnpm-workspace.yaml was not found or packages don't have workspace:\* dep correctly. Debug by checking `pnpm ls --filter @tablecraft/core`.
 
 Step 4 — Fix any peer dependency issues that block builds. Common issues to resolve:
 
 Issue A: @sveltejs/vite-plugin-svelte peer warning about Svelte version
+
 - Resolution: Ensure root package.json devDependencies has `"svelte": "^5.0.0"` — it does. Ignore peer warnings for packages that are installed correctly.
 
 Issue B: @testing-library/svelte requires @vitest/browser
+
 - Resolution: This is an optional peer dep for browser mode. For jsdom mode it's not required. Add to root devDependencies if the warning becomes a blocking error:
   `"@vitest/browser": "^4.1.0"`
 
 Issue C: missing peerDependency for react or vue in packages/react or packages/vue
+
 - Resolution: These are devDependencies already (react ^19.0.0, vue ^3.5.0) so they are installed.
 
 Step 5 — Verify pnpm install produced no fatal errors:
@@ -170,40 +171,27 @@ pnpm ls --depth 0 2>&1 | head -20
 ```
 
 If `pnpm install` fails for any reason, read the exact error message and fix the specific issue:
+
 - Missing package: add to the correct package.json devDependencies
 - Incompatible version: check exact version constraint
 - Network error: retry once
   </action>
 
-  <verify>
-    <automated>cd /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind && pnpm install 2>&1 | tail -5 && test -d node_modules && echo "INSTALL PASS" || echo "INSTALL FAIL"</automated>
-  </verify>
+    <verify>
+      <automated>cd /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind && pnpm install 2>&1 | tail -5 && test -d node_modules && echo "INSTALL PASS" || echo "INSTALL FAIL"</automated>
+    </verify>
 
-  <acceptance_criteria>
-    - `pnpm install` exits 0
-    - `test -d node_modules` exits 0
-    - `test -d node_modules/.pnpm` exits 0
-    - `test -d packages/core/node_modules || test -L packages/core/node_modules` exits 0 (node_modules may be hoisted)
-    - `pnpm ls --filter @tablecraft/core 2>&1 | grep "@tablecraft/core"` finds the package
-    - `pnpm ls --filter @tablecraft/svelte 2>&1 | grep "@tablecraft/svelte"` finds the package
-    - `pnpm ls --filter @tablecraft/react 2>&1 | grep "@tablecraft/react"` finds the package
-    - `pnpm ls --filter @tablecraft/vue 2>&1 | grep "@tablecraft/vue"` finds the package
+  <acceptance_criteria> - `pnpm install` exits 0 - `test -d node_modules` exits 0 - `test -d node_modules/.pnpm` exits 0 - `test -d packages/core/node_modules || test -L packages/core/node_modules` exits 0 (node_modules may be hoisted) - `pnpm ls --filter @tablecraft/core 2>&1 | grep "@tablecraft/core"` finds the package - `pnpm ls --filter @tablecraft/svelte 2>&1 | grep "@tablecraft/svelte"` finds the package - `pnpm ls --filter @tablecraft/react 2>&1 | grep "@tablecraft/react"` finds the package - `pnpm ls --filter @tablecraft/vue 2>&1 | grep "@tablecraft/vue"` finds the package
   </acceptance_criteria>
 
   <done>pnpm install exits 0. All four packages recognized by pnpm. Workspace symlinks for @tablecraft/core created in consuming packages' node_modules. No fatal peer dependency errors blocking builds.</done>
-</task>
+  </task>
 
 <task type="auto">
   <name>Task 2: Build all packages and fix any compilation errors</name>
 
-  <read_first>
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/vite.config.ts (verify config before running build)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/svelte.config.js (verify @sveltejs/package config before running build)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/react/tsup.config.ts (verify tsup config before running build)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/vue/tsup.config.ts (verify tsup config before running build)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/src/index.ts (verify exports before building)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/src/lib/Table.svelte (verify no syntax errors before building)
-  </read_first>
+<read_first> - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/vite.config.ts (verify config before running build) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/svelte.config.js (verify @sveltejs/package config before running build) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/react/tsup.config.ts (verify tsup config before running build) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/vue/tsup.config.ts (verify tsup config before running build) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/src/index.ts (verify exports before building) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/src/lib/Table.svelte (verify no syntax errors before building)
+</read_first>
 
   <files>
     packages/core/dist/
@@ -223,6 +211,7 @@ pnpm --filter @tablecraft/core build
 
 Expected output: Vite 8 compiles src/index.ts, vite-plugin-dts generates type declarations.
 Expected files after build:
+
 - packages/core/dist/index.js (ESM)
 - packages/core/dist/index.cjs (CJS)
 - packages/core/dist/index.umd.js (UMD)
@@ -240,6 +229,7 @@ ERROR: "type: module conflicts with require()"
 FIX: The vite.config.ts uses `import` syntax and packages/core/package.json has `"type": "module"` — this is correct for Vite 8.
 
 Verify core build:
+
 ```bash
 test -f packages/core/dist/index.js && echo "core ESM: OK"
 test -f packages/core/dist/index.cjs && echo "core CJS: OK"
@@ -254,12 +244,14 @@ pnpm --filter @tablecraft/svelte build
 
 The build command is `svelte-package -i src/lib` (from package.json scripts).
 @sveltejs/package will:
+
 1. Read svelte.config.js for preprocessor (vitePreprocess)
 2. Compile Table.svelte to JavaScript
 3. Generate TypeScript declarations
 4. Output to packages/svelte/dist/
 
 Expected files after build:
+
 - packages/svelte/dist/index.js (main entry)
 - packages/svelte/dist/Table.svelte (processed Svelte component)
 - packages/svelte/dist/index.d.ts
@@ -276,6 +268,7 @@ ERROR: "svelte-package: compilerOptions.moduleResolution must be Bundler"
 FIX: The packages/svelte/tsconfig.json already has "moduleResolution": "Bundler" — this is the correct override.
 
 Verify svelte build:
+
 ```bash
 test -f packages/svelte/dist/index.js && echo "svelte ESM: OK"
 ```
@@ -289,6 +282,7 @@ pnpm --filter @tablecraft/react build
 The build command is `tsup` (from package.json scripts).
 
 Expected files:
+
 - packages/react/dist/index.js (ESM)
 - packages/react/dist/index.cjs (CJS)
 - packages/react/dist/index.d.ts
@@ -302,6 +296,7 @@ ERROR: "tsup: external 'react' not found"
 FIX: React is in devDependencies so it IS installed — the external flag just prevents bundling it. This is correct behavior.
 
 Verify react build:
+
 ```bash
 test -f packages/react/dist/index.js && echo "react ESM: OK"
 test -f packages/react/dist/index.cjs && echo "react CJS: OK"
@@ -314,11 +309,13 @@ pnpm --filter @tablecraft/vue build
 ```
 
 Expected files:
+
 - packages/vue/dist/index.js (ESM)
 - packages/vue/dist/index.cjs (CJS)
 - packages/vue/dist/index.d.ts
 
 Verify vue build:
+
 ```bash
 test -f packages/vue/dist/index.js && echo "vue ESM: OK"
 test -f packages/vue/dist/index.cjs && echo "vue CJS: OK"
@@ -352,32 +349,16 @@ ERROR: "Cannot use 'import.meta' outside a module"
 FIX: Ensure packages with `"type": "module"` have correct tsconfig module setting. packages/core uses NodeNext which supports import.meta.
 
 Step 7 — If any typecheck error persists that cannot be fixed without changing the architectural approach, add a `// @ts-ignore` with a detailed comment explaining why, and log it as a known issue in the SUMMARY.
-  </action>
+</action>
 
   <verify>
     <automated>cd /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind && pnpm -r build 2>&1 | tail -10 && test -f packages/core/dist/index.js && test -f packages/react/dist/index.js && test -f packages/vue/dist/index.js && echo "ALL BUILDS PASS" || echo "BUILD FAIL"</automated>
   </verify>
 
-  <acceptance_criteria>
-    - `pnpm --filter @tablecraft/core build` exits 0
-    - `test -f packages/core/dist/index.js` exits 0
-    - `test -f packages/core/dist/index.cjs` exits 0
-    - `test -f packages/core/dist/index.umd.js` exits 0
-    - `test -f packages/core/dist/index.d.ts` exits 0
-    - `pnpm --filter @tablecraft/svelte build` exits 0
-    - `test -f packages/svelte/dist/index.js` exits 0
-    - `pnpm --filter @tablecraft/react build` exits 0
-    - `test -f packages/react/dist/index.js` exits 0
-    - `test -f packages/react/dist/index.cjs` exits 0
-    - `pnpm --filter @tablecraft/vue build` exits 0
-    - `test -f packages/vue/dist/index.js` exits 0
-    - `test -f packages/vue/dist/index.cjs` exits 0
-    - `pnpm -r build` exits 0 (all packages in one command)
-    - `pnpm -r typecheck` exits 0
-    - `grep 'ColumnType' packages/core/dist/index.d.ts` finds the type in declarations
-  </acceptance_criteria>
+<acceptance_criteria> - `pnpm --filter @tablecraft/core build` exits 0 - `test -f packages/core/dist/index.js` exits 0 - `test -f packages/core/dist/index.cjs` exits 0 - `test -f packages/core/dist/index.umd.js` exits 0 - `test -f packages/core/dist/index.d.ts` exits 0 - `pnpm --filter @tablecraft/svelte build` exits 0 - `test -f packages/svelte/dist/index.js` exits 0 - `pnpm --filter @tablecraft/react build` exits 0 - `test -f packages/react/dist/index.js` exits 0 - `test -f packages/react/dist/index.cjs` exits 0 - `pnpm --filter @tablecraft/vue build` exits 0 - `test -f packages/vue/dist/index.js` exits 0 - `test -f packages/vue/dist/index.cjs` exits 0 - `pnpm -r build` exits 0 (all packages in one command) - `pnpm -r typecheck` exits 0 - `grep 'ColumnType' packages/core/dist/index.d.ts` finds the type in declarations
+</acceptance_criteria>
 
-  <done>All four packages build successfully. dist/ directories exist with correct format outputs per package. pnpm -r build exits 0. pnpm -r typecheck exits 0 with zero errors. The @tablecraft/core dist/index.d.ts contains ColumnType and other type exports.</done>
+<done>All four packages build successfully. dist/ directories exist with correct format outputs per package. pnpm -r build exits 0. pnpm -r typecheck exits 0 with zero errors. The @tablecraft/core dist/index.d.ts contains ColumnType and other type exports.</done>
 </task>
 
 </tasks>
@@ -414,9 +395,11 @@ grep 'defineColumns' packages/core/dist/index.d.ts && echo "defineColumns in DTS
 grep -r 'rollup-plugin' packages/ | wc -l  # must output 0
 test ! -f rollup.config.js && echo "rollup.config.js: GONE" || echo "rollup.config.js: STILL EXISTS"
 ```
+
 </verification>
 
 <success_criteria>
+
 1. `pnpm install` exits 0 and all workspace symlinks are created — FOUND-05 satisfied (all old deps replaced)
 2. `pnpm -r build` exits 0 — all four packages compile, FOUND-02 satisfied
 3. `test -f packages/core/dist/index.d.ts` exits 0 and the file contains ColumnType — FOUND-03 TypeScript types built
@@ -424,7 +407,7 @@ test ! -f rollup.config.js && echo "rollup.config.js: GONE" || echo "rollup.conf
 5. `grep -r 'rollup-plugin' packages/ | wc -l` outputs 0 — FOUND-05, all Rollup plugins gone
 6. `test ! -f rollup.config.js` exits 0 — v1 build config is gone
 7. Phase success criterion 1 proven: `pnpm install && pnpm build` succeeds with zero errors
-</success_criteria>
+   </success_criteria>
 
 <output>
 After completion, create `.planning/phases/01-foundation/01-03-SUMMARY.md` with:

@@ -32,41 +32,41 @@ requirements:
 
 must_haves:
   truths:
-    - "pnpm test exits 0 with Vitest running tests from all four packages"
-    - "pnpm exec playwright test exits 0 for the smoke spec"
-    - "foundation.test.ts verifies MIT license in all package.json files and engines field set"
-    - "foundation.test.ts verifies zero {@html} in any .svelte source file"
-    - "foundation.test.ts verifies zero CDN Tailwind links in any source file"
-    - "foundation.test.ts verifies zero type-switcher <select> in packages/svelte/src"
-    - "foundation.test.ts verifies .changeset/config.json exists with access: public"
-    - "pnpm lint exits 0 — ESLint passes with zero errors"
-    - "pnpm format:check exits 0 — all files are Prettier-formatted"
+    - 'pnpm test exits 0 with Vitest running tests from all four packages'
+    - 'pnpm exec playwright test exits 0 for the smoke spec'
+    - 'foundation.test.ts verifies MIT license in all package.json files and engines field set'
+    - 'foundation.test.ts verifies zero {@html} in any .svelte source file'
+    - 'foundation.test.ts verifies zero CDN Tailwind links in any source file'
+    - 'foundation.test.ts verifies zero type-switcher <select> in packages/svelte/src'
+    - 'foundation.test.ts verifies .changeset/config.json exists with access: public'
+    - 'pnpm lint exits 0 — ESLint passes with zero errors'
+    - 'pnpm format:check exits 0 — all files are Prettier-formatted'
   artifacts:
-    - path: "vitest.config.ts"
-      provides: "Root Vitest workspace config — runs all packages with single pnpm test"
-      contains: "workspace"
-    - path: "packages/core/src/foundation.test.ts"
-      provides: "Automated verification of all FOUND-* requirements"
+    - path: 'vitest.config.ts'
+      provides: 'Root Vitest workspace config — runs all packages with single pnpm test'
+      contains: 'workspace'
+    - path: 'packages/core/src/foundation.test.ts'
+      provides: 'Automated verification of all FOUND-* requirements'
       min_lines: 40
-    - path: "playwright.config.ts"
-      provides: "Playwright E2E config — Chromium, Firefox, WebKit"
-      contains: "chromium"
-    - path: "e2e/smoke.spec.ts"
-      provides: "Playwright smoke test — passes immediately as infrastructure proof"
+    - path: 'playwright.config.ts'
+      provides: 'Playwright E2E config — Chromium, Firefox, WebKit'
+      contains: 'chromium'
+    - path: 'e2e/smoke.spec.ts'
+      provides: 'Playwright smoke test — passes immediately as infrastructure proof'
       min_lines: 10
   key_links:
-    - from: "vitest.config.ts"
-      to: "packages/*/vitest.config.ts"
-      via: "Vitest workspace projects array"
+    - from: 'vitest.config.ts'
+      to: 'packages/*/vitest.config.ts'
+      via: 'Vitest workspace projects array'
       pattern: "packages/\\*"
-    - from: "packages/core/src/foundation.test.ts"
-      to: "packages/*/package.json"
-      via: "fs.readFileSync to read and parse each package.json"
-      pattern: "readFileSync.*package.json"
-    - from: "packages/core/src/foundation.test.ts"
-      to: "packages/svelte/src/lib/Table.svelte"
-      via: "fs.readFileSync to grep for defects"
-      pattern: "readFileSync.*Table.svelte"
+    - from: 'packages/core/src/foundation.test.ts'
+      to: 'packages/*/package.json'
+      via: 'fs.readFileSync to read and parse each package.json'
+      pattern: 'readFileSync.*package.json'
+    - from: 'packages/core/src/foundation.test.ts'
+      to: 'packages/svelte/src/lib/Table.svelte'
+      via: 'fs.readFileSync to grep for defects'
+      pattern: 'readFileSync.*Table.svelte'
 ---
 
 <objective>
@@ -75,15 +75,16 @@ Install testing infrastructure (Vitest 4 workspace, Playwright), create foundati
 Purpose: Wave 4 closes the loop. The foundation test suite in packages/core/src/foundation.test.ts is the machine-readable spec for Phase 1 — it will fail if anyone re-introduces {@html}, CDN Tailwind, or a missing MIT license. This is the "never regress" safety net for all subsequent phases. Playwright smoke test proves E2E infrastructure exists and is wired correctly.
 
 Output:
+
 - vitest.config.ts (root workspace mode)
 - Per-package vitest.config.ts files
-- packages/core/src/foundation.test.ts (FOUND-* spec)
+- packages/core/src/foundation.test.ts (FOUND-\* spec)
 - Table.test.ts, index.test.ts stubs per package
 - playwright.config.ts + e2e/smoke.spec.ts
 - All tests passing: pnpm test exits 0
 - pnpm lint exits 0
 - pnpm format:check exits 0
-</objective>
+  </objective>
 
 <execution_context>
 @/Users/arshdeep.singh/.claude/get-shit-done/workflows/execute-plan.md
@@ -126,11 +127,8 @@ Output:
 <task type="auto">
   <name>Task 1: Create Vitest workspace config, per-package configs, and Playwright config</name>
 
-  <read_first>
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/package.json (verify vitest and @playwright/test are in devDependencies)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.planning/phases/01-foundation/01-VALIDATION.md (Wave 0 requirements — exact file list)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/vite.config.ts (verify jsdom environment already configured)
-  </read_first>
+<read_first> - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/package.json (verify vitest and @playwright/test are in devDependencies) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.planning/phases/01-foundation/01-VALIDATION.md (Wave 0 requirements — exact file list) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/vite.config.ts (verify jsdom environment already configured)
+</read_first>
 
   <files>
     vitest.config.ts
@@ -315,45 +313,23 @@ pnpm exec playwright install chromium
 Note: Only install Chromium for Phase 1 to save time. Firefox and WebKit can be installed before Phase 3 E2E tests that actually need them. The smoke test file runs on all three in the config, but if only Chromium is installed, run with `--project=chromium` in the smoke test command.
 
 If the full `playwright install` takes too long, use `playwright install chromium` only.
-  </action>
+</action>
 
   <verify>
     <automated>cd /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind && test -f vitest.config.ts && test -f playwright.config.ts && test -f e2e/smoke.spec.ts && grep -q "workspace" vitest.config.ts && echo "CONFIGS PASS" || echo "CONFIGS FAIL"</automated>
   </verify>
 
-  <acceptance_criteria>
-    - `test -f vitest.config.ts` exits 0
-    - `grep "workspace" vitest.config.ts` finds the workspace array
-    - `grep "packages/core/vitest.config.ts" vitest.config.ts` finds the entry
-    - `grep "packages/svelte/vitest.config.ts" vitest.config.ts` finds the entry
-    - `grep "packages/react/vitest.config.ts" vitest.config.ts` finds the entry
-    - `grep "packages/vue/vitest.config.ts" vitest.config.ts` finds the entry
-    - `test -f packages/core/vitest.config.ts` exits 0
-    - `grep '"@tablecraft/core"' packages/core/vitest.config.ts` finds the test name
-    - `test -f packages/svelte/vitest.config.ts` exits 0
-    - `grep "jsdom" packages/svelte/vitest.config.ts` finds the environment
-    - `test -f packages/react/vitest.config.ts` exits 0
-    - `test -f packages/vue/vitest.config.ts` exits 0
-    - `test -f playwright.config.ts` exits 0
-    - `grep "chromium" playwright.config.ts` finds the project
-    - `grep "firefox" playwright.config.ts` finds the project
-    - `test -f e2e/smoke.spec.ts` exits 0
-    - `grep "expect(true).toBe(true)" e2e/smoke.spec.ts` finds the assertion
-  </acceptance_criteria>
+<acceptance_criteria> - `test -f vitest.config.ts` exits 0 - `grep "workspace" vitest.config.ts` finds the workspace array - `grep "packages/core/vitest.config.ts" vitest.config.ts` finds the entry - `grep "packages/svelte/vitest.config.ts" vitest.config.ts` finds the entry - `grep "packages/react/vitest.config.ts" vitest.config.ts` finds the entry - `grep "packages/vue/vitest.config.ts" vitest.config.ts` finds the entry - `test -f packages/core/vitest.config.ts` exits 0 - `grep '"@tablecraft/core"' packages/core/vitest.config.ts` finds the test name - `test -f packages/svelte/vitest.config.ts` exits 0 - `grep "jsdom" packages/svelte/vitest.config.ts` finds the environment - `test -f packages/react/vitest.config.ts` exits 0 - `test -f packages/vue/vitest.config.ts` exits 0 - `test -f playwright.config.ts` exits 0 - `grep "chromium" playwright.config.ts` finds the project - `grep "firefox" playwright.config.ts` finds the project - `test -f e2e/smoke.spec.ts` exits 0 - `grep "expect(true).toBe(true)" e2e/smoke.spec.ts` finds the assertion
+</acceptance_criteria>
 
-  <done>Root vitest.config.ts in workspace mode pointing to all four package configs. Per-package vitest configs with correct environments (node for core, jsdom for svelte/react/vue). playwright.config.ts with three browser projects. e2e/smoke.spec.ts as immediately-passing infrastructure proof. Playwright browsers installed (at minimum Chromium).</done>
+<done>Root vitest.config.ts in workspace mode pointing to all four package configs. Per-package vitest configs with correct environments (node for core, jsdom for svelte/react/vue). playwright.config.ts with three browser projects. e2e/smoke.spec.ts as immediately-passing infrastructure proof. Playwright browsers installed (at minimum Chromium).</done>
 </task>
 
 <task type="auto">
   <name>Task 2: Create foundation test suite and per-package stubs, then run all tests</name>
 
-  <read_first>
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/src/types.ts (what's exported — test will verify these exports compile)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/src/lib/Table.svelte (test will verify no defects in this file using fs.readFileSync)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.planning/phases/01-foundation/01-VALIDATION.md (exact test IDs: 1-06, 1-07, 1-08, 1-09, 1-10)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.changeset/config.json (test will verify this file exists with access: public)
-    - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/vitest.config.ts (verify jsdom is configured before writing Table.test.ts)
-  </read_first>
+<read_first> - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/core/src/types.ts (what's exported — test will verify these exports compile) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/src/lib/Table.svelte (test will verify no defects in this file using fs.readFileSync) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.planning/phases/01-foundation/01-VALIDATION.md (exact test IDs: 1-06, 1-07, 1-08, 1-09, 1-10) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/.changeset/config.json (test will verify this file exists with access: public) - /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind/packages/svelte/vitest.config.ts (verify jsdom is configured before writing Table.test.ts)
+</read_first>
 
   <files>
     packages/core/src/foundation.test.ts
@@ -366,6 +342,7 @@ If the full `playwright install` takes too long, use `playwright install chromiu
 Create the foundation test suite and three package stub tests, then run everything.
 
 --- FILE: packages/core/src/foundation.test.ts ---
+
 ```typescript
 /**
  * Foundation test suite — automated verification of FOUND-* requirements.
@@ -480,7 +457,11 @@ describe('FOUND-07: XSS — zero {@html} in source files', () => {
 // ─── FOUND-08: No CDN Tailwind ─────────────────────────────────────────────────
 
 describe('FOUND-08: No CDN Tailwind injection', () => {
-  const CDN_PATTERNS = ['unpkg.com/tailwindcss', 'cdn.tailwindcss.com', 'cdn.jsdelivr.net/npm/tailwindcss'];
+  const CDN_PATTERNS = [
+    'unpkg.com/tailwindcss',
+    'cdn.tailwindcss.com',
+    'cdn.jsdelivr.net/npm/tailwindcss',
+  ];
 
   it('finds no CDN Tailwind link in any .svelte file', () => {
     const svelteFiles = findFiles(PACKAGES_DIR, '.svelte');
@@ -510,7 +491,10 @@ describe('FOUND-08: No CDN Tailwind injection', () => {
       }
     }
 
-    expect(violations, `CDN Tailwind in svelte:head found in: ${violations.join(', ')}`).toHaveLength(0);
+    expect(
+      violations,
+      `CDN Tailwind in svelte:head found in: ${violations.join(', ')}`,
+    ).toHaveLength(0);
   });
 });
 
@@ -626,7 +610,10 @@ describe('FOUND-03: TypeScript types exported from @tablecraft/core', () => {
     // Import statically for type checking
     const { defineColumns } = require('./types.js') as typeof import('./types.js');
     const helper = defineColumns<{ name: string; age: number }>();
-    const columns = helper([{ key: 'name', type: 'text' }, { key: 'age', type: 'number' }]);
+    const columns = helper([
+      { key: 'name', type: 'text' },
+      { key: 'age', type: 'number' },
+    ]);
     expect(columns).toHaveLength(2);
     expect(columns[0].key).toBe('name');
     expect(columns[1].type).toBe('number');
@@ -635,6 +622,7 @@ describe('FOUND-03: TypeScript types exported from @tablecraft/core', () => {
 ```
 
 --- FILE: packages/svelte/src/lib/Table.test.ts ---
+
 ```typescript
 /**
  * @tablecraft/svelte — Table component stub tests
@@ -701,6 +689,7 @@ describe('Table component (Phase 1 stub)', () => {
 ```
 
 --- FILE: packages/react/src/index.test.ts ---
+
 ```typescript
 /**
  * @tablecraft/react — Phase 1 stub tests
@@ -723,6 +712,7 @@ describe('@tablecraft/react stub', () => {
 ```
 
 --- FILE: packages/vue/src/index.test.ts ---
+
 ```typescript
 /**
  * @tablecraft/vue — Phase 1 stub tests
@@ -748,7 +738,7 @@ After creating all four test files, run the full test suite:
 pnpm test
 ```
 
-Expected: All tests pass. foundation.test.ts has ~15 test cases that verify the FOUND-* requirements. Table.test.ts has ~6 component tests. react/vue stubs have 2 tests each.
+Expected: All tests pass. foundation.test.ts has ~15 test cases that verify the FOUND-\* requirements. Table.test.ts has ~6 component tests. react/vue stubs have 2 tests each.
 
 If any test fails:
 
@@ -760,6 +750,7 @@ FIX: If rollup.config.js still exists at repo root, delete it: `rm rollup.config
 
 FAIL: foundation.test.ts "defineColumns" import fails
 FIX: The require() call in the test uses CommonJS syntax. Since packages/core/vitest.config.ts uses node environment, vitest handles .js extension resolution. If the import fails, change the test to:
+
 ```typescript
 const { defineColumns } = await import('./types.js');
 ```
@@ -785,38 +776,22 @@ pnpm format:check
 ```
 
 If prettier reports formatting issues, auto-fix them:
+
 ```bash
 pnpm format
 ```
 
 Then run `pnpm format:check` again to verify it exits 0.
-  </action>
+</action>
 
   <verify>
     <automated>cd /Users/arshdeep.singh/Desktop/Svelte-Tables-Tailwind && pnpm test 2>&1 | tail -20 && echo "TEST RUN COMPLETE"</automated>
   </verify>
 
-  <acceptance_criteria>
-    - `test -f packages/core/src/foundation.test.ts` exits 0
-    - `grep "FOUND-07" packages/core/src/foundation.test.ts` finds the comment (test is documented)
-    - `grep "FOUND-08" packages/core/src/foundation.test.ts` finds the comment
-    - `grep "FOUND-09" packages/core/src/foundation.test.ts` finds the comment
-    - `grep "FOUND-10" packages/core/src/foundation.test.ts` finds the comment
-    - `grep "readFileSync" packages/core/src/foundation.test.ts` finds fs usage (test reads actual files)
-    - `grep "{@html}" packages/core/src/foundation.test.ts | grep -v "#"` finds the string literal being checked (the test searches for this pattern)
-    - `test -f packages/svelte/src/lib/Table.test.ts` exits 0
-    - `grep "render(Table" packages/svelte/src/lib/Table.test.ts` finds the render call
-    - `grep "No data to display" packages/svelte/src/lib/Table.test.ts` finds the expected text
-    - `grep 'role="grid"' packages/svelte/src/lib/Table.test.ts` finds the accessibility check
-    - `test -f packages/react/src/index.test.ts` exits 0
-    - `test -f packages/vue/src/index.test.ts` exits 0
-    - `pnpm test` exits 0 (all tests pass)
-    - `pnpm lint` exits 0 (zero ESLint errors)
-    - `pnpm format:check` exits 0 (all files Prettier-formatted)
-    - `pnpm exec playwright test --project=chromium` exits 0 (smoke test passes)
-  </acceptance_criteria>
+<acceptance_criteria> - `test -f packages/core/src/foundation.test.ts` exits 0 - `grep "FOUND-07" packages/core/src/foundation.test.ts` finds the comment (test is documented) - `grep "FOUND-08" packages/core/src/foundation.test.ts` finds the comment - `grep "FOUND-09" packages/core/src/foundation.test.ts` finds the comment - `grep "FOUND-10" packages/core/src/foundation.test.ts` finds the comment - `grep "readFileSync" packages/core/src/foundation.test.ts` finds fs usage (test reads actual files) - `grep "{@html}" packages/core/src/foundation.test.ts | grep -v "#"` finds the string literal being checked (the test searches for this pattern) - `test -f packages/svelte/src/lib/Table.test.ts` exits 0 - `grep "render(Table" packages/svelte/src/lib/Table.test.ts` finds the render call - `grep "No data to display" packages/svelte/src/lib/Table.test.ts` finds the expected text - `grep 'role="grid"' packages/svelte/src/lib/Table.test.ts` finds the accessibility check - `test -f packages/react/src/index.test.ts` exits 0 - `test -f packages/vue/src/index.test.ts` exits 0 - `pnpm test` exits 0 (all tests pass) - `pnpm lint` exits 0 (zero ESLint errors) - `pnpm format:check` exits 0 (all files Prettier-formatted) - `pnpm exec playwright test --project=chromium` exits 0 (smoke test passes)
+</acceptance_criteria>
 
-  <done>All test files exist. pnpm test exits 0 — Vitest runs foundation.test.ts (FOUND-* spec), Table.test.ts (Svelte component), and react/vue stubs. pnpm lint exits 0. pnpm format:check exits 0. pnpm exec playwright test exits 0 for smoke test. Phase 1 success criteria are all machine-verified by the foundation test suite.</done>
+<done>All test files exist. pnpm test exits 0 — Vitest runs foundation.test.ts (FOUND-\* spec), Table.test.ts (Svelte component), and react/vue stubs. pnpm lint exits 0. pnpm format:check exits 0. pnpm exec playwright test exits 0 for smoke test. Phase 1 success criteria are all machine-verified by the foundation test suite.</done>
 </task>
 
 </tasks>
@@ -855,9 +830,11 @@ test ! -d src/ && echo "src/ directory: GONE" || echo "src/: STILL EXISTS (defec
 echo "=== TESTING INFRASTRUCTURE ==="
 pnpm exec playwright test --project=chromium && echo "Playwright smoke: PASS" || echo "Playwright smoke: FAIL"
 ```
+
 </verification>
 
 <success_criteria>
+
 1. `pnpm test` exits 0 — Vitest runs across all 4 packages with zero failures — FOUND-11 satisfied
 2. `pnpm exec playwright test --project=chromium` exits 0 — E2E infrastructure proven — FOUND-11 satisfied
 3. `pnpm lint` exits 0 — ESLint 9 clean, including svelte/no-at-html-tags:error — FOUND-12 satisfied
@@ -869,7 +846,7 @@ pnpm exec playwright test --project=chromium && echo "Playwright smoke: PASS" ||
    - Criterion 3: No `{@html}` in any source (foundation.test.ts asserts this)
    - Criterion 4: No CDN Tailwind, no type-switcher select (foundation.test.ts asserts this)
    - Criterion 5: MIT license + engines.node >= 20 everywhere (foundation.test.ts asserts this)
-</success_criteria>
+     </success_criteria>
 
 <output>
 After completion, create `.planning/phases/01-foundation/01-04-SUMMARY.md` with:
