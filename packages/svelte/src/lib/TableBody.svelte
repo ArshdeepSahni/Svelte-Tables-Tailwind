@@ -5,19 +5,29 @@
    * Renders <tbody> with data rows via Cell.svelte, empty state, loading skeleton,
    * row selection checkboxes, and keyboard arrow navigation (roving tabindex pattern).
    *
+   * Supports two mutually-exclusive render modes:
+   *   - Virtual mode: receives virtualItems + sortedRows; renders with translateY positioning
+   *   - Normal mode: receives visibleRows; renders all rows in document flow
+   *
    * FOUND-07: No {@html} — all cell rendering delegated to Cell.svelte.
    * FOUND-08: CSS custom properties (--tc-*) used throughout.
    * FOUND-04: Svelte 5 runes ($props, $state, $derived) only.
    */
 
   import type { ProcessedRow, ResolvedColumn } from '@tablecraft/core';
+  import type { VirtualItem } from '@tanstack/svelte-virtual';
   import type { Row, FocusedCell } from './types.js';
   import type { Snippet } from 'svelte';
   import Cell from './Cell.svelte';
   import Checkbox from './Checkbox.svelte';
 
   interface Props {
-    visibleRows: ProcessedRow[];
+    // Normal mode (non-virtual)
+    visibleRows?: ProcessedRow[];
+    // Virtual mode
+    virtualItems?: VirtualItem[];
+    sortedRows?: ProcessedRow[];  // full sorted dataset (virtual indexes into this)
+    // Shared
     columns: ResolvedColumn[];
     loading?: boolean;
     skeletonRows?: number;
@@ -33,7 +43,9 @@
   }
 
   let {
-    visibleRows,
+    visibleRows = [],
+    virtualItems = [],
+    sortedRows = [],
     columns,
     loading = false,
     skeletonRows = 5,
@@ -51,8 +63,11 @@
   let focusedCell = $state<FocusedCell>({ rowIndex: 0, colIndex: 0 });
   let colOffset = $derived(selectable ? 1 : 0);
 
+  // Virtual mode is active when virtualItems has entries and sortedRows is provided
+  const isVirtualMode = $derived(virtualItems.length > 0 && sortedRows.length > 0);
+
   function handleKeyDown(e: KeyboardEvent) {
-    const maxRow = visibleRows.length - 1;
+    const maxRow = isVirtualMode ? sortedRows.length - 1 : visibleRows.length - 1;
     const maxCol = columns.length - 1;
     let { rowIndex, colIndex } = focusedCell;
 
@@ -101,7 +116,7 @@
         {/each}
       </tr>
     {/each}
-  {:else if visibleRows.length === 0}
+  {:else if isVirtualMode ? sortedRows.length === 0 : visibleRows.length === 0}
     <tr class="tc-tr tc-tr--empty">
       <td
         class="tc-td tc-td--empty"
@@ -115,49 +130,95 @@
       </td>
     </tr>
   {:else}
-    {#each visibleRows as processedRow, rowIndex (rowIndex)}
-      {@const row = processedRow._original}
-      {@const isSelected = selectedRows.some((r) => r === row)}
-      <tr
-        class="tc-tr"
-        class:tc-tr--striped={striped && rowIndex % 2 === 1}
-        class:tc-tr--selected={isSelected}
-        role="row"
-        aria-selected={selectable ? isSelected : undefined}
-        onclick={() => onrowclick?.({ row, rowIndex })}
-      >
-        {#if selectable}
-          <td class="tc-td tc-td--checkbox" role="gridcell">
-            <Checkbox
-              checked={isSelected}
-              oncheckedchange={(checked) => onrowtoggle?.(row, checked)}
-              aria-label={`Select row ${rowIndex + 1}`}
-            />
-          </td>
-        {/if}
-        {#each columns as col, colIndex (col.key)}
-          {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
-          <td
-            class="tc-td"
-            class:tc-td--bordered={bordered}
-            role="gridcell"
-            tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
-            onclick={(e) => {
-              e.stopPropagation();
-              oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
-            }}
-          >
-            <Cell {descriptor} />
-          </td>
-        {/each}
-      </tr>
-    {/each}
+    {#if isVirtualMode}
+      {#each virtualItems as item, index}
+        {@const processedRow = sortedRows[item.index]}
+        {@const row = processedRow?._original}
+        {@const isSelected = row ? selectedRows.some((r) => r === row) : false}
+        <tr
+          class="tc-tr"
+          class:tc-tr--selected={isSelected}
+          role="row"
+          aria-selected={selectable ? isSelected : undefined}
+          data-row={item.index}
+          style="height: {item.size}px; transform: translateY({item.start - index * item.size}px);"
+          onclick={() => row && onrowclick?.({ row: row as Row, rowIndex: item.index })}
+        >
+          {#if selectable && row}
+            <td class="tc-td tc-td--checkbox" role="gridcell">
+              <Checkbox
+                checked={isSelected}
+                oncheckedchange={(checked) => onrowtoggle?.(row as Row, checked)}
+                aria-label={`Select row ${item.index + 1}`}
+              />
+            </td>
+          {/if}
+          {#if row}
+            {#each columns as col, colIndex (col.key)}
+              {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+              <td
+                class="tc-td"
+                class:tc-td--bordered={bordered}
+                role="gridcell"
+                data-col={colIndex}
+                tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
+                onclick={(e) => {
+                  e.stopPropagation();
+                  oncellclick?.({ row: row as Row, column: col, value: (row as Row)[col.key], rowIndex: item.index });
+                }}
+              >
+                <Cell {descriptor} />
+              </td>
+            {/each}
+          {/if}
+        </tr>
+      {/each}
+    {:else}
+      {#each visibleRows as processedRow, rowIndex (rowIndex)}
+        {@const row = processedRow._original}
+        {@const isSelected = selectedRows.some((r) => r === row)}
+        <tr
+          class="tc-tr"
+          class:tc-tr--striped={striped && rowIndex % 2 === 1}
+          class:tc-tr--selected={isSelected}
+          role="row"
+          aria-selected={selectable ? isSelected : undefined}
+          onclick={() => onrowclick?.({ row, rowIndex })}
+        >
+          {#if selectable}
+            <td class="tc-td tc-td--checkbox" role="gridcell">
+              <Checkbox
+                checked={isSelected}
+                oncheckedchange={(checked) => onrowtoggle?.(row, checked)}
+                aria-label={`Select row ${rowIndex + 1}`}
+              />
+            </td>
+          {/if}
+          {#each columns as col, colIndex (col.key)}
+            {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+            <td
+              class="tc-td"
+              class:tc-td--bordered={bordered}
+              role="gridcell"
+              tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
+              onclick={(e) => {
+                e.stopPropagation();
+                oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
+              }}
+            >
+              <Cell {descriptor} />
+            </td>
+          {/each}
+        </tr>
+      {/each}
+    {/if}
   {/if}
 </tbody>
 
 <style>
   .tc-tr {
     transition: background 0.1s ease;
+    contain: layout style;
   }
 
   .tc-tr:hover {
@@ -179,6 +240,7 @@
     height: var(--tc-row-height, 3rem);
     vertical-align: middle;
     color: var(--tc-color-text, #0f172a);
+    contain: layout style paint;
   }
 
   .tc-td--bordered {
