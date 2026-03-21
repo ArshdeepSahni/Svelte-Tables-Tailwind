@@ -9,6 +9,7 @@
     selectable?: boolean;
     allSelected?: boolean;
     someSelected?: boolean;
+    sortLoading?: boolean;
     onsortchange?: (key: string) => void;
     onselectall?: (checked: boolean) => void;
   }
@@ -19,6 +20,7 @@
     selectable = false,
     allSelected = false,
     someSelected = false,
+    sortLoading = false,
     onsortchange,
     onselectall,
   }: Props = $props();
@@ -37,7 +39,7 @@
   }
 </script>
 
-<thead>
+<thead aria-busy={sortLoading ? 'true' : undefined}>
   <tr>
     {#if selectable}
       <th scope="col" class="tc-th tc-th--checkbox" role="columnheader">

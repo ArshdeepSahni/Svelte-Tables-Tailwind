@@ -159,6 +159,12 @@
   let virtualItems = $state<VirtualItem[]>([]);
   let totalVirtualSize = $state(0);
 
+  // Web Worker sort state
+  let sortWorker = $state<Worker | null>(null);
+  let sortLoading = $state(false);
+  let workerSortedRows = $state<ProcessedRow[]>([]);
+  const USE_WORKER_THRESHOLD = 10_000;
+
   // ---------------------------------------------------------------------------
   // Two-phase inference $effect
   // ---------------------------------------------------------------------------
@@ -231,7 +237,7 @@
     );
   });
 
-  const sortedRows = $derived.by(() => {
+  const mainThreadSortedRows = $derived.by(() => {
     if (!sortState.key || !sortState.dir) return filteredRows;
     const col = resolvedColumns.find((c) => c.key === sortState.key);
     if (!col) return filteredRows;
@@ -245,6 +251,13 @@
       return String(av).localeCompare(String(bv)) * dir;
     });
   });
+
+  // Final sortedRows: uses Worker result when available, falls back to main-thread
+  const sortedRows = $derived(
+    workerSortedRows.length > 0 && sortState.key !== null
+      ? workerSortedRows
+      : mainThreadSortedRows,
+  );
 
   // isVirtualizing: true when row count exceeds threshold
   const isVirtualizing = $derived(sortedRows.length > virtualizeAt);
@@ -285,6 +298,78 @@
     });
 
     return unsub;
+  });
+
+  // ---------------------------------------------------------------------------
+  // Web Worker lifecycle — create once, handle messages, clean up on unmount
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    // SSR guard — Worker is not available in Node/SvelteKit SSR
+    if (typeof Worker === 'undefined') return;
+
+    let worker: Worker;
+    try {
+      worker = new Worker(
+        new URL('./sort.worker.ts', import.meta.url),
+        { type: 'module' },
+      );
+    } catch {
+      // Worker blocked (CSP or env) — silent fallback to main-thread sort
+      return;
+    }
+
+    worker.addEventListener('message', (e: MessageEvent<{ sorted: Record<string, unknown>[] }>) => {
+      const sortedOriginals = e.data.sorted;
+      // Map sorted originals back to their ProcessedRow without re-processing
+      const origToProcessed = new Map(processedRows.map((pr) => [pr._original, pr]));
+      workerSortedRows = sortedOriginals
+        .map((orig) => origToProcessed.get(orig))
+        .filter((pr): pr is ProcessedRow => pr !== undefined);
+      sortLoading = false;
+    });
+
+    worker.addEventListener('error', () => {
+      // Worker error — fall back to main-thread sort
+      sortLoading = false;
+      workerSortedRows = [];
+    });
+
+    sortWorker = worker;
+
+    return () => {
+      worker.terminate();
+      sortWorker = null;
+    };
+  });
+
+  // ---------------------------------------------------------------------------
+  // Sort dispatch — fires Worker for large datasets when sort is active
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    // Watch sortState and filteredRows
+    const key = sortState.key;
+    const dir = sortState.dir;
+    const rows = filteredRows;
+
+    // Only use Worker for large datasets when sort is active
+    if (!key || !dir || rows.length <= USE_WORKER_THRESHOLD || !sortWorker) {
+      // Clear worker result when sort is cleared or dataset is small
+      if (!key || !dir) {
+        workerSortedRows = [];
+        sortLoading = false;
+      }
+      return;
+    }
+
+    sortLoading = true;
+    // Post only raw _original data (not ProcessedRow — avoids slow structured clone of cell descriptors)
+    sortWorker.postMessage({
+      data: rows.map((r) => r._original),
+      key,
+      dir,
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -372,6 +457,7 @@
             {selectable}
             {allSelected}
             {someSelected}
+            {sortLoading}
             onsortchange={handleSortChange}
             onselectall={handleSelectAll}
           />
@@ -415,6 +501,7 @@
           {selectable}
           {allSelected}
           {someSelected}
+          {sortLoading}
           onsortchange={handleSortChange}
           onselectall={handleSelectAll}
         />
