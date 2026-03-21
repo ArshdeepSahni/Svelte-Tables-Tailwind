@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-core-engine-type-inference-renderer-registry/01-PLAN.md
-last_updated: "2026-03-21T15:08:06.888Z"
+stopped_at: Completed 02-core-engine-type-inference-renderer-registry/03-PLAN.md
+last_updated: "2026-03-21T15:13:17.438Z"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 10
-  completed_plans: 5
+  completed_plans: 6
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (1/6 plans done)
+Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (3/6 plans done)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 2 — Core Engine + Type Inference + Renderer Registry |
-| Plan     | 01 complete (scaffolding: types, tokens, scheduler)  |
-| Status   | Phase 2 in progress (1/6 plans done)                 |
-| Progress | 5/10 plans complete across all phases                |
+| Plan     | 03 complete (renderer plugin registry: Map singleton, 6 exports, 20+ tests) |
+| Status   | Phase 2 in progress (3/6 plans done)                 |
+| Progress | 6/10 plans complete across all phases                |
 
 ```
 Phase progress: [█______] 1/7
-Plan progress:  [█████░░░░░] 50% (5/10 plans)
+Plan progress:  [██████░░░░] 60% (6/10 plans)
 ```
 
 ---
@@ -59,7 +59,7 @@ Plan progress:  [█████░░░░░] 50% (5/10 plans)
 | Phase | Name                                             | Status   | Plans |
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 1/6   |
+| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 3/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
 | 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
@@ -86,6 +86,7 @@ Plan progress:  [█████░░░░░] 50% (5/10 plans)
 | Plan 01-foundation/03 | 153s | 2 tasks | 2 files |
 | Phase 01-foundation P04 | 436 | 2 tasks | 11 files |
 | Phase 02-core-engine-type-inference-renderer-registry P01 | 185s | 2 tasks | 7 files |
+| Phase 02-core-engine-type-inference-renderer-registry P03 | 4min | 1 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -115,6 +116,8 @@ Plan progress:  [█████░░░░░] 50% (5/10 plans)
 | jsdom must be explicitly installed for Vitest jsdom env    | Not bundled with Vitest; must be added to root devDependencies                                                  |
 | Dropped --tc-border-width to reach 18 tokens               | Plan must_haves said 18; action content had 19; border-width defaults to 1px browser default, safely omitted   |
 | vite.config.ts rollupOptions → rolldownOptions             | Vite 8 deprecates rollupOptions; rolldownOptions is required for Vite 8+ multi-entry builds                     |
+| Registry uses module-level Map singleton (not a class)     | Simple, shared across all renderer module imports without instantiation; no constructor overhead                 |
+| Registry duplicate registration warns + overwrites         | Enables intentional built-in renderer replacement without forking core; warn alerts accidental duplicates       |
 
 ### Active Todos
 
@@ -145,13 +148,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T15:08:06.886Z
+**Last session:** 2026-03-21T15:13:17.435Z
 
-**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/01-PLAN.md
+**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/03-PLAN.md
 
-**Next action:** Continue Phase 2 — Plan 02 (type inference engine).
+**Next action:** Continue Phase 2 — Plan 04 (Tier 1 renderers).
 
-**Context to restore:** Phase 2 Plan 01 complete. types.ts extended with CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork (requestIdleCallback > setImmediate > setTimeout). vite.config.ts uses rolldownOptions with 17 renderer entry points. vitest.config.ts has per-glob coverage thresholds. All tests pass (typecheck + scheduler.test.ts + tokens.test.ts + foundation.test.ts). CORE-05 and CORE-09 marked complete.
+**Context to restore:** Phase 2 Plans 01, 02, 03 complete. types.ts has CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork. inference engine (inferSchema, runDetectors, detectors) complete with 166 todo stubs for Wave 4+. registry/index.ts: Map<string, RendererFn> singleton with registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes. All 66 core tests pass (4 files: foundation, scheduler/tokens, inference, registry). TypeScript strict mode: zero errors. CORE-05, CORE-09, CORE-06 marked complete. Wave 4 renderers self-register via registerRenderer() at module init; use clearRegistry() in afterEach for test isolation.
 
 ---
 

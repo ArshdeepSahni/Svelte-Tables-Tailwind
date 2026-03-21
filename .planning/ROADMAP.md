@@ -65,7 +65,7 @@ Plans:
 4. Importing only the `currency` renderer does not include the `code` or `image` renderers in the output bundle — tree-shaking works per individual renderer module.
 5. Vitest reports > 95% line coverage on the inference engine and > 90% on all Tier 1 renderers.
 
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 Plans:
 - [ ] 02-01-PLAN.md — Types + Infrastructure: extend types.ts (CellDescriptor, ResolvedColumn, RendererFn, ProcessedRow), create tokens.ts (18 --tc-* tokens), scheduler.ts (requestIdleCallback/setImmediate), update vite.config.ts (rolldownOptions, multi-entry), vitest.config.ts (coverage thresholds), Wave 0 test stubs
@@ -182,7 +182,7 @@ Plans:
 | Phase | Name                                             | Goal                                                | Requirements         | Status  |
 | ----- | ------------------------------------------------ | --------------------------------------------------- | -------------------- | ------- |
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
-| 2     | 1/6 | In Progress|  | Pending |
+| 2     | 2/6 | In Progress|  | Pending |
 | 3     | Svelte 5 Component + Zero-Config API             | `<Table data={rows} />` works end-to-end            | SVLT-01–15 (15 reqs) | Pending |
 | 4     | Virtual Scrolling + Performance                  | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs)  | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |

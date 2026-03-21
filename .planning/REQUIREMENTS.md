@@ -41,7 +41,7 @@ What v1.0.6 ships today. These are the baselines, not goals.
 - [ ] **CORE-03**: Type detectors implemented: boolean, currency, percentage, number/integer, date, datetime, time, email, phone, image-url, url, status/enum, code, text (fallback)
 - [ ] **CORE-04**: Field-name keyword heuristics boost type inference confidence (e.g. `avatar`, `email`, `phone`, `status`, `price`, `date` column names)
 - [x] **CORE-05**: Type inference runs in `requestIdleCallback` — table renders immediately with text fallback, updates once inference completes
-- [ ] **CORE-06**: Renderer plugin registry with `registerRenderer(name, rendererFn)` API — built-in renderers use the same API as external plugins
+- [x] **CORE-06**: Renderer plugin registry with `registerRenderer(name, rendererFn)` API — built-in renderers use the same API as external plugins
 - [ ] **CORE-07**: Tier 1 cell renderers implemented as individually importable tree-shakable modules: `text`, `number`, `integer`, `currency`, `percentage`, `boolean`, `date`, `datetime`, `time`, `email`, `url`, `phone`, `image`, `badge`, `status`, `code`, `html` (with explicit opt-in sanitization)
 - [ ] **CORE-08**: State graph separated into isolated reactive stores: `columns`, `sortState`, `filterState`, `visibleRows` — sort/filter changes never trigger cell renderer re-renders
 - [x] **CORE-09**: CSS custom property design token system defined (`--tc-color-*`, `--tc-spacing-*`, `--tc-border-*`, `--tc-font-*`) with light and dark mode defaults
@@ -178,7 +178,7 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | CORE-03     | Phase 2 | Pending  |
 | CORE-04     | Phase 2 | Pending  |
 | CORE-05     | Phase 2 | Complete |
-| CORE-06     | Phase 2 | Pending  |
+| CORE-06     | Phase 2 | Complete |
 | CORE-07     | Phase 2 | Pending  |
 | CORE-08     | Phase 2 | Pending  |
 | CORE-09     | Phase 2 | Complete |
