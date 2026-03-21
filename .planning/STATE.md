@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 01-foundation-04-PLAN.md
-last_updated: "2026-03-21T13:07:36.494Z"
+stopped_at: Completed 02-core-engine-type-inference-renderer-registry/01-PLAN.md
+last_updated: "2026-03-21T15:08:06.888Z"
 progress:
   total_phases: 7
   completed_phases: 1
-  total_plans: 4
-  completed_plans: 4
+  total_plans: 10
+  completed_plans: 5
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 1: Foundation — COMPLETE (all 4 plans done)
+Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (1/6 plans done)
 
 ---
 
@@ -32,7 +32,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 **Core value:** Zero-config data display with smart type inference — `<Table data={rows} />` just works, and when you need more, one prop does it.
 
-**Current focus:** Phase 1: Foundation
+**Current focus:** Phase 2: Core Engine + Type Inference + Renderer Registry
 
 **Milestone:** v2.0.0 — Industry-Standard Zero-Config Table Library
 
@@ -40,16 +40,16 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 ## Current Position
 
-| Field    | Value                                |
-| -------- | ------------------------------------ |
-| Phase    | 1 — Foundation (COMPLETE)            |
-| Plan     | 04 complete (testing infrastructure) |
-| Status   | Phase 1 done; ready for Phase 2      |
-| Progress | 1/7 phases complete                  |
+| Field    | Value                                                |
+| -------- | ---------------------------------------------------- |
+| Phase    | 2 — Core Engine + Type Inference + Renderer Registry |
+| Plan     | 01 complete (scaffolding: types, tokens, scheduler)  |
+| Status   | Phase 2 in progress (1/6 plans done)                 |
+| Progress | 5/10 plans complete across all phases                |
 
 ```
 Phase progress: [█______] 1/7
-Plan progress:  [██████████] 100% (4/4 plans)
+Plan progress:  [█████░░░░░] 50% (5/10 plans)
 ```
 
 ---
@@ -59,7 +59,7 @@ Plan progress:  [██████████] 100% (4/4 plans)
 | Phase | Name                                             | Status   | Plans |
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | Pending  | 0/0   |
+| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 1/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
 | 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
@@ -85,6 +85,7 @@ Plan progress:  [██████████] 100% (4/4 plans)
 | Plan 01-foundation/02 | 266s | 3 tasks | 20 files |
 | Plan 01-foundation/03 | 153s | 2 tasks | 2 files |
 | Phase 01-foundation P04 | 436 | 2 tasks | 11 files |
+| Phase 02-core-engine-type-inference-renderer-registry P01 | 185s | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -112,6 +113,8 @@ Plan progress:  [██████████] 100% (4/4 plans)
 | Vitest 4 uses test.projects not test.workspace             | Plan used removed API; auto-fixed — Vitest 4 renamed workspace to projects                                      |
 | resolve.conditions browser in svelte vitest config         | Svelte 5 default export is index-server.js; browser condition selects index-client.js for jsdom mount           |
 | jsdom must be explicitly installed for Vitest jsdom env    | Not bundled with Vitest; must be added to root devDependencies                                                  |
+| Dropped --tc-border-width to reach 18 tokens               | Plan must_haves said 18; action content had 19; border-width defaults to 1px browser default, safely omitted   |
+| vite.config.ts rollupOptions → rolldownOptions             | Vite 8 deprecates rollupOptions; rolldownOptions is required for Vite 8+ multi-entry builds                     |
 
 ### Active Todos
 
@@ -142,13 +145,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T13:07:47Z
+**Last session:** 2026-03-21T15:08:06.886Z
 
-**Stopped at:** Completed 01-foundation-04-PLAN.md
+**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/01-PLAN.md
 
-**Next action:** Begin Phase 2 — Core Engine + Type Inference + Renderer Registry.
+**Next action:** Continue Phase 2 — Plan 02 (type inference engine).
 
-**Context to restore:** Phase 1 complete. All 4 plans done. Vitest workspace (projects mode) runs 44 tests across 4 packages (pnpm test exits 0). Playwright smoke test passes on Chromium. ESLint exits 0. Prettier exits 0. foundation.test.ts codifies all FOUND-\* requirements as permanent machine-verified assertions. All Phase 1 success criteria satisfied.
+**Context to restore:** Phase 2 Plan 01 complete. types.ts extended with CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork (requestIdleCallback > setImmediate > setTimeout). vite.config.ts uses rolldownOptions with 17 renderer entry points. vitest.config.ts has per-glob coverage thresholds. All tests pass (typecheck + scheduler.test.ts + tokens.test.ts + foundation.test.ts). CORE-05 and CORE-09 marked complete.
 
 ---
 
