@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 05-04-PLAN.md
-last_updated: "2026-03-21T20:32:35.882Z"
+stopped_at: Completed 05-03-PLAN.md
+last_updated: "2026-03-21T20:34:39.367Z"
 progress:
   total_phases: 10
   completed_phases: 4
   total_plans: 27
-  completed_plans: 25
+  completed_plans: 26
 ---
 
 # Project State
@@ -106,6 +106,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 05-web-components-core-framework-wrappers P01 | 133 | 3 tasks | 8 files |
 | Phase 05-web-components-core-framework-wrappers P02 | 339 | 3 tasks | 8 files |
 | Phase 05-web-components-core-framework-wrappers P04 | 158 | 2 tasks | 6 files |
+| Phase 05-web-components-core-framework-wrappers P03 | 266 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -188,6 +189,9 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | CSS contain: layout style paint normalises to 'content' in Chromium computed style (04-06) | Playwright getComputedStyle().contain returns 'content' not 'paint'; assertion updated to accept 'content' as valid paint containment per CSS Containment spec |
 | packages/svelte/index.html required for Vite bench server to serve at / (04-06) | vite serves bench.html only at /bench.html; Playwright page.goto('/') returns 404 without index.html |
 | Render time CI threshold 5000ms not 500ms (04-06) | 100k synchronous Array.from generation takes ~2-3s; virtualizer itself is fast but bench data generation cost is unavoidable in cold load measurement |
+| Row type defined locally in react package (05-03) | @tablecraft/core does not export Row; it's Record<string, unknown> defined locally in element.ts and now mirrored in react/src/index.ts |
+| jsdom environment required in react tests for LitElement (05-03) | @vitest-environment node fails — importing @tablecraft/core/element triggers LitElement class definition needing HTMLElement at module load time |
+| @lit/react createComponent() returns forwardRef object not function in React 19 (05-03) | typeof result is 'object' with $$typeof symbol; test assertion updated to accept both function and forwardRef object shapes |
 | Row typed locally as Record<string,unknown> in Table.vue (05-04) | Row is not a named export from @tablecraft/core; element.ts defines it locally; Vue SFC mirrors the same local type definition |
 | vue-shim.d.ts added for plain tsc support (05-04) | declare module '*.vue' with DefineComponent; required because project uses tsc not vue-tsc; tsconfig extended to include .vue and .d.ts |
 | @vitejs/plugin-vue added to vitest.config.ts (05-04) | Required to transform .vue files during test runs; already in devDependencies from Plan 01; compilerOptions.isCustomElement mirrors vite.config.ts |
@@ -221,9 +225,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T20:32:35.880Z
+**Last session:** 2026-03-21T20:34:39.364Z
 
-**Stopped at:** Completed 05-04-PLAN.md
+**Stopped at:** Completed 05-03-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 

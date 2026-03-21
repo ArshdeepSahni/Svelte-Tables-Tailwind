@@ -149,7 +149,7 @@ Plans:
 4. Setting `document.querySelector('tc-table').data = rows` in the browser console of a plain HTML file (no framework) updates the rendered table — the Web Component property API works in vanilla JS.
 5. Playwright smoke tests pass for both the React wrapper and the Vue wrapper rendering 100 rows — tables are visible, headers are present, cells contain expected values.
 
-**Plans:** 2/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 - [ ] 05-01-PLAN.md — Infrastructure + Wave 0 stubs: install lit in @tablecraft/core, install @lit/react in @tablecraft/react, switch @tablecraft/vue to Vite + @vitejs/plugin-vue, create vite.config.element.ts (UMD), create element.test.ts and wc-smoke.spec.ts Wave 0 stubs
@@ -208,7 +208,7 @@ Plans:
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 4     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 5     | 2/5 | In Progress|  | Pending |
+| 5     | 4/5 | In Progress|  | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
