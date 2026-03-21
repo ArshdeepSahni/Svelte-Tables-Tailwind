@@ -12,8 +12,8 @@ import { describe, it, expect, vi, beforeEach, afterEach } from 'vitest';
 import { render, fireEvent, screen, act } from '@testing-library/svelte';
 import { axe } from 'vitest-axe';
 import type { ResolvedColumn } from '@tablecraft/core';
-import type { Row } from './types.js';
-import Table from './Table.svelte';
+import type { Row } from '../lib/types.js';
+import Table from '../lib/Table.svelte';
 
 // ---------------------------------------------------------------------------
 // Core engine mock — deterministic, fast, no inference latency
