@@ -297,6 +297,7 @@ export class TcTable extends LitElement {
   // WC-04: Same CSS class names, same kind dispatch, same safety contract.
   // FOUND-07: Only 'html' kind uses innerHTML — descriptor.sanitized is
   //   DOMPurify-processed by the html renderer. All other kinds use text nodes.
+  // Note: No Svelte at-html directive used here — this is a TypeScript file.
   // -------------------------------------------------------------------------
   private _renderCell(descriptor: CellDescriptor) {
     switch (descriptor.kind) {
@@ -340,7 +341,7 @@ export class TcTable extends LitElement {
       case 'html': {
         // FOUND-07: descriptor.sanitized is already DOMPurify-processed by the html
         // renderer — safe to inject. This is the ONLY innerHTML usage in the element.
-        // Matches the {@html descriptor.sanitized} pattern in Cell.svelte.
+        // Mirrors the Svelte at-html directive pattern in Cell.svelte (sanitized only).
         const span = document.createElement('span');
         span.innerHTML = descriptor.sanitized;
         return span;
@@ -454,7 +455,12 @@ export class TcTable extends LitElement {
 // WC-05: SSR guard — customElements is not available in Node.js / SvelteKit SSR.
 // This is the ONLY place customElements.define is called for tc-table.
 // Importing this module in a server context must NOT throw.
+//
+// Double-registration guard: Lit's ssr-dom-shim shims customElements in Node.js,
+// so typeof customElements !== 'undefined' is true even in Node.js with Lit.
+// We also check get() to avoid "already used with this registry" errors when
+// the module is imported multiple times in tests (vi.resetModules() path).
 // -------------------------------------------------------------------------
-if (typeof customElements !== 'undefined') {
+if (typeof customElements !== 'undefined' && !customElements.get('tc-table')) {
   customElements.define('tc-table', TcTable);
 }
