@@ -14,9 +14,14 @@ import { registerRenderer } from '../registry/index.js';
 
 function toFiniteNumber(value: unknown): number | null {
   if (value === null || value === undefined) return null;
-  // Strip common currency symbols and commas before parsing
-  const str = String(value).replace(/[¥€£$₹,\s]/g, '').replace(/[A-Z]{3}$/i, '').trim();
-  const n = Number(str);
+  // Strip common currency symbols and commas, then strip a trailing 3-letter currency code
+  // (e.g. "100 USD" → "100", "$99.99" → "99.99"). Guard: must have at least one digit remaining.
+  const stripped = String(value)
+    .replace(/[¥€£$₹,\s]/g, '')
+    .replace(/[A-Z]{3}$/i, '')
+    .trim();
+  if (stripped === '' || !/\d/.test(stripped)) return null;
+  const n = Number(stripped);
   return Number.isFinite(n) ? n : null;
 }
 

@@ -17,7 +17,7 @@ import { registerRenderer } from '../registry/index.js';
 export function codeRenderer(value: unknown, _column: ResolvedColumn): CellDescriptor {
   if (value === null || value === undefined) return { kind: 'raw', value };
   // Raw string — rendered in <code> element by Svelte component (Phase 3). NO sanitization here.
-  // FOUND-07: No @html. The Svelte component uses text binding, not {@html}.
+  // FOUND-07: No at-html. The Svelte component uses text binding, not the at-html directive.
   return { kind: 'code', value: String(value) };
 }
 
