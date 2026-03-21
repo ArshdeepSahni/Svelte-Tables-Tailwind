@@ -159,6 +159,11 @@
   let virtualItems = $state<VirtualItem[]>([]);
   let totalVirtualSize = $state(0);
 
+  // Column virtualization state
+  let columnVirtualItems = $state<VirtualItem[]>([]);
+  let totalColumnSize = $state(0);
+  const COL_VIRTUALIZE_THRESHOLD = 20;
+
   // Web Worker sort state
   let sortWorker = $state<Worker | null>(null);
   let sortLoading = $state(false);
@@ -262,6 +267,9 @@
   // isVirtualizing: true when row count exceeds threshold
   const isVirtualizing = $derived(sortedRows.length > virtualizeAt);
 
+  // isColumnVirtualizing: true when column count exceeds threshold
+  const isColumnVirtualizing = $derived(resolvedColumns.length > COL_VIRTUALIZE_THRESHOLD);
+
   const totalPages = $derived(Math.max(1, Math.ceil(filteredRows.length / pageSize)));
   const visibleRows = $derived(
     sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
@@ -295,6 +303,33 @@
     const unsub = store.subscribe((v) => {
       virtualItems = v.getVirtualItems();
       totalVirtualSize = v.getTotalSize();
+    });
+
+    return unsub;
+  });
+
+  // ---------------------------------------------------------------------------
+  // Column virtualizer $effect — creates/destroys store when column virtualization is active
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    if (!scrollEl || !isColumnVirtualizing) {
+      columnVirtualItems = [];
+      totalColumnSize = 0;
+      return;
+    }
+
+    const colStore = createVirtualizer<HTMLDivElement, HTMLTableCellElement>({
+      count: resolvedColumns.length,
+      getScrollElement: () => scrollEl!,
+      estimateSize: () => 150,  // 150px default column width
+      horizontal: true,          // REQUIRED for column virtualization
+      overscan: 3,
+    });
+
+    const unsub = colStore.subscribe((v) => {
+      columnVirtualItems = v.getVirtualItems();
+      totalColumnSize = v.getTotalSize();
     });
 
     return unsub;
@@ -458,6 +493,9 @@
             {allSelected}
             {someSelected}
             {sortLoading}
+            {columnVirtualItems}
+            {totalColumnSize}
+            {isColumnVirtualizing}
             onsortchange={handleSortChange}
             onselectall={handleSelectAll}
           />
@@ -474,6 +512,9 @@
             {striped}
             {bordered}
             {empty}
+            {columnVirtualItems}
+            {totalColumnSize}
+            {isColumnVirtualizing}
             {onrowclick}
             {oncellclick}
             onrowtoggle={handleRowToggle}
@@ -502,6 +543,9 @@
           {allSelected}
           {someSelected}
           {sortLoading}
+          {columnVirtualItems}
+          {totalColumnSize}
+          {isColumnVirtualizing}
           onsortchange={handleSortChange}
           onselectall={handleSelectAll}
         />
@@ -517,6 +561,9 @@
           {striped}
           {bordered}
           {empty}
+          {columnVirtualItems}
+          {totalColumnSize}
+          {isColumnVirtualizing}
           {onrowclick}
           {oncellclick}
           onrowtoggle={handleRowToggle}
