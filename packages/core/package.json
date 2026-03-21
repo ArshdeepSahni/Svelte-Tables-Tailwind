@@ -128,6 +128,16 @@
         "types": "./dist/renderers/html.d.ts",
         "default": "./dist/renderers/html.js"
       }
+    },
+    "./element": {
+      "import": {
+        "types": "./dist/element.d.ts",
+        "default": "./dist/element.js"
+      },
+      "require": {
+        "types": "./dist/element.d.cts",
+        "default": "./dist/element.cjs"
+      }
     }
   },
   "peerDependencies": {
@@ -144,6 +154,8 @@
   ],
   "scripts": {
     "build": "vite build",
+    "build:element": "vite build --config vite.config.element.ts",
+    "build:all": "pnpm run build && pnpm run build:element",
     "dev": "vite build --watch",
     "test": "vitest run",
     "test:watch": "vitest",
@@ -162,5 +174,8 @@
     "data-grid",
     "typescript",
     "framework-agnostic"
-  ]
+  ],
+  "dependencies": {
+    "lit": "^3.3.2"
+  }
 }
