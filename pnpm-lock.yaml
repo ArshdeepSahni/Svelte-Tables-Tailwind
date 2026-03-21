@@ -63,9 +63,32 @@ importers:
         specifier: ^4.1.0
         version: 4.1.0(@types/node@12.20.55)(jsdom@29.0.1)(vite@8.0.1(@types/node@12.20.55)(esbuild@0.27.4))
 
+  apps/dev:
+    dependencies:
+      '@tablecraft/core':
+        specifier: workspace:*
+        version: link:../../packages/core
+      '@tablecraft/svelte':
+        specifier: workspace:*
+        version: link:../../packages/svelte
+    devDependencies:
+      '@sveltejs/vite-plugin-svelte':
+        specifier: ^6.0.0
+        version: 6.2.4(svelte@5.54.0)(vite@7.3.1(lightningcss@1.32.0))
+      svelte:
+        specifier: ^5.0.0
+        version: 5.54.0
+      vite:
+        specifier: ^7.3.1
+        version: 7.3.1(lightningcss@1.32.0)
+
   apps/docs: {}
 
   packages/core:
+    dependencies:
+      dompurify:
+        specifier: '>=3.0.0'
+        version: 3.3.3
     devDependencies:
       '@vitest/coverage-v8':
         specifier: ^4.1.0
@@ -141,6 +164,9 @@ importers:
       vitest:
         specifier: ^4.1.0
         version: 4.1.0(jsdom@29.0.1)(vite@7.3.1(lightningcss@1.32.0))
+      vitest-axe:
+        specifier: 1.0.0-pre.5
+        version: 1.0.0-pre.5(vitest@4.1.0(jsdom@29.0.1)(vite@7.3.1(lightningcss@1.32.0)))
 
   packages/vue:
     dependencies:
@@ -1022,6 +1048,9 @@ packages:
       vite:
         optional: true
 
+  '@vitest/pretty-format@3.2.4':
+    resolution: {integrity: sha512-IVNZik8IVRJRTr9fxlitMKeJeXFFFN0JaB9PHPGQ8NKQbGpfjlTx9zO4RefN8gp7eqjNy8nyK3NZmBzOPeIxtA==}
+
   '@vitest/pretty-format@4.1.0':
     resolution: {integrity: sha512-3RZLZlh88Ib0J7NQTRATfc/3ZPOnSUn2uDBUoGNn5T36+bALixmzphN26OUD3LRXWkJu4H0s5vvUeqBiw+kS0A==}
 
@@ -1164,6 +1193,10 @@ packages:
   ast-v8-to-istanbul@1.0.0:
     resolution: {integrity: sha512-1fSfIwuDICFA4LKkCzRPO7F0hzFf0B7+Xqrl27ynQaa+Rh0e1Es0v6kWHPott3lU10AyAr7oKHa65OppjLn3Rg==}
 
+  axe-core@4.11.1:
+    resolution: {integrity: sha512-BASOg+YwO2C+346x3LZOeoovTIoTrRqEsqMa6fmfAV0P+U9mFr9NsyOEpiYvFjbc64NMrSswhV50WdXzdb/Z5A==}
+    engines: {node: '>=4'}
+
   axobject-query@4.1.0:
     resolution: {integrity: sha512-qIj0G9wZbMGNLjLmg1PT6v2mE9AH2zlnADJD/2tC6E00hgmhUOfEB6greHPAfLRSufHqROIUTkw6E+M3lH0PTQ==}
     engines: {node: '>= 0.4'}
@@ -1217,6 +1250,10 @@ packages:
   chalk@4.1.2:
     resolution: {integrity: sha512-oKnbhFyRIXpUuez8iBMmyEa4nbj4IOQyuhc/wy9kY7/WVPcwIO9VA668Pu8RkO7+0G76SLROeyw9CpQ061i4mA==}
     engines: {node: '>=10'}
+
+  chalk@5.6.2:
+    resolution: {integrity: sha512-7NzBL0rN6fMUW+f7A6Io4h40qQlG+xGmtMxfbnH/K7TAtt8JQWVQK+6g0UXKMeVJoyV5EkkNsErQ8pVD3bLHbA==}
+    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
 
   chardet@2.1.1:
     resolution: {integrity: sha512-PsezH1rqdV9VvyNhxxOW32/d75r01NY7TQCmOqomRo15ZSOKbpTFVsfjghxo6JloQUCGnH4k1LGu0R4yCLlWQQ==}
@@ -1333,6 +1370,9 @@ packages:
 
   dom-accessibility-api@0.5.16:
     resolution: {integrity: sha512-X7BJ2yElsnOJ30pZF4uIIDfBEVgF4XEBxL9Bxhy6dnrm5hkzqmsWHGTiHqRiITNhMyFLyAiWndIJP7Z1NTteDg==}
+
+  dompurify@3.3.3:
+    resolution: {integrity: sha512-Oj6pzI2+RqBfFG+qOaOLbFXLQ90ARpcGG6UePL82bJLtdsa6CYJD7nmiU8MW9nQNOtCHV3lZ/Bzq1X0QYbBZCA==}
 
   enquirer@2.4.1:
     resolution: {integrity: sha512-rRqJg/6gd538VHvR3PSrdRBb/1Vy2YfzHqzvbhGIQpDRKIa4FgV/54b5Q1xYSxOOwKvjXweS26E0Q+nAMwp2pQ==}
@@ -1813,6 +1853,9 @@ packages:
   locate-path@6.0.0:
     resolution: {integrity: sha512-iPZK6eYjbxRu3uB4/WZ3EsEIMJFMqAoopl3R+zuq0UjcAm/MO6KCweDgPfP3elTztoKP3KtnVHxTn2NHBSDVUw==}
     engines: {node: '>=10'}
+
+  lodash-es@4.17.23:
+    resolution: {integrity: sha512-kVI48u3PZr38HdYz98UmfPnXl2DXrpdctLrFLCd3kOx1xUkOmpFPx7gCWWM5MPkL/fD8zb+Ph0QzjGFs4+hHWg==}
 
   lodash.merge@4.6.2:
     resolution: {integrity: sha512-0KpjqXRVvrYyCsX1swR/XTK0va6VQkQM6MNo7PqW77ByjAhoARA8EfrP1N4+KlKj8YS0ZUCtRT/YUuhyYDujIQ==}
@@ -2303,6 +2346,10 @@ packages:
     resolution: {integrity: sha512-j2Zq4NyQYG5XMST4cbs02Ak8iJUdxRM0XI5QyxXuZOzKOINmWurp3smXu3y5wDcJrptwpSjgXHzIQxR0omXljQ==}
     engines: {node: '>=12.0.0'}
 
+  tinyrainbow@2.0.0:
+    resolution: {integrity: sha512-op4nsTR47R6p0vMUUoYl/a+ljLFVtlfaXkLQmqfLR1qHma1h/ysYk4hEXZ880bf2CYgTskvTa/e196Vd5dDQXw==}
+    engines: {node: '>=14.0.0'}
+
   tinyrainbow@3.1.0:
     resolution: {integrity: sha512-Bf+ILmBgretUrdJxzXM0SgXLZ3XfiaUuOj/IKQHuTXip+05Xn+uyEYdVg0kYDipTBcLrCVyUzAPz7QmArb0mmw==}
     engines: {node: '>=14.0.0'}
@@ -2495,6 +2542,11 @@ packages:
     peerDependenciesMeta:
       vite:
         optional: true
+
+  vitest-axe@1.0.0-pre.5:
+    resolution: {integrity: sha512-eUGxjpXnceha9lkqIVyMgOUeDmWU9LVjNiLTjAjDtMew0WbaBDtixoUvdftOhZfqRI03G2Ay4ZxaU1KG6jNCiQ==}
+    peerDependencies:
+      vitest: '>=1'
 
   vitest@4.1.0:
     resolution: {integrity: sha512-YbDrMF9jM2Lqc++2530UourxZHmkKLxrs4+mYhEwqWS97WJ7wOYEkcr+QfRgJ3PW9wz3odRijLZjHEaRLTNbqw==}
@@ -3470,13 +3522,17 @@ snapshots:
     optionalDependencies:
       vite: 7.3.1(lightningcss@1.32.0)
 
-  '@vitest/mocker@4.1.0(vite@8.0.1(esbuild@0.27.4))':
+  '@vitest/mocker@4.1.0(vite@8.0.1(@types/node@12.20.55)(esbuild@0.27.4))':
     dependencies:
       '@vitest/spy': 4.1.0
       estree-walker: 3.0.3
       magic-string: 0.30.21
     optionalDependencies:
       vite: 8.0.1(@types/node@12.20.55)(esbuild@0.27.4)
+
+  '@vitest/pretty-format@3.2.4':
+    dependencies:
+      tinyrainbow: 2.0.0
 
   '@vitest/pretty-format@4.1.0':
     dependencies:
@@ -3650,6 +3706,8 @@ snapshots:
       estree-walker: 3.0.3
       js-tokens: 10.0.0
 
+  axe-core@4.11.1: {}
+
   axobject-query@4.1.0: {}
 
   balanced-match@1.0.2: {}
@@ -3696,6 +3754,8 @@ snapshots:
     dependencies:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
+
+  chalk@5.6.2: {}
 
   chardet@2.1.1: {}
 
@@ -3780,6 +3840,10 @@ snapshots:
       path-type: 4.0.0
 
   dom-accessibility-api@0.5.16: {}
+
+  dompurify@3.3.3:
+    optionalDependencies:
+      '@types/trusted-types': 2.0.7
 
   enquirer@2.4.1:
     dependencies:
@@ -4274,6 +4338,8 @@ snapshots:
     dependencies:
       p-locate: 5.0.0
 
+  lodash-es@4.17.23: {}
+
   lodash.merge@4.6.2: {}
 
   lodash.startcase@4.4.0: {}
@@ -4738,6 +4804,8 @@ snapshots:
       fdir: 6.5.0(picomatch@4.0.3)
       picomatch: 4.0.3
 
+  tinyrainbow@2.0.0: {}
+
   tinyrainbow@3.1.0: {}
 
   tldts-core@7.0.27: {}
@@ -4871,10 +4939,18 @@ snapshots:
     optionalDependencies:
       vite: 8.0.1(@types/node@12.20.55)(esbuild@0.27.4)
 
+  vitest-axe@1.0.0-pre.5(vitest@4.1.0(jsdom@29.0.1)(vite@7.3.1(lightningcss@1.32.0))):
+    dependencies:
+      '@vitest/pretty-format': 3.2.4
+      axe-core: 4.11.1
+      chalk: 5.6.2
+      lodash-es: 4.17.23
+      vitest: 4.1.0(jsdom@29.0.1)(vite@7.3.1(lightningcss@1.32.0))
+
   vitest@4.1.0(@types/node@12.20.55)(jsdom@29.0.1)(vite@8.0.1(@types/node@12.20.55)(esbuild@0.27.4)):
     dependencies:
       '@vitest/expect': 4.1.0
-      '@vitest/mocker': 4.1.0(vite@8.0.1(esbuild@0.27.4))
+      '@vitest/mocker': 4.1.0(vite@8.0.1(@types/node@12.20.55)(esbuild@0.27.4))
       '@vitest/pretty-format': 4.1.0
       '@vitest/runner': 4.1.0
       '@vitest/snapshot': 4.1.0
