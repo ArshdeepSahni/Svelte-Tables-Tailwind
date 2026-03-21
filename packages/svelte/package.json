@@ -1,0 +1,53 @@
+{
+  "name": "@tablecraft/svelte",
+  "version": "0.0.1",
+  "description": "Svelte 5 table component — zero-config data display for SvelteKit and Svelte projects",
+  "license": "MIT",
+  "author": "Arshdeep Singh <arsh22sahni@gmail.com>",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind",
+    "directory": "packages/svelte"
+  },
+  "engines": {
+    "node": ">=20.19.0 || >=22.12.0"
+  },
+  "type": "module",
+  "svelte": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "svelte": "./dist/index.js",
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "scripts": {
+    "build": "svelte-package -i src/lib",
+    "dev": "svelte-package -i src/lib --watch",
+    "typecheck": "svelte-check --tsconfig ./tsconfig.json"
+  },
+  "peerDependencies": {
+    "svelte": "^5.0.0"
+  },
+  "dependencies": {
+    "@tablecraft/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@sveltejs/package": "^2.5.7",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "svelte": "^5.0.0",
+    "svelte-check": "^4.1.5",
+    "typescript": "^5.8.3",
+    "vite": "^7.3.1",
+    "vitest": "^4.1.0",
+    "@testing-library/svelte": "^5.2.7"
+  },
+  "keywords": ["tablecraft", "svelte", "svelte5", "table", "data-grid"]
+}
