@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-core-engine-type-inference-renderer-registry/04-PLAN.md
-last_updated: "2026-03-21T15:42:00.882Z"
+stopped_at: Completed 02-core-engine-type-inference-renderer-registry/05-PLAN.md
+last_updated: "2026-03-21T15:52:34.375Z"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 10
-  completed_plans: 8
+  completed_plans: 9
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (4/6 plans done)
+Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (5/6 plans done)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 2 — Core Engine + Type Inference + Renderer Registry |
-| Plan     | 04 complete (all 17 Tier 1 renderers + 17 test files; 383 tests passing) |
-| Status   | Phase 2 in progress (4/6 plans done)                 |
-| Progress | 8/10 plans complete across all phases                |
+| Plan     | 05 complete (createTableEngine factory + v1 shim + 17 renderer exports; 464 tests passing) |
+| Status   | Phase 2 in progress (5/6 plans done)                 |
+| Progress | 9/10 plans complete across all phases                |
 
 ```
 Phase progress: [█______] 1/7
-Plan progress:  [████████░░] 80% (8/10 plans)
+Plan progress:  [█████████░] 90% (9/10 plans)
 ```
 
 ---
@@ -59,7 +59,7 @@ Plan progress:  [████████░░] 80% (8/10 plans)
 | Phase | Name                                             | Status   | Plans |
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 4/6   |
+| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 5/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
 | 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
@@ -89,6 +89,7 @@ Plan progress:  [████████░░] 80% (8/10 plans)
 | Phase 02-core-engine-type-inference-renderer-registry P03 | 4min | 1 tasks | 4 files |
 | Phase 02-core-engine-type-inference-renderer-registry P02 | 452s | 4 tasks | 5 files |
 | Phase 02-core-engine-type-inference-renderer-registry P04 | 1060 | 2 tasks | 37 files |
+| Phase 02-core-engine-type-inference-renderer-registry P05 | 349 | 7 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -125,6 +126,11 @@ Plan progress:  [████████░░] 80% (8/10 plans)
 | toFiniteNumber duplicated per numeric renderer (not shared) | No shared helper import — each renderer is independently tree-shakable without pulling in a utils module       |
 | status variant normalization strips whitespace+underscores+hyphens | 'in-progress' normalized to 'inprogress' matches Set lookup; preserves original label for display        |
 | html renderer injectedPurify persists for module lifetime  | Once configure() is called, injection is permanent for the module session; vi.resetModules needed for deep isolation |
+| resolveColumns immediate text fallback (no inference arg)  | Returns text for all columns immediately; same function handles typed path when inferenceResult is passed |
+| labelFromKey auto-generates Title Case column labels        | camelCase/snake_case/kebab-case → Title Case (created_at → Created At); consumers skip explicit label config |
+| Engine holds no inferenceResult — Svelte layer owns state  | CORE-08: engine is pure stateless computation; reactive state lives in Svelte $state() in Phase 3 |
+| 17 renderer export entries in package.json (import-only)   | ESM tree-shaking sub-paths; no require form needed for individual renderer entries |
+| dompurify added as optional peerDependency >=3.0.0         | DOMPurify inclusion strategy resolved: peer dep, not bundled; html renderer opt-in pattern confirmed |
 
 ### Active Todos
 
@@ -155,13 +161,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T15:42:00.880Z
+**Last session:** 2026-03-21T15:52:34.373Z
 
-**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/04-PLAN.md
+**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/05-PLAN.md
 
-**Next action:** Continue Phase 2 — Plan 05 (createTableEngine factory: resolveColumns + processRows).
+**Next action:** Continue Phase 2 — Plan 06 (final plan to complete Phase 2).
 
-**Context to restore:** Phase 2 Plans 01–04 complete. types.ts: CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts: 18 --tc-* tokens. scheduler.ts: scheduleIdleWork. Inference engine complete: detectors.ts (15 detectors), inference/index.ts (inferSchema, sampleRows, runDetectors). registry/index.ts: Map singleton (registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes). renderers/: all 17 Tier 1 renderers self-registered, renderers/index.ts barrel. 383 core tests pass (23 files). TypeScript strict mode: zero errors. CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-07, CORE-09, CORE-12 marked complete.
+**Context to restore:** Phase 2 Plans 01–05 complete. types.ts: CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts: 18 --tc-* tokens. scheduler.ts: scheduleIdleWork. Inference engine: detectors.ts (15 detectors), inference/index.ts (inferSchema, sampleRows, runDetectors). registry/index.ts: Map singleton. renderers/: all 17 Tier 1 renderers self-registered. engine/index.ts: createTableEngine factory (inferSchema/resolveColumns/processRows/getConfig). compat/v1.ts: adaptV1Props with all 6 type mappings + deprecation warn. index.ts: full public API barrel. package.json: 17 renderer export entries + DOMPurify optional peerDep. 464 core tests pass (25 files). TypeScript strict mode: zero errors. CORE-01, CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-07, CORE-08, CORE-09, CORE-10, CORE-11, CORE-12 all marked complete.
 
 ---
 
