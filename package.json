@@ -1,36 +1,52 @@
 {
-  "name": "svelte-tables-tailwind",
-  "version": "1.0.6",
-  "description": "Svelte Tables Tailwind",
-  "main": "dist/index.js",
-  "module": "dist/index.mjs",
-  "svelte": "src/Tables.svelte",
-  "scripts": {
-    "build": "rollup -c",
-    "prepare": "npm run build",
-    "dev": "rollup -c -w"
-  },
-  "keywords": [
-    "svelte",
-    "tables",
-    "tailwind"
-  ],
+  "name": "tablecraft-monorepo",
+  "version": "0.0.0",
+  "private": true,
+  "description": "pnpm monorepo for @tablecraft/* packages",
+  "license": "MIT",
+  "author": "Arshdeep Singh <arsh22sahni@gmail.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind"
   },
-  "author": "Arshdeep Singh <arsh22sahni@gmail.com>",
-  "license": "ISC",
-  "devDependencies": {
-    "@rollup/plugin-commonjs": "^18.0.0",
-    "rollup": "^2.45.2",
-    "rollup-plugin-css-only": "^3.1.0",
-    "rollup-plugin-node-resolve": "^5.2.0",
-    "rollup-plugin-svelte": "^7.1.0",
-    "svelte": "^3.37.0"
+  "engines": {
+    "node": ">=20.19.0 || >=22.12.0",
+    "pnpm": ">=9.0.0"
   },
-  "homepage": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind",
-  "bugs": {
-    "url": "https://github.com/ArshdeepSahni/Svelte-Tables-Tailwind/issues"
+  "packageManager": "pnpm@9.15.4",
+  "scripts": {
+    "build": "pnpm -r build",
+    "dev": "pnpm -r --parallel dev",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "pnpm -r typecheck",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
+    "changeset": "changeset",
+    "version-packages": "changeset version",
+    "release": "pnpm -r build && changeset publish",
+    "clean": "pnpm -r --parallel exec rm -rf dist .svelte-kit build"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.30.0",
+    "@eslint/js": "^9.24.0",
+    "@sveltejs/vite-plugin-svelte": "^6.0.0",
+    "@testing-library/svelte": "^5.2.7",
+    "@typescript-eslint/eslint-plugin": "^8.31.0",
+    "@typescript-eslint/parser": "^8.31.0",
+    "eslint": "^9.24.0",
+    "eslint-plugin-svelte": "^2.46.1",
+    "globals": "^16.0.0",
+    "playwright": "^1.50.1",
+    "prettier": "^3.5.3",
+    "prettier-plugin-svelte": "^3.4.0",
+    "svelte": "^5.0.0",
+    "svelte-eslint-parser": "^0.43.0",
+    "typescript": "^5.8.3",
+    "vitest": "^4.1.0"
+  },
+  "pnpm": {
+    "overrides": {}
   }
 }
