@@ -31,6 +31,7 @@
   "scripts": {
     "build": "svelte-package -i src/lib",
     "dev": "svelte-package -i src/lib --watch",
+    "bench": "vite --port 5174",
     "test": "vitest --run",
     "typecheck": "svelte-check --tsconfig ./tsconfig.json"
   },
@@ -38,7 +39,8 @@
     "svelte": "^5.0.0"
   },
   "dependencies": {
-    "@tablecraft/core": "workspace:*"
+    "@tablecraft/core": "workspace:*",
+    "@tanstack/svelte-virtual": "3.13.23"
   },
   "devDependencies": {
     "@sveltejs/package": "^2.5.7",
