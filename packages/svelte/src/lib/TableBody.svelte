@@ -66,6 +66,38 @@
   // Virtual mode is active when virtualItems has entries and sortedRows is provided
   const isVirtualMode = $derived(virtualItems.length > 0 && sortedRows.length > 0);
 
+  function handleBodyClick(e: MouseEvent) {
+    const tr = (e.target as Element).closest('[data-row]');
+    if (!tr) return;
+    const rowIndex = Number(tr.getAttribute('data-row'));
+
+    const td = (e.target as Element).closest('[data-col]');
+
+    if (isVirtualMode) {
+      const processedRow = sortedRows[rowIndex];
+      if (!processedRow) return;
+      const row = processedRow._original as Row;
+      if (td) {
+        const colIndex = Number(td.getAttribute('data-col'));
+        const col = columns[colIndex];
+        if (col) oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
+      } else {
+        onrowclick?.({ row, rowIndex });
+      }
+    } else {
+      const processedRow = visibleRows[rowIndex];
+      if (!processedRow) return;
+      const row = processedRow._original as Row;
+      if (td) {
+        const colIndex = Number(td.getAttribute('data-col'));
+        const col = columns[colIndex];
+        if (col) oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
+      } else {
+        onrowclick?.({ row, rowIndex });
+      }
+    }
+  }
+
   function handleKeyDown(e: KeyboardEvent) {
     const maxRow = isVirtualMode ? sortedRows.length - 1 : visibleRows.length - 1;
     const maxCol = columns.length - 1;
@@ -104,7 +136,7 @@
   }
 </script>
 
-<tbody onkeydown={handleKeyDown}>
+<tbody onkeydown={handleKeyDown} onclick={handleBodyClick}>
   {#if loading}
     {#each { length: skeletonRows } as _}
       <tr class="tc-tr tc-tr--skeleton" role="row" data-skeleton aria-hidden="true">
@@ -142,7 +174,6 @@
           aria-selected={selectable ? isSelected : undefined}
           data-row={item.index}
           style="height: {item.size}px; transform: translateY({item.start - index * item.size}px);"
-          onclick={() => row && onrowclick?.({ row: row as Row, rowIndex: item.index })}
         >
           {#if selectable && row}
             <td class="tc-td tc-td--checkbox" role="gridcell">
@@ -162,10 +193,6 @@
                 role="gridcell"
                 data-col={colIndex}
                 tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
-                onclick={(e) => {
-                  e.stopPropagation();
-                  oncellclick?.({ row: row as Row, column: col, value: (row as Row)[col.key], rowIndex: item.index });
-                }}
               >
                 <Cell {descriptor} />
               </td>
@@ -183,7 +210,7 @@
           class:tc-tr--selected={isSelected}
           role="row"
           aria-selected={selectable ? isSelected : undefined}
-          onclick={() => onrowclick?.({ row, rowIndex })}
+          data-row={rowIndex}
         >
           {#if selectable}
             <td class="tc-td tc-td--checkbox" role="gridcell">
@@ -200,11 +227,8 @@
               class="tc-td"
               class:tc-td--bordered={bordered}
               role="gridcell"
+              data-col={colIndex}
               tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
-              onclick={(e) => {
-                e.stopPropagation();
-                oncellclick?.({ row, column: col, value: row[col.key], rowIndex });
-              }}
             >
               <Cell {descriptor} />
             </td>
