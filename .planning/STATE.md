@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-core-engine-type-inference-renderer-registry/02-PLAN.md
-last_updated: "2026-03-21T15:18:54.626Z"
+stopped_at: Completed 02-core-engine-type-inference-renderer-registry/04-PLAN.md
+last_updated: "2026-03-21T15:42:00.882Z"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 10
-  completed_plans: 7
+  completed_plans: 8
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (3/6 plans done)
+Phase 2: Core Engine + Type Inference + Renderer Registry — IN PROGRESS (4/6 plans done)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 2 — Core Engine + Type Inference + Renderer Registry |
-| Plan     | 03 complete (renderer plugin registry: Map singleton, 6 exports, 20+ tests) |
-| Status   | Phase 2 in progress (3/6 plans done)                 |
-| Progress | 6/10 plans complete across all phases                |
+| Plan     | 04 complete (all 17 Tier 1 renderers + 17 test files; 383 tests passing) |
+| Status   | Phase 2 in progress (4/6 plans done)                 |
+| Progress | 8/10 plans complete across all phases                |
 
 ```
 Phase progress: [█______] 1/7
-Plan progress:  [██████░░░░] 60% (6/10 plans)
+Plan progress:  [████████░░] 80% (8/10 plans)
 ```
 
 ---
@@ -59,7 +59,7 @@ Plan progress:  [██████░░░░] 60% (6/10 plans)
 | Phase | Name                                             | Status   | Plans |
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 3/6   |
+| 2     | Core Engine + Type Inference + Renderer Registry | In Progress | 4/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
 | 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
@@ -88,6 +88,7 @@ Plan progress:  [██████░░░░] 60% (6/10 plans)
 | Phase 02-core-engine-type-inference-renderer-registry P01 | 185s | 2 tasks | 7 files |
 | Phase 02-core-engine-type-inference-renderer-registry P03 | 4min | 1 tasks | 4 files |
 | Phase 02-core-engine-type-inference-renderer-registry P02 | 452s | 4 tasks | 5 files |
+| Phase 02-core-engine-type-inference-renderer-registry P04 | 1060 | 2 tasks | 37 files |
 
 ## Accumulated Context
 
@@ -121,6 +122,9 @@ Plan progress:  [██████░░░░] 60% (6/10 plans)
 | Registry duplicate registration warns + overwrites         | Enables intentional built-in renderer replacement without forking core; warn alerts accidental duplicates       |
 | `_at` suffix regex for date keyword boost (not substring)  | `'at'` as substring matched 'avatar' producing false image+date dual boost; `/_at$/` matches `created_at` only |
 | detectStatus explicit numeric guard before cardinality     | Prevents overlap with integer columns that happen to have few unique values (e.g., 1/2/3 flags)                 |
+| toFiniteNumber duplicated per numeric renderer (not shared) | No shared helper import — each renderer is independently tree-shakable without pulling in a utils module       |
+| status variant normalization strips whitespace+underscores+hyphens | 'in-progress' normalized to 'inprogress' matches Set lookup; preserves original label for display        |
+| html renderer injectedPurify persists for module lifetime  | Once configure() is called, injection is permanent for the module session; vi.resetModules needed for deep isolation |
 
 ### Active Todos
 
@@ -151,13 +155,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T15:18:54.624Z
+**Last session:** 2026-03-21T15:42:00.880Z
 
-**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/02-PLAN.md
+**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/04-PLAN.md
 
-**Next action:** Continue Phase 2 — Plan 04 (Tier 1 renderers).
+**Next action:** Continue Phase 2 — Plan 05 (createTableEngine factory: resolveColumns + processRows).
 
-**Context to restore:** Phase 2 Plans 01, 02, 03 complete. types.ts has CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork. Inference engine complete: detectors.ts (15 detectors, getBoostMap, DETECTORS array), inference/index.ts (inferSchema, sampleRows, runDetectors). registry/index.ts: Map<string, RendererFn> singleton with registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes. All 226 core tests pass (6 files). TypeScript strict mode: zero errors. CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-09 marked complete. Wave 4 renderers self-register via registerRenderer() at module init; use clearRegistry() in afterEach for test isolation.
+**Context to restore:** Phase 2 Plans 01–04 complete. types.ts: CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts: 18 --tc-* tokens. scheduler.ts: scheduleIdleWork. Inference engine complete: detectors.ts (15 detectors), inference/index.ts (inferSchema, sampleRows, runDetectors). registry/index.ts: Map singleton (registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes). renderers/: all 17 Tier 1 renderers self-registered, renderers/index.ts barrel. 383 core tests pass (23 files). TypeScript strict mode: zero errors. CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-07, CORE-09, CORE-12 marked complete.
 
 ---
 
