@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-core-engine-type-inference-renderer-registry/03-PLAN.md
-last_updated: "2026-03-21T15:13:17.438Z"
+stopped_at: Completed 02-core-engine-type-inference-renderer-registry/02-PLAN.md
+last_updated: "2026-03-21T15:18:54.626Z"
 progress:
   total_phases: 7
   completed_phases: 1
   total_plans: 10
-  completed_plans: 6
+  completed_plans: 7
 ---
 
 # Project State
@@ -87,6 +87,7 @@ Plan progress:  [██████░░░░] 60% (6/10 plans)
 | Phase 01-foundation P04 | 436 | 2 tasks | 11 files |
 | Phase 02-core-engine-type-inference-renderer-registry P01 | 185s | 2 tasks | 7 files |
 | Phase 02-core-engine-type-inference-renderer-registry P03 | 4min | 1 tasks | 4 files |
+| Phase 02-core-engine-type-inference-renderer-registry P02 | 452s | 4 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,8 @@ Plan progress:  [██████░░░░] 60% (6/10 plans)
 | vite.config.ts rollupOptions → rolldownOptions             | Vite 8 deprecates rollupOptions; rolldownOptions is required for Vite 8+ multi-entry builds                     |
 | Registry uses module-level Map singleton (not a class)     | Simple, shared across all renderer module imports without instantiation; no constructor overhead                 |
 | Registry duplicate registration warns + overwrites         | Enables intentional built-in renderer replacement without forking core; warn alerts accidental duplicates       |
+| `_at` suffix regex for date keyword boost (not substring)  | `'at'` as substring matched 'avatar' producing false image+date dual boost; `/_at$/` matches `created_at` only |
+| detectStatus explicit numeric guard before cardinality     | Prevents overlap with integer columns that happen to have few unique values (e.g., 1/2/3 flags)                 |
 
 ### Active Todos
 
@@ -148,13 +151,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T15:13:17.435Z
+**Last session:** 2026-03-21T15:18:54.624Z
 
-**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/03-PLAN.md
+**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/02-PLAN.md
 
 **Next action:** Continue Phase 2 — Plan 04 (Tier 1 renderers).
 
-**Context to restore:** Phase 2 Plans 01, 02, 03 complete. types.ts has CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork. inference engine (inferSchema, runDetectors, detectors) complete with 166 todo stubs for Wave 4+. registry/index.ts: Map<string, RendererFn> singleton with registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes. All 66 core tests pass (4 files: foundation, scheduler/tokens, inference, registry). TypeScript strict mode: zero errors. CORE-05, CORE-09, CORE-06 marked complete. Wave 4 renderers self-register via registerRenderer() at module init; use clearRegistry() in afterEach for test isolation.
+**Context to restore:** Phase 2 Plans 01, 02, 03 complete. types.ts has CellDescriptor (10 variants), RendererFn, ResolvedColumn, ProcessedRow, BadgeVariant. tokens.ts has 18 --tc-* tokens. scheduler.ts has scheduleIdleWork. Inference engine complete: detectors.ts (15 detectors, getBoostMap, DETECTORS array), inference/index.ts (inferSchema, sampleRows, runDetectors). registry/index.ts: Map<string, RendererFn> singleton with registerRenderer/getRenderer/hasRenderer/unregisterRenderer/clearRegistry/getRegisteredTypes. All 226 core tests pass (6 files). TypeScript strict mode: zero errors. CORE-02, CORE-03, CORE-04, CORE-05, CORE-06, CORE-09 marked complete. Wave 4 renderers self-register via registerRenderer() at module init; use clearRegistry() in afterEach for test isolation.
 
 ---
 

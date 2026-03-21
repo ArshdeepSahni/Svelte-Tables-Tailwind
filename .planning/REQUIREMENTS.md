@@ -37,9 +37,9 @@ What v1.0.6 ships today. These are the baselines, not goals.
 ### CORE ENGINE (Phase 2)
 
 - [ ] **CORE-01**: Pure-JS `createTableEngine(config)` factory implemented as framework-agnostic core with event emitter interface
-- [ ] **CORE-02**: Type inference engine samples 200 rows per column, runs 14+ typed detectors in priority order, returns highest-confidence type above threshold
-- [ ] **CORE-03**: Type detectors implemented: boolean, currency, percentage, number/integer, date, datetime, time, email, phone, image-url, url, status/enum, code, text (fallback)
-- [ ] **CORE-04**: Field-name keyword heuristics boost type inference confidence (e.g. `avatar`, `email`, `phone`, `status`, `price`, `date` column names)
+- [x] **CORE-02**: Type inference engine samples 200 rows per column, runs 14+ typed detectors in priority order, returns highest-confidence type above threshold
+- [x] **CORE-03**: Type detectors implemented: boolean, currency, percentage, number/integer, date, datetime, time, email, phone, image-url, url, status/enum, code, text (fallback)
+- [x] **CORE-04**: Field-name keyword heuristics boost type inference confidence (e.g. `avatar`, `email`, `phone`, `status`, `price`, `date` column names)
 - [x] **CORE-05**: Type inference runs in `requestIdleCallback` — table renders immediately with text fallback, updates once inference completes
 - [x] **CORE-06**: Renderer plugin registry with `registerRenderer(name, rendererFn)` API — built-in renderers use the same API as external plugins
 - [ ] **CORE-07**: Tier 1 cell renderers implemented as individually importable tree-shakable modules: `text`, `number`, `integer`, `currency`, `percentage`, `boolean`, `date`, `datetime`, `time`, `email`, `url`, `phone`, `image`, `badge`, `status`, `code`, `html` (with explicit opt-in sanitization)
@@ -174,9 +174,9 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | FOUND-11    | Phase 1 | Complete |
 | FOUND-12    | Phase 1 | Complete |
 | CORE-01     | Phase 2 | Pending  |
-| CORE-02     | Phase 2 | Pending  |
-| CORE-03     | Phase 2 | Pending  |
-| CORE-04     | Phase 2 | Pending  |
+| CORE-02     | Phase 2 | Complete |
+| CORE-03     | Phase 2 | Complete |
+| CORE-04     | Phase 2 | Complete |
 | CORE-05     | Phase 2 | Complete |
 | CORE-06     | Phase 2 | Complete |
 | CORE-07     | Phase 2 | Pending  |
