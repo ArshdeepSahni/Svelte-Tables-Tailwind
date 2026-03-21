@@ -37,6 +37,10 @@
     striped?: boolean;
     bordered?: boolean;
     empty?: Snippet;
+    // Column virtualization
+    columnVirtualItems?: VirtualItem[];
+    totalColumnSize?: number;
+    isColumnVirtualizing?: boolean;
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
     oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown; rowIndex: number }) => void;
     onrowtoggle?: (row: Row, selected: boolean) => void;
@@ -55,6 +59,9 @@
     striped = false,
     bordered = false,
     empty,
+    columnVirtualItems = [],
+    totalColumnSize = 0,
+    isColumnVirtualizing = false,
     onrowclick,
     oncellclick,
     onrowtoggle,
@@ -185,18 +192,50 @@
             </td>
           {/if}
           {#if row}
-            {#each columns as col, colIndex (col.key)}
-              {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
-              <td
-                class="tc-td"
-                class:tc-td--bordered={bordered}
-                role="gridcell"
-                data-col={colIndex}
-                tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
-              >
-                <Cell {descriptor} />
-              </td>
-            {/each}
+            {#if isColumnVirtualizing && columnVirtualItems.length > 0}
+              <!-- Left cell spacer -->
+              {#if columnVirtualItems[0]?.start > 0}
+                <td style="width: {columnVirtualItems[0].start}px; padding: 0;" aria-hidden="true"></td>
+              {/if}
+              <!-- Virtual column cells -->
+              {#each columnVirtualItems as colItem}
+                {@const col = columns[colItem.index]}
+                {#if col}
+                  {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+                  <td
+                    class="tc-td"
+                    class:tc-td--bordered={bordered}
+                    role="gridcell"
+                    data-col={colItem.index}
+                    style="width: {colItem.size}px; min-width: {colItem.size}px;"
+                    tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colItem.index ? 0 : -1}
+                  >
+                    <Cell {descriptor} />
+                  </td>
+                {/if}
+              {/each}
+              <!-- Right cell spacer -->
+              {#if columnVirtualItems.at(-1)}
+                {@const lastItem = columnVirtualItems.at(-1)!}
+                {@const rightSpace = totalColumnSize - lastItem.end}
+                {#if rightSpace > 0}
+                  <td style="width: {rightSpace}px; padding: 0;" aria-hidden="true"></td>
+                {/if}
+              {/if}
+            {:else}
+              {#each columns as col, colIndex (col.key)}
+                {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+                <td
+                  class="tc-td"
+                  class:tc-td--bordered={bordered}
+                  role="gridcell"
+                  data-col={colIndex}
+                  tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
+                >
+                  <Cell {descriptor} />
+                </td>
+              {/each}
+            {/if}
           {/if}
         </tr>
       {/each}
@@ -221,18 +260,50 @@
               />
             </td>
           {/if}
-          {#each columns as col, colIndex (col.key)}
-            {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
-            <td
-              class="tc-td"
-              class:tc-td--bordered={bordered}
-              role="gridcell"
-              data-col={colIndex}
-              tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
-            >
-              <Cell {descriptor} />
-            </td>
-          {/each}
+          {#if isColumnVirtualizing && columnVirtualItems.length > 0}
+            <!-- Left cell spacer -->
+            {#if columnVirtualItems[0]?.start > 0}
+              <td style="width: {columnVirtualItems[0].start}px; padding: 0;" aria-hidden="true"></td>
+            {/if}
+            <!-- Virtual column cells -->
+            {#each columnVirtualItems as colItem}
+              {@const col = columns[colItem.index]}
+              {#if col}
+                {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+                <td
+                  class="tc-td"
+                  class:tc-td--bordered={bordered}
+                  role="gridcell"
+                  data-col={colItem.index}
+                  style="width: {colItem.size}px; min-width: {colItem.size}px;"
+                  tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colItem.index ? 0 : -1}
+                >
+                  <Cell {descriptor} />
+                </td>
+              {/if}
+            {/each}
+            <!-- Right cell spacer -->
+            {#if columnVirtualItems.at(-1)}
+              {@const lastItem = columnVirtualItems.at(-1)!}
+              {@const rightSpace = totalColumnSize - lastItem.end}
+              {#if rightSpace > 0}
+                <td style="width: {rightSpace}px; padding: 0;" aria-hidden="true"></td>
+              {/if}
+            {/if}
+          {:else}
+            {#each columns as col, colIndex (col.key)}
+              {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+              <td
+                class="tc-td"
+                class:tc-td--bordered={bordered}
+                role="gridcell"
+                data-col={colIndex}
+                tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
+              >
+                <Cell {descriptor} />
+              </td>
+            {/each}
+          {/if}
         </tr>
       {/each}
     {/if}

@@ -1,5 +1,6 @@
 <script lang="ts">
   import type { ResolvedColumn } from '@tablecraft/core';
+  import type { VirtualItem } from '@tanstack/svelte-virtual';
   import type { SortState } from './types.js';
   import Checkbox from './Checkbox.svelte';
 
@@ -10,6 +11,9 @@
     allSelected?: boolean;
     someSelected?: boolean;
     sortLoading?: boolean;
+    columnVirtualItems?: VirtualItem[];
+    totalColumnSize?: number;
+    isColumnVirtualizing?: boolean;
     onsortchange?: (key: string) => void;
     onselectall?: (checked: boolean) => void;
   }
@@ -21,6 +25,9 @@
     allSelected = false,
     someSelected = false,
     sortLoading = false,
+    columnVirtualItems = [],
+    totalColumnSize = 0,
+    isColumnVirtualizing = false,
     onsortchange,
     onselectall,
   }: Props = $props();
@@ -51,39 +58,93 @@
         />
       </th>
     {/if}
-    {#each columns as col (col.key)}
-      <th
-        scope="col"
-        class="tc-th"
-        class:tc-th--sortable={col.sortable !== false}
-        class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
-        role="columnheader"
-        aria-sort={getAriaSortValue(col.key)}
-        onclick={() => handleHeaderClick(col)}
-        onkeydown={(e) => {
-          if (e.key === 'Enter' || e.key === ' ') {
-            e.preventDefault();
-            handleHeaderClick(col);
-          }
-        }}
-        tabindex={col.sortable !== false ? 0 : undefined}
-      >
-        <span class="tc-th-content">
-          {col.label}
-          {#if col.sortable !== false}
-            <span class="tc-sort-icon" aria-hidden="true">
-              {#if sortState.key === col.key && sortState.dir === 'asc'}
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 1L7 6H1L4 1Z"/></svg>
-              {:else if sortState.key === col.key && sortState.dir === 'desc'}
-                <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 7L1 2H7L4 7Z"/></svg>
-              {:else}
-                <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" opacity="0.4"><path d="M4 0L7 4H1L4 0Z"/><path d="M4 10L1 6H7L4 10Z"/></svg>
+    {#if isColumnVirtualizing && columnVirtualItems.length > 0}
+      <!-- Left spacer th -->
+      {#if columnVirtualItems[0]?.start > 0}
+        <th style="width: {columnVirtualItems[0].start}px; padding: 0;" aria-hidden="true"></th>
+      {/if}
+      <!-- Virtual columns -->
+      {#each columnVirtualItems as colItem}
+        {@const col = columns[colItem.index]}
+        {#if col}
+          <th
+            scope="col"
+            class="tc-th"
+            class:tc-th--sortable={col.sortable !== false}
+            class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
+            role="columnheader"
+            aria-sort={getAriaSortValue(col.key)}
+            style="width: {colItem.size}px; min-width: {colItem.size}px;"
+            onclick={() => handleHeaderClick(col)}
+            onkeydown={(e) => {
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                handleHeaderClick(col);
+              }
+            }}
+            tabindex={col.sortable !== false ? 0 : undefined}
+          >
+            <span class="tc-th-content">
+              {col.label}
+              {#if col.sortable !== false}
+                <span class="tc-sort-icon" aria-hidden="true">
+                  {#if sortState.key === col.key && sortState.dir === 'asc'}
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 1L7 6H1L4 1Z"/></svg>
+                  {:else if sortState.key === col.key && sortState.dir === 'desc'}
+                    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 7L1 2H7L4 7Z"/></svg>
+                  {:else}
+                    <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" opacity="0.4"><path d="M4 0L7 4H1L4 0Z"/><path d="M4 10L1 6H7L4 10Z"/></svg>
+                  {/if}
+                </span>
               {/if}
             </span>
-          {/if}
-        </span>
-      </th>
-    {/each}
+          </th>
+        {/if}
+      {/each}
+      <!-- Right spacer th -->
+      {#if columnVirtualItems.at(-1)}
+        {@const lastItem = columnVirtualItems.at(-1)!}
+        {@const rightSpace = totalColumnSize - lastItem.end}
+        {#if rightSpace > 0}
+          <th style="width: {rightSpace}px; padding: 0;" aria-hidden="true"></th>
+        {/if}
+      {/if}
+    {:else}
+      <!-- Normal (non-virtual) column rendering -->
+      {#each columns as col (col.key)}
+        <th
+          scope="col"
+          class="tc-th"
+          class:tc-th--sortable={col.sortable !== false}
+          class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
+          role="columnheader"
+          aria-sort={getAriaSortValue(col.key)}
+          onclick={() => handleHeaderClick(col)}
+          onkeydown={(e) => {
+            if (e.key === 'Enter' || e.key === ' ') {
+              e.preventDefault();
+              handleHeaderClick(col);
+            }
+          }}
+          tabindex={col.sortable !== false ? 0 : undefined}
+        >
+          <span class="tc-th-content">
+            {col.label}
+            {#if col.sortable !== false}
+              <span class="tc-sort-icon" aria-hidden="true">
+                {#if sortState.key === col.key && sortState.dir === 'asc'}
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 1L7 6H1L4 1Z"/></svg>
+                {:else if sortState.key === col.key && sortState.dir === 'desc'}
+                  <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 7L1 2H7L4 7Z"/></svg>
+                {:else}
+                  <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" opacity="0.4"><path d="M4 0L7 4H1L4 0Z"/><path d="M4 10L1 6H7L4 10Z"/></svg>
+                {/if}
+              </span>
+            {/if}
+          </span>
+        </th>
+      {/each}
+    {/if}
   </tr>
 </thead>
 
