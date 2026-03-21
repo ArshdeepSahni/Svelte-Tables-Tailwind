@@ -97,3 +97,58 @@ export type ColumnInferenceMap = Record<string, InferenceResult>;
 export function defineColumns<TRow = Record<string, unknown>>() {
   return (columns: ColumnDefinition<TRow>[]): ColumnDefinition<TRow>[] => columns;
 }
+
+// ---------------------------------------------------------------------------
+// Phase 2 additions — renderer and engine types
+// ---------------------------------------------------------------------------
+
+/** Variant names shared by badge and status renderers */
+export type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
+
+/**
+ * Discriminated union returned by every renderer function.
+ * The Svelte component (Phase 3) switches on `kind` — never calls {@html} on raw data.
+ * FOUND-07: No at-html string concatenation.
+ */
+export type CellDescriptor =
+  | { kind: 'text'; value: string }
+  | { kind: 'number'; value: number; formatted: string }
+  | { kind: 'link'; href: string; label: string; external?: boolean }
+  | { kind: 'image'; src: string; alt: string }
+  | { kind: 'badge'; label: string; variant: BadgeVariant }
+  | { kind: 'status'; label: string; variant: BadgeVariant }
+  | { kind: 'boolean'; value: boolean }
+  | { kind: 'code'; value: string }
+  | { kind: 'html'; sanitized: string }
+  | { kind: 'raw'; value: unknown };
+
+/**
+ * Renderer function signature — all built-in and custom renderers implement this.
+ * CORE-06: Built-ins use the same API as external plugins.
+ */
+export type RendererFn = (value: unknown, column: ResolvedColumn) => CellDescriptor;
+
+/**
+ * Column definition after inference + override resolution.
+ * type and label are always present (defaults applied); inferenceResult is present when inferred.
+ */
+export interface ResolvedColumn extends ColumnDefinition {
+  /** Always present after resolution — inferred or declared */
+  type: ColumnType;
+  /** Always present after resolution — key is used as fallback */
+  label: string;
+  /** Present when the type came from the inference engine */
+  inferenceResult?: InferenceResult;
+}
+
+/**
+ * A single data row after processing through resolveColumns + renderer pipeline.
+ * _original holds the raw row object; cells maps column key → CellDescriptor.
+ * CORE-08: State is external — ProcessedRow is immutable output, not reactive state.
+ */
+export interface ProcessedRow {
+  /** The original data row (typed as Record for framework-agnostic use) */
+  _original: Record<string, unknown>;
+  /** Column key → rendered cell descriptor */
+  cells: Record<string, CellDescriptor>;
+}
