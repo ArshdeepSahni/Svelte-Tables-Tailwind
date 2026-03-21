@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 02-core-engine-type-inference-renderer-registry/06-PLAN.md
-last_updated: "2026-03-21T16:24:53.780Z"
+stopped_at: Completed 03-01-PLAN.md
+last_updated: "2026-03-21T16:59:04.173Z"
 progress:
   total_phases: 7
   completed_phases: 2
-  total_plans: 10
-  completed_plans: 10
+  total_plans: 16
+  completed_plans: 11
 ---
 
 # Project State
@@ -91,6 +91,7 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | Phase 02-core-engine-type-inference-renderer-registry P04 | 1060 | 2 tasks | 37 files |
 | Phase 02-core-engine-type-inference-renderer-registry P05 | 349 | 7 tasks | 7 files |
 | Phase 02-core-engine-type-inference-renderer-registry P06 | 25min | 2 tasks | 4 files |
+| Phase 03-svelte-5-component-zero-config-api P01 | 170 | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -135,6 +136,9 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | Engine holds no inferenceResult — Svelte layer owns state  | CORE-08: engine is pure stateless computation; reactive state lives in Svelte $state() in Phase 3 |
 | 17 renderer export entries in package.json (import-only)   | ESM tree-shaking sub-paths; no require form needed for individual renderer entries |
 | dompurify added as optional peerDependency >=3.0.0         | DOMPurify inclusion strategy resolved: peer dep, not bundled; html renderer opt-in pattern confirmed |
+| vitest-axe extend-expect in setup.ts (03-01)               | toHaveNoViolations matcher globally available across all svelte test files without per-file import    |
+| requestIdleCallback stubbed synchronously in test setup (03-01) | Engine inference callback fires immediately; tests see fully resolved state without async waits  |
+| Table.test.ts TypeScript errors on future props are intentional RED (03-01) | props like loading/selectable/pageSize resolve when Table.svelte is implemented in plans 02-05 |
 
 ### Active Todos
 
@@ -165,9 +169,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T16:17:23.457Z
+**Last session:** 2026-03-21T16:59:04.170Z
 
-**Stopped at:** Completed 02-core-engine-type-inference-renderer-registry/06-PLAN.md
+**Stopped at:** Completed 03-01-PLAN.md
 
 **Next action:** Begin Phase 3 — Svelte 5 Component + Zero-Config API.
 

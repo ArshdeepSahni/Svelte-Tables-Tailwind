@@ -51,21 +51,21 @@ What v1.0.6 ships today. These are the baselines, not goals.
 
 ### SVELTE COMPONENT (Phase 3)
 
-- [ ] **SVLT-01**: `@tablecraft/svelte` package ships `<Table data={rows} />` zero-config API — column headers auto-derived from data keys, types auto-inferred
-- [ ] **SVLT-02**: One-prop type override API: `columns={{ avatar: 'image', price: 'currency' }}` (short form) and full column descriptor objects (long form)
-- [ ] **SVLT-03**: Column sorting — click header to sort ascending/descending/off, visual sort indicator
-- [ ] **SVLT-04**: Global search filter — single text input searches all columns
+- [x] **SVLT-01**: `@tablecraft/svelte` package ships `<Table data={rows} />` zero-config API — column headers auto-derived from data keys, types auto-inferred
+- [x] **SVLT-02**: One-prop type override API: `columns={{ avatar: 'image', price: 'currency' }}` (short form) and full column descriptor objects (long form)
+- [x] **SVLT-03**: Column sorting — click header to sort ascending/descending/off, visual sort indicator
+- [x] **SVLT-04**: Global search filter — single text input searches all columns
 - [ ] **SVLT-05**: Per-column filtering — filter inputs per column with type-appropriate controls (text, date range, number range, enum select)
-- [ ] **SVLT-06**: Pagination — configurable page size, first/prev/next/last controls, total count display
-- [ ] **SVLT-07**: Empty state — configurable message and slot when `data` is empty
-- [ ] **SVLT-08**: Loading state — skeleton animation when `loading` prop is true
-- [ ] **SVLT-09**: Row selection — `selectable` prop enables checkbox column; `selectedRows` bindable store; `select-all` header checkbox
+- [x] **SVLT-06**: Pagination — configurable page size, first/prev/next/last controls, total count display
+- [x] **SVLT-07**: Empty state — configurable message and slot when `data` is empty
+- [x] **SVLT-08**: Loading state — skeleton animation when `loading` prop is true
+- [x] **SVLT-09**: Row selection — `selectable` prop enables checkbox column; `selectedRows` bindable store; `select-all` header checkbox
 - [ ] **SVLT-10**: Responsive display — horizontal scroll on narrow viewports; column hiding configurable per breakpoint
-- [ ] **SVLT-11**: Keyboard navigation — arrow keys between cells, Tab moves focus, Enter/Space activates cell actions
-- [ ] **SVLT-12**: WCAG 2.1 AA accessibility — ARIA `grid` role, `rowheader`/`columnheader`/`gridcell` roles, `aria-sort`, `aria-selected`, `aria-busy` for loading
-- [ ] **SVLT-13**: Row click event (`on:rowclick`) and cell click event (`on:cellclick`) with row data payload
+- [x] **SVLT-11**: Keyboard navigation — arrow keys between cells, Tab moves focus, Enter/Space activates cell actions
+- [x] **SVLT-12**: WCAG 2.1 AA accessibility — ARIA `grid` role, `rowheader`/`columnheader`/`gridcell` roles, `aria-sort`, `aria-selected`, `aria-busy` for loading
+- [x] **SVLT-13**: Row click event (`on:rowclick`) and cell click event (`on:cellclick`) with row data payload
 - [ ] **SVLT-14**: `@sveltejs/package` build produces correct `exports` map with Svelte, ESM, and types entries verified
-- [ ] **SVLT-15**: v1 backward compatibility verified — existing `colname`/`rowdata` consumers get deprecation warnings, not errors
+- [x] **SVLT-15**: v1 backward compatibility verified — existing `colname`/`rowdata` consumers get deprecation warnings, not errors
 
 ### PERFORMANCE (Phase 4)
 
@@ -185,21 +185,21 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | CORE-10     | Phase 2 | Complete |
 | CORE-11     | Phase 2 | Complete |
 | CORE-12     | Phase 2 | Complete |
-| SVLT-01     | Phase 3 | Pending  |
-| SVLT-02     | Phase 3 | Pending  |
-| SVLT-03     | Phase 3 | Pending  |
-| SVLT-04     | Phase 3 | Pending  |
+| SVLT-01     | Phase 3 | Complete |
+| SVLT-02     | Phase 3 | Complete |
+| SVLT-03     | Phase 3 | Complete |
+| SVLT-04     | Phase 3 | Complete |
 | SVLT-05     | Phase 3 | Pending  |
-| SVLT-06     | Phase 3 | Pending  |
-| SVLT-07     | Phase 3 | Pending  |
-| SVLT-08     | Phase 3 | Pending  |
-| SVLT-09     | Phase 3 | Pending  |
+| SVLT-06     | Phase 3 | Complete |
+| SVLT-07     | Phase 3 | Complete |
+| SVLT-08     | Phase 3 | Complete |
+| SVLT-09     | Phase 3 | Complete |
 | SVLT-10     | Phase 3 | Pending  |
-| SVLT-11     | Phase 3 | Pending  |
-| SVLT-12     | Phase 3 | Pending  |
-| SVLT-13     | Phase 3 | Pending  |
+| SVLT-11     | Phase 3 | Complete |
+| SVLT-12     | Phase 3 | Complete |
+| SVLT-13     | Phase 3 | Complete |
 | SVLT-14     | Phase 3 | Pending  |
-| SVLT-15     | Phase 3 | Pending  |
+| SVLT-15     | Phase 3 | Complete |
 | PERF-01     | Phase 4 | Pending  |
 | PERF-02     | Phase 4 | Pending  |
 | PERF-03     | Phase 4 | Pending  |
