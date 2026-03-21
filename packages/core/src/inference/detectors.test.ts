@@ -304,6 +304,23 @@ describe('detectDate', () => {
     const result = detectDate(col(['14:30', '09:00', '23:59']), 'col');
     expect(result).toBeNull();
   });
+
+  it('returns null for empty samples', () => {
+    const result = detectDate(col([]), 'col');
+    expect(result).toBeNull();
+  });
+
+  it('returns date with medium confidence (0.8) when 70–89% match', () => {
+    // 7 dates + 3 non-dates → 70% ratio → medium confidence
+    const result = detectDate(
+      col(['2024-01-15', '2024-02-20', '2024-03-01', '2024-04-10', '2024-05-22',
+        '2024-06-15', '2024-07-04', 'hello', 'world', 'text']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('date');
+    expect(result!.confidence).toBe(0.8);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -337,6 +354,23 @@ describe('detectTime', () => {
   it('returns null for plain text', () => {
     const result = detectTime(col(['hello', 'world', 'foo']), 'col');
     expect(result).toBeNull();
+  });
+
+  it('returns null for empty samples', () => {
+    const result = detectTime(col([]), 'col');
+    expect(result).toBeNull();
+  });
+
+  it('returns time with medium confidence (0.8) when 70–89% match', () => {
+    // 7 times + 3 non-times → 70% ratio → medium confidence
+    const result = detectTime(
+      col(['14:30', '09:05', '23:59', '00:00', '12:45', '08:15', '16:00',
+        'hello', 'world', 'text']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('time');
+    expect(result!.confidence).toBe(0.8);
   });
 });
 
@@ -377,6 +411,18 @@ describe('detectEmail', () => {
   it('returns null for plain text', () => {
     const result = detectEmail(col(['hello world', 'foo bar', 'baz qux']), 'col');
     expect(result).toBeNull();
+  });
+
+  it('returns email with medium confidence (0.8) when 70–89% match', () => {
+    // 7 emails + 3 non-emails → 70% ratio → medium confidence
+    const result = detectEmail(
+      col(['a@b.com', 'c@d.com', 'e@f.com', 'g@h.com', 'i@j.com', 'k@l.com', 'm@n.com',
+        'plain', 'text', 'value']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('email');
+    expect(result!.confidence).toBe(0.8);
   });
 });
 
@@ -422,6 +468,23 @@ describe('detectPhone', () => {
       'col'
     );
     expect(result).toBeNull();
+  });
+
+  it('returns null for empty samples', () => {
+    const result = detectPhone(col([]), 'col');
+    expect(result).toBeNull();
+  });
+
+  it('returns phone with medium confidence (0.8) when 70–89% match', () => {
+    // 7 phone numbers + 3 non-phones → 70% ratio → medium confidence
+    const result = detectPhone(
+      col(['5551234567', '5552345678', '5553456789', '5554567890', '5555678901',
+        '5556789012', '5557890123', 'hello', 'world', 'text']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('phone');
+    expect(result!.confidence).toBe(0.8);
   });
 });
 
@@ -499,6 +562,19 @@ describe('detectImage', () => {
     const result = detectImage(col(['hello', 'world', 'foo']), 'col');
     expect(result).toBeNull();
   });
+
+  it('returns image with medium confidence (0.8) when 70–89% match', () => {
+    // 7 image URLs + 3 non-images → 70% ratio → medium confidence
+    const result = detectImage(
+      col(['https://ex.com/a.jpg', 'https://ex.com/b.jpg', 'https://ex.com/c.jpg',
+        'https://ex.com/d.jpg', 'https://ex.com/e.jpg', 'https://ex.com/f.jpg',
+        'https://ex.com/g.jpg', 'plain', 'text', 'value']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('image');
+    expect(result!.confidence).toBe(0.8);
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -540,6 +616,23 @@ describe('detectUrl', () => {
   it('returns null for plain text', () => {
     const result = detectUrl(col(['hello', 'world', 'foo']), 'col');
     expect(result).toBeNull();
+  });
+
+  it('returns null for empty samples', () => {
+    const result = detectUrl(col([]), 'col');
+    expect(result).toBeNull();
+  });
+
+  it('returns url with medium confidence (0.8) when 70–89% match', () => {
+    // 7 URLs + 3 non-URLs → 70% ratio → medium confidence
+    const result = detectUrl(
+      col(['https://a.com', 'https://b.com', 'https://c.com', 'https://d.com',
+        'https://e.com', 'https://f.com', 'https://g.com', 'plain', 'text', 'value']),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('url');
+    expect(result!.confidence).toBe(0.8);
   });
 });
 
@@ -588,6 +681,20 @@ describe('detectStatus', () => {
     const result = detectStatus(col(['1', '2', '3', '1', '2']), 'col');
     expect(result).toBeNull();
   });
+
+  it('returns null when confidence < 0.8 (6 unique values → confidence ~0.78)', () => {
+    // 6 unique values → cardinalityScore = 1 - 6/10 = 0.4 → confidence = 0.7 + 0.4*0.2 = 0.78
+    const result = detectStatus(
+      col(['a', 'b', 'c', 'd', 'e', 'f', 'a', 'b', 'c', 'd']),
+      'col'
+    );
+    expect(result).toBeNull();
+  });
+
+  it('returns null for empty samples', () => {
+    const result = detectStatus(col([]), 'col');
+    expect(result).toBeNull();
+  });
 });
 
 // ---------------------------------------------------------------------------
@@ -625,6 +732,25 @@ describe('detectCode', () => {
   it('returns null for short strings', () => {
     const result = detectCode(col(['hello', 'world', 'short']), 'col');
     expect(result).toBeNull();
+  });
+
+  it('returns null for empty samples', () => {
+    const result = detectCode(col([]), 'col');
+    expect(result).toBeNull();
+  });
+
+  it('returns code with medium confidence (0.8) when 70–89% match code pattern', () => {
+    // 7 code values + 3 non-code → 70% ratio → medium confidence
+    const codeValue = 'function x() {\n  return 1;\n}';
+    const plain = 'just plain text here';
+    const result = detectCode(
+      col([codeValue, codeValue, codeValue, codeValue, codeValue, codeValue, codeValue,
+        plain, plain, plain]),
+      'col'
+    );
+    expect(result).not.toBeNull();
+    expect(result!.type).toBe('code');
+    expect(result!.confidence).toBe(0.8);
   });
 });
 
@@ -764,6 +890,17 @@ describe('getBoostMap', () => {
 
   it('is case-insensitive — "EMAIL" matches email boost', () => {
     expect(getBoostMap('EMAIL')).toEqual({ email: 0.15 });
+  });
+
+  it('returns { date: 0.15 } for exact key "at" (literal equality branch)', () => {
+    // Exercises the `lower === "at"` branch separately from the /_at$/ regex
+    expect(getBoostMap('at')).toMatchObject({ date: 0.15 });
+  });
+
+  it('accumulates boosts when column name matches multiple keyword groups', () => {
+    // "email_rate" matches both "email" and "rate" → both boosts
+    const result = getBoostMap('email_rate');
+    expect(result).toMatchObject({ email: 0.15, percentage: 0.15 });
   });
 });
 

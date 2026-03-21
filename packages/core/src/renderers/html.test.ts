@@ -12,6 +12,7 @@ beforeEach(() => {
 
 afterEach(() => {
   clearRegistry();
+  vi.restoreAllMocks();
 });
 
 describe('htmlRenderer', () => {
@@ -62,5 +63,49 @@ describe('htmlRenderer - throws without DOMPurify', () => {
     configure({ sanitize: (s: string) => s });
     const result = htmlRenderer('test', col);
     expect(result.kind).toBe('html');
+  });
+});
+
+describe('htmlRenderer - globalThis.DOMPurify path', () => {
+  it('uses globalThis.DOMPurify when available in a fresh module', async () => {
+    // vi.resetModules() clears module cache so next import gets a fresh module
+    // where injectedPurify starts as null
+    vi.resetModules();
+
+    const mockPurify = { sanitize: (s: string) => `global:${s}` };
+    (globalThis as Record<string, unknown>)['DOMPurify'] = mockPurify;
+
+    // Import fresh module — injectedPurify will be null; getPurify() falls through to globalThis
+    const { htmlRenderer: freshRenderer } = await import('./html.js');
+    const freshCol = { key: 'body', type: 'html', label: 'Body' } as ResolvedColumn;
+    const result = freshRenderer('<b>test</b>', freshCol);
+
+    delete (globalThis as Record<string, unknown>)['DOMPurify'];
+
+    // Restore module cache for subsequent tests
+    vi.resetModules();
+
+    expect(result.kind).toBe('html');
+    if (result.kind === 'html') {
+      expect(result.sanitized).toBe('global:<b>test</b>');
+    }
+  });
+
+  it('throws descriptive error when no configure() called and no globalThis.DOMPurify', async () => {
+    // Ensure globalThis.DOMPurify is absent
+    const saved = (globalThis as Record<string, unknown>)['DOMPurify'];
+    delete (globalThis as Record<string, unknown>)['DOMPurify'];
+
+    vi.resetModules();
+    const { htmlRenderer: freshRenderer } = await import('./html.js');
+    const freshCol = { key: 'body', type: 'html', label: 'Body' } as ResolvedColumn;
+
+    expect(() => freshRenderer('<b>test</b>', freshCol)).toThrow('[tablecraft] html renderer requires DOMPurify');
+
+    // Restore
+    if (saved !== undefined) {
+      (globalThis as Record<string, unknown>)['DOMPurify'] = saved;
+    }
+    vi.resetModules();
   });
 });
