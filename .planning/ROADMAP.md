@@ -182,7 +182,7 @@ Plans:
 | Phase | Name                                             | Goal                                                | Requirements         | Status  |
 | ----- | ------------------------------------------------ | --------------------------------------------------- | -------------------- | ------- |
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
-| 2     | 6/6 | Complete   | 2026-03-21 | Pending |
+| 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | Svelte 5 Component + Zero-Config API             | `<Table data={rows} />` works end-to-end            | SVLT-01–15 (15 reqs) | Pending |
 | 4     | Virtual Scrolling + Performance                  | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs)  | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
