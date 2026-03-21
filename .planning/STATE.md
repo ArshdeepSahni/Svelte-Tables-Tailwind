@@ -3,26 +3,26 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: executing
-stopped_at: Completed 01-foundation-02-PLAN.md
-last_updated: "2026-03-21T12:45:07.803Z"
+stopped_at: Completed 01-foundation-03-PLAN.md
+last_updated: "2026-03-21T12:50:35.290Z"
 progress:
   total_phases: 7
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
 
 **Project:** svelte-tables-tailwind v2.0.0
 **Updated:** 2026-03-21
-**Status:** Phase 1 in progress — Plan 02 complete
+**Status:** Phase 1 in progress — Plan 03 complete
 
 ---
 
 ## Current Phase
 
-Phase 1: Foundation — in progress (Plan 02 complete)
+Phase 1: Foundation — in progress (Plan 03 complete)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field | Value |
 |-------|-------|
 | Phase | 1 — Foundation |
-| Plan | 02 complete (package scaffolding) |
+| Plan | 03 complete (build verification) |
 | Status | In progress |
 | Progress | 0/7 phases complete |
 
 ```
 Phase progress: [_______] 0/7
-Plan progress:  [█████░░░░░] 50% (2/4 plans)
+Plan progress:  [████████░░] 75% (3/4 plans)
 ```
 
 ---
@@ -58,7 +58,7 @@ Plan progress:  [█████░░░░░] 50% (2/4 plans)
 
 | Phase | Name | Status | Plans |
 |-------|------|--------|-------|
-| 1 | Foundation | In progress | 2/4 |
+| 1 | Foundation | In progress | 3/4 |
 | 2 | Core Engine + Type Inference + Renderer Registry | Pending | 0/0 |
 | 3 | Svelte 5 Component + Zero-Config API | Pending | 0/0 |
 | 4 | Virtual Scrolling + Performance | Pending | 0/0 |
@@ -83,8 +83,7 @@ Plan progress:  [█████░░░░░] 50% (2/4 plans)
 
 | Plan 01-foundation/01 | 2 min | 3 tasks | 11 files |
 | Plan 01-foundation/02 | 266s | 3 tasks | 20 files |
-
----
+| Plan 01-foundation/03 | 153s | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -108,6 +107,7 @@ Plan progress:  [█████░░░░░] 50% (2/4 plans)
 | DOMPurify for `html` renderer | Explicit opt-in; bundle size tradeoff needs verification in Phase 2 |
 | packages/svelte tsconfig uses Bundler moduleResolution | Required for @sveltejs/package and Vite compatibility; overrides NodeNext from base tsconfig |
 | CSS custom properties (--tc-*) replace Tailwind CDN | Table.svelte uses design tokens with hardcoded fallbacks; satisfies FOUND-08 and allows theme customization |
+| columns $derived uses IIFE branch (short/long/zero-config) | noUnusedLocals required columns to be read; IIFE correctly implements Phase 3 column key ordering ahead of time |
 
 ### Active Todos
 
@@ -138,13 +138,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T12:45:07.801Z
+**Last session:** 2026-03-21T12:50:35.288Z
 
-**Stopped at:** Completed 01-foundation-02-PLAN.md
+**Stopped at:** Completed 01-foundation-03-PLAN.md
 
-**Next action:** Execute Phase 1, Plan 03 — build verification (pnpm install, typecheck, build each package).
+**Next action:** Execute Phase 1, Plan 04 — testing infrastructure (Vitest workspace, @testing-library/svelte, initial unit tests for core types).
 
-**Context to restore:** Phase 1 Plans 01 and 02 complete. All four @tablecraft/* packages scaffolded with package.json, tsconfig.json, build configs, and stub source files. packages/core has full TypeScript type definitions (ColumnType, ColumnDefinition, TableConfig, InferenceResult, defineColumns). packages/svelte has Svelte 5 runes Table.svelte. packages/react and packages/vue have tsup stubs. Plan 03 will run pnpm install and verify each package builds successfully.
+**Context to restore:** Phase 1 Plans 01–03 complete. pnpm install done (414 packages, pnpm-lock.yaml committed). All four @tablecraft/* packages build clean: core (Vite 8 ESM+CJS+UMD+DTS), svelte (svelte-package, dist/Table.svelte), react (tsup ESM+CJS), vue (tsup ESM+CJS). pnpm -r typecheck exits 0 across 132 files with zero errors. Build toolchain verified end-to-end.
 
 ---
 
