@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-02-PLAN.md
-last_updated: "2026-03-21T18:54:31.466Z"
+stopped_at: Completed 04-03-PLAN.md
+last_updated: "2026-03-21T18:58:59.360Z"
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 22
-  completed_plans: 18
+  completed_plans: 19
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 4: Virtual Scrolling + Performance — In Progress (2/6 plans done)
+Phase 4: Virtual Scrolling + Performance — In Progress (3/6 plans done)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 4 — Virtual Scrolling + Performance |
-| Plan     | 02 complete (row virtualizer: Table.svelte $effect integration, TableBody dual-mode, 3 PERF-02 tests green) |
-| Status   | Phase 4 IN PROGRESS (2/6 plans done)                 |
-| Progress | 18/22 plans complete across phases 1-4               |
+| Plan     | 03 complete (event delegation on tbody, CSS containment, 3 PERF-04 delegation tests green) |
+| Status   | Phase 4 IN PROGRESS (3/6 plans done)                 |
+| Progress | 19/22 plans complete across phases 1-4               |
 
 ```
 Phase progress: [████___] 4/7
-Plan progress:  [████████░░] 82% (18/22 plans)
+Plan progress:  [█████████░] 86% (19/22 plans)
 ```
 
 ---
@@ -61,7 +61,7 @@ Plan progress:  [████████░░] 82% (18/22 plans)
 | 1     | Foundation                                       | Complete | 4/4   |
 | 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
-| 4     | Virtual Scrolling + Performance                  | In Progress | 1/6   |
+| 4     | Virtual Scrolling + Performance                  | In Progress | 3/6   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
 | 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
 | 7     | Docs Site + Release                              | Pending  | 0/0   |
@@ -99,6 +99,7 @@ Plan progress:  [████████░░] 82% (18/22 plans)
 | Phase 03-svelte-5-component-zero-config-api P06 | 8min | 1 tasks | 3 files |
 | Phase 04-virtual-scrolling-performance P01 | 179 | 3 tasks | 9 files |
 | Phase 04-virtual-scrolling-performance P02 | 268 | 2 tasks | 3 files |
+| Phase 04-virtual-scrolling-performance P03 | 96 | 2 tasks | 2 files |
 
 ## Accumulated Context
 
@@ -170,6 +171,8 @@ Plan progress:  [████████░░] 82% (18/22 plans)
 | translateY formula: item.start - index * item.size (04-02) | Compensates natural document-flow offset of tr elements; item.start is absolute px offset, index*size is natural position |
 | isVirtualMode $derived uses virtualItems.length > 0 (04-02) | Clean dual-mode discriminant in TableBody without adding a mode prop; no prop coupling between Table and TableBody mode |
 | PERF-02 test needs pageSize=200 for 200-row assertion (04-02) | Default pageSize=50 truncates DOM to 50 rows; test must override to verify all 200 render in non-virtual mode |
+| handleBodyClick reads visibleRows[rowIndex] normal / sortedRows[rowIndex] virtual (04-03) | data-row is direct index into the active array; no additional lookup needed |
+| No e.stopPropagation() on td after removing per-td onclick handlers (04-03) | Delegation handler on tbody routes all clicks; stopPropagation was only needed to prevent td click bubbling to per-tr handler |
 
 ### Active Todos
 
@@ -200,9 +203,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T18:54:31.462Z
+**Last session:** 2026-03-21T18:58:59.358Z
 
-**Stopped at:** Completed 04-02-PLAN.md
+**Stopped at:** Completed 04-03-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance.
 
