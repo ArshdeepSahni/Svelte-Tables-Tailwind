@@ -41,14 +41,15 @@
 
 <style>
   .tc-checkbox {
-    cursor: pointer;
     width: 1rem;
     height: 1rem;
-    accent-color: var(--tc-color-primary, #2563eb);
+    cursor: pointer;
+    accent-color: var(--tc-color-primary, #6366f1);
+    border-radius: 0.25rem;
   }
 
-  .tc-checkbox:disabled {
-    cursor: not-allowed;
-    opacity: 0.5;
+  .tc-checkbox:focus-visible {
+    outline: 2px solid var(--tc-color-primary, #6366f1);
+    outline-offset: 2px;
   }
 </style>

@@ -292,7 +292,9 @@
 
 <div class="tc-table-wrapper" role="region" aria-label={caption ?? 'Data table'}>
   {#if filterable}
-    <SearchInput onfilter={(val) => { filterQuery = val; }} />
+    <div class="tc-toolbar">
+      <SearchInput onfilter={(val) => { filterQuery = val; }} />
+    </div>
   {/if}
 
   <div class="tc-table-scroll">
@@ -348,16 +350,29 @@
 
 <style>
   .tc-table-wrapper {
-    font-family: var(--tc-font-family, inherit);
+    font-family: var(--tc-font-family, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--tc-font-size, 0.875rem);
-    color: var(--tc-color-text, #111827);
-    border: 1px solid var(--tc-border-color, #e5e7eb);
-    border-radius: var(--tc-border-radius, 0.5rem);
+    line-height: 1.5;
+    color: var(--tc-color-text, #0f172a);
+    background: var(--tc-color-bg, #ffffff);
+    border: 1px solid var(--tc-border-color, #e2e8f0);
+    border-radius: var(--tc-border-radius, 0.75rem);
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.07);
     overflow: hidden;
+  }
+
+  .tc-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 0.625rem 1rem;
+    border-bottom: 1px solid var(--tc-border-color, #e2e8f0);
+    background: var(--tc-toolbar-bg, #f8fafc);
   }
 
   .tc-table-scroll {
     overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
   }
 
   .tc-table {
@@ -368,18 +383,27 @@
 
   .tc-caption {
     text-align: left;
-    font-weight: 600;
-    padding: var(--tc-spacing-3, 0.75rem) var(--tc-spacing-4, 1rem);
+    font-weight: 700;
+    font-size: 0.9375rem;
+    padding: 0.875rem 1rem 0;
     caption-side: top;
-    color: var(--tc-header-color, #374151);
+    color: var(--tc-color-text, #0f172a);
+    letter-spacing: -0.01em;
   }
 
   @media (prefers-color-scheme: dark) {
     .tc-table-wrapper {
-      --tc-color-text: #f9fafb;
-      --tc-border-color: #374151;
-      --tc-header-bg: #1f2937;
-      --tc-color-bg-hover: #374151;
+      --tc-color-text: #f1f5f9;
+      --tc-color-bg: #0f172a;
+      --tc-border-color: #1e293b;
+      --tc-toolbar-bg: #0f172a;
+      --tc-header-bg: #0f172a;
+      --tc-header-border: #1e293b;
+      --tc-color-bg-hover: #1e293b;
+      --tc-color-selected-bg: #172554;
+      --tc-color-muted: #64748b;
+      --tc-skeleton-from: #1e293b;
+      --tc-skeleton-to: #334155;
     }
   }
 </style>

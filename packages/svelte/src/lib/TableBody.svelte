@@ -156,43 +156,51 @@
 </tbody>
 
 <style>
+  .tc-tr {
+    transition: background 0.1s ease;
+  }
+
   .tc-tr:hover {
-    background: var(--tc-color-bg-hover, #f9fafb);
+    background: var(--tc-color-bg-hover, #f8fafc);
   }
 
   .tc-tr--selected {
-    background: var(--tc-color-selected-bg, #eff6ff);
+    background: var(--tc-color-selected-bg, #eef2ff) !important;
+    box-shadow: inset 3px 0 0 var(--tc-color-primary, #6366f1);
   }
 
   .tc-tr--striped {
-    background: var(--tc-color-bg-alt, #f9fafb);
+    background: var(--tc-color-bg-alt, #f8fafc);
   }
 
   .tc-td {
-    padding: var(--tc-spacing-3, 0.75rem) var(--tc-spacing-4, 1rem);
-    border-bottom: 1px solid var(--tc-border-color, #e5e7eb);
+    padding: 0.6875rem 1rem;
+    border-bottom: 1px solid var(--tc-border-color, #e2e8f0);
     height: var(--tc-row-height, 3rem);
     vertical-align: middle;
+    color: var(--tc-color-text, #0f172a);
   }
 
   .tc-td--bordered {
-    border-right: 1px solid var(--tc-border-color, #e5e7eb);
+    border-right: 1px solid var(--tc-border-color, #e2e8f0);
   }
 
   .tc-td--empty {
     text-align: center;
-    color: var(--tc-color-muted, #6b7280);
-    padding: var(--tc-spacing-8, 2rem);
+    color: var(--tc-color-muted, #94a3b8);
+    padding: 3rem 1rem;
+    font-size: 0.9375rem;
   }
 
   .tc-td:focus-visible {
-    outline: 2px solid var(--tc-color-primary, #2563eb);
+    outline: 2px solid var(--tc-color-primary, #6366f1);
     outline-offset: -2px;
+    border-radius: 2px;
   }
 
   .tc-td--checkbox {
-    width: 2.5rem;
-    padding-left: var(--tc-spacing-3, 0.75rem);
+    width: 2.75rem;
+    padding-left: 1rem;
   }
 
   .tc-tr:last-child .tc-td {
@@ -200,24 +208,20 @@
   }
 
   .tc-skeleton-cell {
-    height: 1rem;
-    border-radius: 0.25rem;
+    height: 0.875rem;
+    border-radius: 0.375rem;
     background: linear-gradient(
       90deg,
-      var(--tc-skeleton-from, #e5e7eb) 25%,
-      var(--tc-skeleton-to, #f3f4f6) 50%,
-      var(--tc-skeleton-from, #e5e7eb) 75%
+      #e2e8f0 0%,
+      #f1f5f9 40%,
+      #e2e8f0 80%
     );
-    background-size: 200% 100%;
-    animation: tc-shimmer 1.5s infinite;
+    background-size: 300% 100%;
+    animation: tc-shimmer 2.5s ease-in-out infinite;
   }
 
   @keyframes tc-shimmer {
-    from {
-      background-position: 200% 0;
-    }
-    to {
-      background-position: -200% 0;
-    }
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0% 50%; }
   }
 </style>

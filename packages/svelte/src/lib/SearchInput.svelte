@@ -32,6 +32,12 @@
 </script>
 
 <div class="tc-search-wrapper">
+  <span class="tc-search-icon" aria-hidden="true">
+    <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <circle cx="7" cy="7" r="5"/>
+      <path d="M12 12l2.5 2.5"/>
+    </svg>
+  </span>
   <input
     type="search"
     class="tc-search-input"
@@ -45,29 +51,39 @@
 <style>
   .tc-search-wrapper {
     display: flex;
-    justify-content: flex-end;
-    margin-bottom: var(--tc-spacing-3, 0.75rem);
+    align-items: center;
+    position: relative;
+  }
+
+  .tc-search-icon {
+    position: absolute;
+    left: 0.625rem;
+    color: var(--tc-color-muted, #94a3b8);
+    pointer-events: none;
+    display: flex;
+    align-items: center;
   }
 
   .tc-search-input {
-    padding: var(--tc-spacing-2, 0.5rem) var(--tc-spacing-3, 0.75rem);
-    border: 1px solid var(--tc-border-color, #e5e7eb);
-    border-radius: var(--tc-border-radius, 0.375rem);
-    font-size: inherit;
+    padding: 0.4rem 0.75rem 0.4rem 2rem;
+    border: 1px solid var(--tc-border-color, #e2e8f0);
+    border-radius: 0.5rem;
+    font-size: 0.8125rem;
     font-family: inherit;
-    min-width: 200px;
-    outline-offset: 2px;
-    background-color: var(--tc-color-bg, #ffffff);
-    color: var(--tc-color-text, #111827);
-    transition: border-color 0.15s ease;
+    min-width: 220px;
+    background: var(--tc-color-bg, #ffffff);
+    color: var(--tc-color-text, #0f172a);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    line-height: 1.5;
   }
 
   .tc-search-input:focus-visible {
-    outline: 2px solid var(--tc-color-primary, #2563eb);
-    border-color: var(--tc-color-primary, #2563eb);
+    outline: none;
+    border-color: var(--tc-color-primary, #6366f1);
+    box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
   }
 
   .tc-search-input::placeholder {
-    color: var(--tc-color-placeholder, #9ca3af);
+    color: var(--tc-color-placeholder, #94a3b8);
   }
 </style>

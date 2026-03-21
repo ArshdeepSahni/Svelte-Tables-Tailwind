@@ -162,7 +162,7 @@ describe('sorting (SVLT-03)', () => {
     await fireEvent.click(nameHeader);
     await act();
     const th = nameHeader.closest('th');
-    expect(th?.textContent).toContain('▲');
+    expect(th?.getAttribute('aria-sort')).toBe('ascending');
   });
 });
 
