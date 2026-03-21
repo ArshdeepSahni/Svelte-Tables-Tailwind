@@ -11,7 +11,7 @@
 ## Phases
 
 - [x] **Phase 1: Foundation** - Monorepo scaffold, dependency upgrades, toolchain modernization, and blocker resolution (completed 2026-03-21)
-- [ ] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers
+- [x] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers (completed 2026-03-21)
 - [ ] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end
 - [ ] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation
 - [ ] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper
@@ -65,7 +65,7 @@ Plans:
 4. Importing only the `currency` renderer does not include the `code` or `image` renderers in the output bundle — tree-shaking works per individual renderer module.
 5. Vitest reports > 95% line coverage on the inference engine and > 90% on all Tier 1 renderers.
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
 - [ ] 02-01-PLAN.md — Types + Infrastructure: extend types.ts (CellDescriptor, ResolvedColumn, RendererFn, ProcessedRow), create tokens.ts (18 --tc-* tokens), scheduler.ts (requestIdleCallback/setImmediate), update vite.config.ts (rolldownOptions, multi-entry), vitest.config.ts (coverage thresholds), Wave 0 test stubs
@@ -182,7 +182,7 @@ Plans:
 | Phase | Name                                             | Goal                                                | Requirements         | Status  |
 | ----- | ------------------------------------------------ | --------------------------------------------------- | -------------------- | ------- |
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
-| 2     | 5/6 | In Progress|  | Pending |
+| 2     | 6/6 | Complete   | 2026-03-21 | Pending |
 | 3     | Svelte 5 Component + Zero-Config API             | `<Table data={rows} />` works end-to-end            | SVLT-01–15 (15 reqs) | Pending |
 | 4     | Virtual Scrolling + Performance                  | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs)  | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
