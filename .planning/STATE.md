@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 05-02-PLAN.md
-last_updated: "2026-03-21T20:27:33.501Z"
+stopped_at: Completed 05-04-PLAN.md
+last_updated: "2026-03-21T20:32:35.882Z"
 progress:
   total_phases: 10
   completed_phases: 4
   total_plans: 27
-  completed_plans: 24
+  completed_plans: 25
 ---
 
 # Project State
@@ -105,6 +105,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 04-virtual-scrolling-performance P06 | 900 | 1 tasks | 3 files |
 | Phase 05-web-components-core-framework-wrappers P01 | 133 | 3 tasks | 8 files |
 | Phase 05-web-components-core-framework-wrappers P02 | 339 | 3 tasks | 8 files |
+| Phase 05-web-components-core-framework-wrappers P04 | 158 | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -187,6 +188,9 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | CSS contain: layout style paint normalises to 'content' in Chromium computed style (04-06) | Playwright getComputedStyle().contain returns 'content' not 'paint'; assertion updated to accept 'content' as valid paint containment per CSS Containment spec |
 | packages/svelte/index.html required for Vite bench server to serve at / (04-06) | vite serves bench.html only at /bench.html; Playwright page.goto('/') returns 404 without index.html |
 | Render time CI threshold 5000ms not 500ms (04-06) | 100k synchronous Array.from generation takes ~2-3s; virtualizer itself is fast but bench data generation cost is unavoidable in cold load measurement |
+| Row typed locally as Record<string,unknown> in Table.vue (05-04) | Row is not a named export from @tablecraft/core; element.ts defines it locally; Vue SFC mirrors the same local type definition |
+| vue-shim.d.ts added for plain tsc support (05-04) | declare module '*.vue' with DefineComponent; required because project uses tsc not vue-tsc; tsconfig extended to include .vue and .d.ts |
+| @vitejs/plugin-vue added to vitest.config.ts (05-04) | Required to transform .vue files during test runs; already in devDependencies from Plan 01; compilerOptions.isCustomElement mirrors vite.config.ts |
 
 ### Active Todos
 
@@ -217,9 +221,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T20:27:33.497Z
+**Last session:** 2026-03-21T20:32:35.880Z
 
-**Stopped at:** Completed 05-02-PLAN.md
+**Stopped at:** Completed 05-04-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 
