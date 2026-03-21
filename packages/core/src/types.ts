@@ -107,7 +107,7 @@ export type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info'
 
 /**
  * Discriminated union returned by every renderer function.
- * The Svelte component (Phase 3) switches on `kind` — never calls {@html} on raw data.
+ * The Svelte component (Phase 3) switches on `kind` — never uses the at-html directive on raw data.
  * FOUND-07: No at-html string concatenation.
  */
 export type CellDescriptor =
