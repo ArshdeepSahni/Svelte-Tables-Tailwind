@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 03-05-PLAN.md
-last_updated: "2026-03-21T17:17:05.515Z"
+stopped_at: Completed 03-06-PLAN.md — Phase 3 complete (6/6 plans done)
+last_updated: "2026-03-21T22:57:00.000Z"
 progress:
   total_phases: 7
-  completed_phases: 2
+  completed_phases: 3
   total_plans: 16
-  completed_plans: 15
+  completed_plans: 16
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 2: Core Engine + Type Inference + Renderer Registry — COMPLETE (6/6 plans done)
+Phase 3: Svelte 5 Component + Zero-Config API — COMPLETE (6/6 plans done)
 
 ---
 
@@ -32,7 +32,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 **Core value:** Zero-config data display with smart type inference — `<Table data={rows} />` just works, and when you need more, one prop does it.
 
-**Current focus:** Phase 2: Core Engine + Type Inference + Renderer Registry
+**Current focus:** Phase 4: Virtual Scrolling + Performance
 
 **Milestone:** v2.0.0 — Industry-Standard Zero-Config Table Library
 
@@ -42,14 +42,14 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
-| Phase    | 2 — Core Engine + Type Inference + Renderer Registry |
-| Plan     | 06 complete (coverage verified >= thresholds, build verified 17 renderer files; 482 tests passing) |
-| Status   | Phase 2 COMPLETE (6/6 plans done)                    |
-| Progress | 10/10 plans complete across all phases                |
+| Phase    | 3 — Svelte 5 Component + Zero-Config API |
+| Plan     | 06 complete (build verified, 40/40 tests GREEN, typecheck 0 errors, dist/ clean) |
+| Status   | Phase 3 COMPLETE (6/6 plans done)                    |
+| Progress | 16/16 plans complete across phases 1-3                |
 
 ```
-Phase progress: [██_____] 2/7
-Plan progress:  [██████████] 100% (10/10 plans)
+Phase progress: [███____] 3/7
+Plan progress:  [██████████] 100% (16/16 plans)
 ```
 
 ---
@@ -60,7 +60,7 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
 | 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
-| 3     | Svelte 5 Component + Zero-Config API             | Pending  | 0/0   |
+| 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
 | 4     | Virtual Scrolling + Performance                  | Pending  | 0/0   |
 | 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
 | 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
@@ -96,12 +96,15 @@ Plan progress:  [██████████] 100% (10/10 plans)
 | Phase 03-svelte-5-component-zero-config-api P02 | 121 | 2 tasks | 2 files |
 | Phase 03-svelte-5-component-zero-config-api P04 | 240 | 2 tasks | 2 files |
 | Phase 03-svelte-5-component-zero-config-api P05 | 1980 | 2 tasks | 3 files |
+| Phase 03-svelte-5-component-zero-config-api P06 | 8min | 1 tasks | 3 files |
 
 ## Accumulated Context
 
 ### Key Decisions Made
 
-| Decision                                                   | Rationale                                                                                                       |
+| Decision                                                   | Rationale |
+| Test files must live in src/test/ not src/lib/ for @sveltejs/package | @sveltejs/package copies everything in its -i dir to dist/; test files in src/lib/ pollute the published package |
+| vitest --run (flag form) in test script, not vitest run | pnpm intercepts positional args after script name; --run flag correctly passes to vitest |
 | ---------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
 | @vitest/coverage-v8 must be installed explicitly           | Not bundled with Vitest 4; must add to devDependencies before coverage runs                                     |
 | vi.resetModules() for module singleton isolation in tests  | vi.isolateModules() does not exist in Vitest 4; resetModules() achieves fresh module state for singleton tests  |
@@ -183,13 +186,13 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T17:17:05.513Z
+**Last session:** 2026-03-21T22:57:00.000Z
 
-**Stopped at:** Completed 03-05-PLAN.md
+**Stopped at:** Completed 03-06-PLAN.md — Phase 3 complete (6/6 plans done)
 
-**Next action:** Phase 3 COMPLETE (5/5 plans done — 03-01 through 03-05). Continue to Phase 4: Virtual Scrolling + Performance.
+**Next action:** Phase 4: Virtual Scrolling + Performance.
 
-**Context to restore:** Phase 3 COMPLETE. @tablecraft/svelte production component delivered: 40/40 tests pass, zero TypeScript errors, WCAG 2.1 AA verified (vitest-axe). Table.svelte fully integrates createTableEngine with two-phase inference, $derived filter/sort/paginate pipeline, WCAG aria attributes, v1 compat, CSS custom property theming. index.ts exports Table, defineColumns, ColumnType, ColumnDefinition, TableConfig. Build: pnpm --filter @tablecraft/svelte build produces dist/ via @sveltejs/package.
+**Context to restore:** Phase 3 COMPLETE. @tablecraft/svelte production-ready: 40/40 tests pass, zero TypeScript errors, WCAG 2.1 AA verified (vitest-axe), @sveltejs/package build produces clean dist/ (no test contamination). dist/ contains all 9 .svelte files + types.js + index.js. Exports map has svelte/import/types entries. Test file lives at src/test/Table.test.ts (not src/lib/ — prevents dist/ pollution). pnpm --filter @tablecraft/svelte test works (vitest --run baked in).
 
 ---
 

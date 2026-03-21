@@ -12,7 +12,7 @@
 
 - [x] **Phase 1: Foundation** - Monorepo scaffold, dependency upgrades, toolchain modernization, and blocker resolution (completed 2026-03-21)
 - [x] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers (completed 2026-03-21)
-- [ ] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end
+- [x] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end (completed 2026-03-21)
 - [ ] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation
 - [ ] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper
 - [ ] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence
@@ -93,15 +93,15 @@ Plans:
 4. A screen reader using NVDA or VoiceOver can navigate the table with arrow keys, hears column header role and sort direction via `aria-sort`, and hears `aria-busy` during loading — WCAG 2.1 AA is satisfied.
 5. `@sveltejs/package` produces a dist folder with correct `exports` map entries for `.svelte`, `.js`, and `.d.ts` — TypeScript consumers get full type inference on the `columns` prop.
 
-**Plans:** 5/6 plans executed
+**Plans:** 6/6 plans complete
 
 Plans:
-- [ ] 03-01-PLAN.md — Test scaffold: Svelte-layer types.ts, vitest-axe install, full failing test stubs for all 12 test-covered requirements
-- [ ] 03-02-PLAN.md — Sub-components: Cell.svelte (CellDescriptor → safe markup dispatcher), SearchInput.svelte (debounced filter)
-- [ ] 03-03-PLAN.md — Sub-components: TableHeader.svelte (sortable thead + aria-sort), Checkbox.svelte (three-state with indeterminate via bind:this)
-- [ ] 03-04-PLAN.md — Sub-components: TableBody.svelte (rows/empty/loading/keyboard nav), TableFooter.svelte (pagination controls)
-- [ ] 03-05-PLAN.md — Table.svelte complete rewrite + index.ts update (wires all sub-components, two-phase inference, v1 compat)
-- [ ] 03-06-PLAN.md — Build verification + exports map confirmed + responsive visual checkpoint
+- [x] 03-01-PLAN.md — Test scaffold: Svelte-layer types.ts, vitest-axe install, full failing test stubs for all 12 test-covered requirements
+- [x] 03-02-PLAN.md — Sub-components: Cell.svelte (CellDescriptor → safe markup dispatcher), SearchInput.svelte (debounced filter)
+- [x] 03-03-PLAN.md — Sub-components: TableHeader.svelte (sortable thead + aria-sort), Checkbox.svelte (three-state with indeterminate via bind:this)
+- [x] 03-04-PLAN.md — Sub-components: TableBody.svelte (rows/empty/loading/keyboard nav), TableFooter.svelte (pagination controls)
+- [x] 03-05-PLAN.md — Table.svelte complete rewrite + index.ts update (wires all sub-components, two-phase inference, v1 compat)
+- [x] 03-06-PLAN.md — Build verification + exports map confirmed + responsive visual checkpoint
 
 ---
 
@@ -191,7 +191,7 @@ Plans:
 | ----- | ------------------------------------------------ | --------------------------------------------------- | -------------------- | ------- |
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 3     | 5/6 | In Progress|  | Pending |
+| 3     | 6/6 | Complete | 2026-03-21 | Pending |
 | 4     | Virtual Scrolling + Performance                  | 100k rows, <200ms render, 60fps scroll, Worker sort | PERF-01–07 (7 reqs)  | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
