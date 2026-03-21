@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 04-01-PLAN.md
-last_updated: "2026-03-21T18:47:10.759Z"
+stopped_at: Completed 04-02-PLAN.md
+last_updated: "2026-03-21T18:54:31.466Z"
 progress:
   total_phases: 10
   completed_phases: 3
   total_plans: 22
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 4: Virtual Scrolling + Performance — In Progress (1/6 plans done)
+Phase 4: Virtual Scrolling + Performance — In Progress (2/6 plans done)
 
 ---
 
@@ -43,13 +43,13 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 4 — Virtual Scrolling + Performance |
-| Plan     | 01 complete (infrastructure: @tanstack/svelte-virtual, bench page, sort.worker.ts, 12 RED stubs) |
-| Status   | Phase 4 IN PROGRESS (1/6 plans done)                 |
-| Progress | 17/22 plans complete across phases 1-4               |
+| Plan     | 02 complete (row virtualizer: Table.svelte $effect integration, TableBody dual-mode, 3 PERF-02 tests green) |
+| Status   | Phase 4 IN PROGRESS (2/6 plans done)                 |
+| Progress | 18/22 plans complete across phases 1-4               |
 
 ```
 Phase progress: [████___] 4/7
-Plan progress:  [████████░░] 77% (17/22 plans)
+Plan progress:  [████████░░] 82% (18/22 plans)
 ```
 
 ---
@@ -98,6 +98,7 @@ Plan progress:  [████████░░] 77% (17/22 plans)
 | Phase 03-svelte-5-component-zero-config-api P05 | 1980 | 2 tasks | 3 files |
 | Phase 03-svelte-5-component-zero-config-api P06 | 8min | 1 tasks | 3 files |
 | Phase 04-virtual-scrolling-performance P01 | 179 | 3 tasks | 9 files |
+| Phase 04-virtual-scrolling-performance P02 | 268 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -166,6 +167,9 @@ Plan progress:  [████████░░] 77% (17/22 plans)
 | sort.worker.ts uses /// reference lib webworker (04-01) | Resolves DedicatedWorkerGlobalScope for self.addEventListener without tsconfig lib changes; keeps worker isolated from DOM types |
 | void [render, Table] in delegation.test.ts (04-01) | Satisfies noUnusedLocals on Wave 0 stub imports; Wave 3 will replace with actual render() calls |
 | bench script uses vite --port 5174 explicitly (04-01) | Avoids port collision — dev script runs svelte-package (no port); 5174 is stable for playwright webServer config |
+| translateY formula: item.start - index * item.size (04-02) | Compensates natural document-flow offset of tr elements; item.start is absolute px offset, index*size is natural position |
+| isVirtualMode $derived uses virtualItems.length > 0 (04-02) | Clean dual-mode discriminant in TableBody without adding a mode prop; no prop coupling between Table and TableBody mode |
+| PERF-02 test needs pageSize=200 for 200-row assertion (04-02) | Default pageSize=50 truncates DOM to 50 rows; test must override to verify all 200 render in non-virtual mode |
 
 ### Active Todos
 
@@ -196,9 +200,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T18:47:10.757Z
+**Last session:** 2026-03-21T18:54:31.462Z
 
-**Stopped at:** Completed 04-01-PLAN.md
+**Stopped at:** Completed 04-02-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance.
 

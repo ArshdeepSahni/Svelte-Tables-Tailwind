@@ -121,7 +121,7 @@ Plans:
 4. A table with 25 columns activates column virtualization automatically — only visible columns are rendered, confirmed by inspecting the DOM.
 5. DevTools computed styles on a table row show `contain: layout style` and on a table cell show `contain: layout style paint` — CSS containment is applied.
 
-**Plans:** 1/6 plans executed
+**Plans:** 2/6 plans executed
 
 Plans:
 - [ ] 04-01-PLAN.md — Infrastructure + Wave 0 tests: install @tanstack/svelte-virtual, add playwright webServer, create bench page (100k rows), sort.worker.ts, and failing test stubs for all PERF-* requirements
@@ -200,7 +200,7 @@ Plans:
 | 1     | 4/4                                              | Complete    | 2026-03-21 | Pending |
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 4     | 1/6 | In Progress|  | Pending |
+| 4     | 2/6 | In Progress|  | Pending |
 | 5     | Web Components Core + Framework Wrappers         | React + Vue wrappers working, SSR-safe              | WC-01–10 (10 reqs)   | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
