@@ -1,0 +1,15 @@
+{
+  "name": "@tablecraft/docs",
+  "version": "0.0.1",
+  "description": "Documentation site for @tablecraft — SvelteKit (stub — implemented in Phase 7)",
+  "license": "MIT",
+  "private": true,
+  "engines": {
+    "node": ">=20.19.0 || >=22.12.0"
+  },
+  "scripts": {
+    "dev": "echo 'Docs site not yet implemented — Phase 7'",
+    "build": "echo 'Docs site not yet implemented — Phase 7'"
+  },
+  "keywords": ["tablecraft", "docs"]
+}
