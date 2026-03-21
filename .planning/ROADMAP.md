@@ -121,7 +121,15 @@ Plans:
 4. A table with 25 columns activates column virtualization automatically — only visible columns are rendered, confirmed by inspecting the DOM.
 5. DevTools computed styles on a table row show `contain: layout style` and on a table cell show `contain: layout style paint` — CSS containment is applied.
 
-**Plans:** TBD
+**Plans:** 6 plans
+
+Plans:
+- [ ] 04-01-PLAN.md — Infrastructure + Wave 0 tests: install @tanstack/svelte-virtual, add playwright webServer, create bench page (100k rows), sort.worker.ts, and failing test stubs for all PERF-* requirements
+- [ ] 04-02-PLAN.md — Row virtualization: wire @tanstack/svelte-virtual into Table.svelte ($effect lifecycle), virtual render path in TableBody.svelte (translateY positioning), height spacer div, isVirtualizing derived
+- [ ] 04-03-PLAN.md — Event delegation + CSS containment: move onclick from tr/td to single tbody handler (data-row/data-col), add contain: layout style to .tc-tr and contain: layout style paint to .tc-td
+- [ ] 04-04-PLAN.md — Web Worker sort: wire sort.worker.ts into Table.svelte ($effect lifecycle, SSR guard, 10k threshold), sortLoading state, aria-busy on TableHeader thead
+- [ ] 04-05-PLAN.md — Column virtualization: second createVirtualizer instance (horizontal: true, threshold >20 cols), spacer th/td pattern in TableHeader and TableBody, green PERF-06 unit tests
+- [ ] 04-06-PLAN.md — Playwright benchmarks + phase verification: implement all 5 benchmarks in e2e/performance.spec.ts, run full suite (48 unit tests + 6 Playwright), clean build gate + human visual checkpoint
 
 ---
 
@@ -312,4 +320,4 @@ Plans:
 ---
 
 _Created: 2026-03-20_
-_Last updated: 2026-03-21 — Phase 3 plans created (6 plans, 4 waves)_
+_Last updated: 2026-03-22 — Phase 4 plans created (6 plans, 6 waves)_
