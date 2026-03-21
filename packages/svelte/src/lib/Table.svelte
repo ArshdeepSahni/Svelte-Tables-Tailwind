@@ -23,6 +23,8 @@
   } from '@tablecraft/core';
   import { createTableEngine, adaptV1Props } from '@tablecraft/core';
   import type { Row, SortState } from './types.js';
+  import type { VirtualItem } from '@tanstack/svelte-virtual';
+  import { createVirtualizer } from '@tanstack/svelte-virtual';
   import TableHeader from './TableHeader.svelte';
   import TableBody from './TableBody.svelte';
   import TableFooter from './TableFooter.svelte';
@@ -45,6 +47,9 @@
     striped?: boolean;
     bordered?: boolean;
     emptyMessage?: string;
+
+    // Virtual scrolling
+    virtualizeAt?: number;  // default 200 — row count threshold to activate virtualizer
 
     // v1 backward compat (typed as unknown to avoid TS errors for existing consumers)
     colname?: unknown;
@@ -74,6 +79,7 @@
     striped = false,
     bordered = false,
     emptyMessage = 'No data',
+    virtualizeAt = 200,
     colname,
     rowdata,
     selectedRows = $bindable([]),
@@ -146,6 +152,12 @@
   let sortState = $state<SortState>({ key: null, dir: null });
   let filterQuery = $state('');
   let currentPage = $state(1);
+
+  // Virtual scrolling state
+  let scrollEl = $state<HTMLDivElement | null>(null);
+  let rowHeight = $state(48);
+  let virtualItems = $state<VirtualItem[]>([]);
+  let totalVirtualSize = $state(0);
 
   // ---------------------------------------------------------------------------
   // Two-phase inference $effect
@@ -234,10 +246,46 @@
     });
   });
 
+  // isVirtualizing: true when row count exceeds threshold
+  const isVirtualizing = $derived(sortedRows.length > virtualizeAt);
+
   const totalPages = $derived(Math.max(1, Math.ceil(filteredRows.length / pageSize)));
   const visibleRows = $derived(
     sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
   );
+
+  // ---------------------------------------------------------------------------
+  // Virtualizer $effect — creates/destroys store when virtualization is active
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    if (!scrollEl || !isVirtualizing) {
+      virtualItems = [];
+      totalVirtualSize = 0;
+      return;
+    }
+
+    // Read row height from CSS variable at mount time
+    const cssRowHeight = parseInt(
+      getComputedStyle(scrollEl).getPropertyValue('--tc-row-height') || '48',
+      10,
+    );
+    rowHeight = isNaN(cssRowHeight) ? 48 : cssRowHeight;
+
+    const store = createVirtualizer<HTMLDivElement, HTMLTableRowElement>({
+      count: sortedRows.length,
+      getScrollElement: () => scrollEl!,
+      estimateSize: () => rowHeight,
+      overscan: 5,
+    });
+
+    const unsub = store.subscribe((v) => {
+      virtualItems = v.getVirtualItems();
+      totalVirtualSize = v.getTotalSize();
+    });
+
+    return unsub;
+  });
 
   // ---------------------------------------------------------------------------
   // Reset page on data or filter change
@@ -297,55 +345,107 @@
     </div>
   {/if}
 
-  <div class="tc-table-scroll">
-    <table
-      class="tc-table"
-      class:tc-table--bordered={bordered}
-      class:tc-table--striped={striped}
-      role="grid"
-      aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
-      aria-rowcount={effectiveData.length}
-      aria-busy={loading ? 'true' : 'false'}
-      aria-label={caption}
-    >
-      {#if caption}
-        <caption class="tc-caption">{caption}</caption>
-      {/if}
+  <div
+    class="tc-table-scroll"
+    class:tc-table-scroll--virtual={isVirtualizing}
+    bind:this={scrollEl}
+  >
+    {#if isVirtualizing}
+      <div style="height: {totalVirtualSize}px; position: relative;">
+        <table
+          class="tc-table"
+          class:tc-table--bordered={bordered}
+          class:tc-table--striped={striped}
+          role="grid"
+          aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
+          aria-rowcount={effectiveData.length}
+          aria-busy={loading ? 'true' : 'false'}
+          aria-label={caption}
+        >
+          {#if caption}
+            <caption class="tc-caption">{caption}</caption>
+          {/if}
 
-      <TableHeader
-        columns={resolvedColumns}
-        {sortState}
-        {selectable}
-        {allSelected}
-        {someSelected}
-        onsortchange={handleSortChange}
-        onselectall={handleSelectAll}
-      />
+          <TableHeader
+            columns={resolvedColumns}
+            {sortState}
+            {selectable}
+            {allSelected}
+            {someSelected}
+            onsortchange={handleSortChange}
+            onselectall={handleSelectAll}
+          />
 
-      <TableBody
-        {visibleRows}
-        columns={resolvedColumns}
-        {loading}
-        {skeletonRows}
-        {selectable}
-        {selectedRows}
-        {emptyMessage}
-        {striped}
-        {bordered}
-        {empty}
-        {onrowclick}
-        {oncellclick}
-        onrowtoggle={handleRowToggle}
-      />
-    </table>
+          <TableBody
+            {virtualItems}
+            {sortedRows}
+            columns={resolvedColumns}
+            {loading}
+            {skeletonRows}
+            {selectable}
+            {selectedRows}
+            {emptyMessage}
+            {striped}
+            {bordered}
+            {empty}
+            {onrowclick}
+            {oncellclick}
+            onrowtoggle={handleRowToggle}
+          />
+        </table>
+      </div>
+    {:else}
+      <table
+        class="tc-table"
+        class:tc-table--bordered={bordered}
+        class:tc-table--striped={striped}
+        role="grid"
+        aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
+        aria-rowcount={effectiveData.length}
+        aria-busy={loading ? 'true' : 'false'}
+        aria-label={caption}
+      >
+        {#if caption}
+          <caption class="tc-caption">{caption}</caption>
+        {/if}
+
+        <TableHeader
+          columns={resolvedColumns}
+          {sortState}
+          {selectable}
+          {allSelected}
+          {someSelected}
+          onsortchange={handleSortChange}
+          onselectall={handleSelectAll}
+        />
+
+        <TableBody
+          {visibleRows}
+          columns={resolvedColumns}
+          {loading}
+          {skeletonRows}
+          {selectable}
+          {selectedRows}
+          {emptyMessage}
+          {striped}
+          {bordered}
+          {empty}
+          {onrowclick}
+          {oncellclick}
+          onrowtoggle={handleRowToggle}
+        />
+      </table>
+    {/if}
   </div>
 
-  <TableFooter
-    {currentPage}
-    {totalPages}
-    totalRows={filteredRows.length}
-    onpagechange={(page) => { currentPage = page; }}
-  />
+  {#if !isVirtualizing}
+    <TableFooter
+      {currentPage}
+      {totalPages}
+      totalRows={filteredRows.length}
+      onpagechange={(page) => { currentPage = page; }}
+    />
+  {/if}
 </div>
 
 <style>
@@ -373,6 +473,11 @@
   .tc-table-scroll {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
+  }
+
+  .tc-table-scroll--virtual {
+    height: var(--tc-virtual-height, 600px);
+    overflow-y: auto;
   }
 
   .tc-table {
