@@ -36,6 +36,33 @@
 {:else if descriptor.kind === 'html'}
   <!-- eslint-disable-next-line svelte/no-at-html-tags -->
   {@html descriptor.sanitized}
+{:else if descriptor.kind === 'rating'}
+  <span class="tc-rating" aria-label="{descriptor.value} out of {descriptor.max ?? 5}">
+    {#each Array.from({ length: descriptor.max ?? 5 }) as _, i}
+      <span
+        class="tc-star {i < Math.round(descriptor.value) ? 'tc-star--filled' : ''}"
+        aria-hidden="true"
+      >★</span>
+    {/each}
+  </span>
+{:else if descriptor.kind === 'progress'}
+  <div
+    class="tc-progress"
+    role="progressbar"
+    aria-valuenow={descriptor.value}
+    aria-valuemin="0"
+    aria-valuemax="100"
+  >
+    <div class="tc-progress-bar" style="width: {Math.min(100, Math.max(0, descriptor.value))}%"></div>
+    <span class="tc-progress-label">{Math.round(descriptor.value)}%</span>
+  </div>
+{:else if descriptor.kind === 'relative-time'}
+  <time datetime={descriptor.iso} title={descriptor.absolute} class="tc-relative-time">{descriptor.relative}</time>
+{:else if descriptor.kind === 'color'}
+  <span class="tc-color-swatch">
+    <span class="tc-color-dot" style="background: {descriptor.hex}"></span>
+    {descriptor.hex}
+  </span>
 {:else}
   <span>{String(descriptor.value)}</span>
 {/if}
@@ -178,5 +205,106 @@
   }
   .tc-status--success::before {
     animation: tc-pulse 2s ease-in-out infinite;
+  }
+
+  /* Rating — star display */
+  .tc-rating {
+    display: inline-flex;
+    align-items: center;
+    gap: 1px;
+    line-height: 1;
+    font-size: 0.875rem;
+  }
+
+  .tc-star {
+    color: var(--tc-color-border, #d1d5db);
+    transition: color 0.1s ease;
+  }
+
+  .tc-star--filled {
+    color: #f59e0b;
+  }
+
+  /* Progress bar */
+  .tc-progress {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    min-width: 80px;
+  }
+
+  .tc-progress-bar {
+    flex: 1;
+    height: 6px;
+    background: var(--tc-color-primary, #6366f1);
+    border-radius: 9999px;
+    position: relative;
+    min-width: 0;
+    max-width: 100px;
+    transition: width 0.3s ease;
+  }
+
+  .tc-progress-bar::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: var(--tc-border-color, #e2e8f0);
+    border-radius: inherit;
+    z-index: -1;
+    width: 100px;
+  }
+
+  /* Wrapper to give progress bar a background track */
+  .tc-progress {
+    position: relative;
+  }
+
+  .tc-progress-bar {
+    background: var(--tc-color-primary, #6366f1);
+    border-radius: 9999px;
+    height: 6px;
+    flex: 1;
+    max-width: 80px;
+    box-shadow: inset 0 0 0 1px rgba(0,0,0,0.06);
+    background-color: var(--tc-progress-track, #e2e8f0);
+    background-image: linear-gradient(
+      to right,
+      var(--tc-color-primary, #6366f1) var(--tc-progress-pct, 0%),
+      transparent var(--tc-progress-pct, 0%)
+    );
+  }
+
+  .tc-progress-label {
+    font-size: 0.6875rem;
+    font-variant-numeric: tabular-nums;
+    color: var(--tc-color-muted, #64748b);
+    white-space: nowrap;
+    min-width: 2.5rem;
+    text-align: right;
+  }
+
+  /* Relative time */
+  .tc-relative-time {
+    color: var(--tc-color-muted, #64748b);
+    font-size: 0.8125rem;
+    cursor: default;
+  }
+
+  /* Color swatch */
+  .tc-color-swatch {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-family: var(--tc-font-mono, ui-monospace, monospace);
+    font-size: 0.75rem;
+  }
+
+  .tc-color-dot {
+    display: inline-block;
+    width: 0.875rem;
+    height: 0.875rem;
+    border-radius: 50%;
+    border: 1px solid rgba(0, 0, 0, 0.15);
+    flex-shrink: 0;
   }
 </style>
