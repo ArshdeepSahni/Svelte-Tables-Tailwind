@@ -287,8 +287,15 @@
   // isVirtualizing: true when row count exceeds threshold
   const isVirtualizing = $derived(sortedRows.length > virtualizeAt);
 
-  // isColumnVirtualizing: true when column count exceeds threshold
-  const isColumnVirtualizing = $derived(resolvedColumns.length > COL_VIRTUALIZE_THRESHOLD);
+  // Column visibility: filter out hidden columns
+  // Consumer responsibility: a column with hideable===false should not be added to hiddenColumns.
+  // The library does not ship a toggle UI — visibility is a data-pipeline filter only.
+  const visibleColumns = $derived(
+    resolvedColumns.filter((c) => !hiddenColumns.has(c.key))
+  );
+
+  // isColumnVirtualizing: true when visible column count exceeds threshold
+  const isColumnVirtualizing = $derived(visibleColumns.length > COL_VIRTUALIZE_THRESHOLD);
 
   const totalPages = $derived(Math.max(1, Math.ceil(filteredRows.length / pageSize)));
   const visibleRows = $derived(
@@ -340,7 +347,7 @@
     }
 
     const colStore = createVirtualizer<HTMLDivElement, HTMLTableCellElement>({
-      count: resolvedColumns.length,
+      count: visibleColumns.length,
       getScrollElement: () => scrollEl!,
       estimateSize: () => 150,  // 150px default column width
       horizontal: true,          // REQUIRED for column virtualization
@@ -546,7 +553,7 @@
           class:tc-table--bordered={bordered}
           class:tc-table--striped={striped}
           role="grid"
-          aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
+          aria-colcount={visibleColumns.length + (selectable ? 1 : 0)}
           aria-rowcount={effectiveData.length}
           aria-busy={loading ? 'true' : 'false'}
           aria-label={caption}
@@ -556,7 +563,7 @@
           {/if}
 
           <TableHeader
-            columns={resolvedColumns}
+            columns={visibleColumns}
             {sortState}
             {selectable}
             {allSelected}
@@ -572,7 +579,7 @@
           <TableBody
             {virtualItems}
             {sortedRows}
-            columns={resolvedColumns}
+            columns={visibleColumns}
             {loading}
             {skeletonRows}
             {selectable}
@@ -596,7 +603,7 @@
         class:tc-table--bordered={bordered}
         class:tc-table--striped={striped}
         role="grid"
-        aria-colcount={resolvedColumns.length + (selectable ? 1 : 0)}
+        aria-colcount={visibleColumns.length + (selectable ? 1 : 0)}
         aria-rowcount={effectiveData.length}
         aria-busy={loading ? 'true' : 'false'}
         aria-label={caption}
@@ -606,7 +613,7 @@
         {/if}
 
         <TableHeader
-          columns={resolvedColumns}
+          columns={visibleColumns}
           {sortState}
           {selectable}
           {allSelected}
@@ -621,7 +628,7 @@
 
         <TableBody
           {visibleRows}
-          columns={resolvedColumns}
+          columns={visibleColumns}
           {loading}
           {skeletonRows}
           {selectable}
