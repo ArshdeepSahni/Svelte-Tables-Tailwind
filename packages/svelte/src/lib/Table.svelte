@@ -32,6 +32,8 @@
 
   type ColumnOverrideShort = Record<string, ColumnType>;
 
+  const rowHeightMap = { compact: 32, comfortable: 48, spacious: 64 } as const;
+
   interface Props {
     // Primary API
     data?: Row[];
@@ -51,12 +53,20 @@
     // Virtual scrolling
     virtualizeAt?: number;  // default 200 — row count threshold to activate virtualizer
 
+    // Advanced features (Phase 6)
+    density?: 'compact' | 'comfortable' | 'spacious';
+    persistKey?: string;
+    showAggregates?: boolean;
+    showGroupAggregates?: boolean;
+    groupBy?: string | null;
+
     // v1 backward compat (typed as unknown to avoid TS errors for existing consumers)
     colname?: unknown;
     rowdata?: unknown;
 
     // Bindable
     selectedRows?: Row[];
+    hiddenColumns?: Set<string>;
 
     // Callback events (Svelte 5 — no createEventDispatcher)
     onselect?: (event: { rows: Row[]; allSelected: boolean }) => void;
@@ -80,9 +90,15 @@
     bordered = false,
     emptyMessage = 'No data',
     virtualizeAt = 200,
+    density = 'comfortable' as 'compact' | 'comfortable' | 'spacious',
+    persistKey,
+    showAggregates = false,
+    showGroupAggregates = false,
+    groupBy = null as string | null,
     colname,
     rowdata,
     selectedRows = $bindable([]),
+    hiddenColumns = $bindable(new Set<string>()),
     onselect,
     onrowclick,
     oncellclick,
@@ -169,6 +185,10 @@
   let sortLoading = $state(false);
   let workerSortedRows = $state<ProcessedRow[]>([]);
   const USE_WORKER_THRESHOLD = 10_000;
+
+  // Phase 6 state
+  let colWidths = $state(new Map<string, number>());
+  let columnOrder = $state<string[]>([]);
 
   // ---------------------------------------------------------------------------
   // Two-phase inference $effect
@@ -417,6 +437,55 @@
   });
 
   // ---------------------------------------------------------------------------
+  // persistKey: load state from localStorage on mount (SSR + version guarded)
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    if (!persistKey || typeof localStorage === 'undefined') return;
+    try {
+      const raw = localStorage.getItem(persistKey);
+      if (!raw) return;
+      const saved = JSON.parse(raw) as Record<string, unknown>;
+      if (saved.v !== 1) return; // version mismatch — ignore
+      if (saved.sortState && typeof saved.sortState === 'object') {
+        const ss = saved.sortState as { key: string | null; dir: 'asc' | 'desc' | null };
+        sortState = { key: ss.key ?? null, dir: ss.dir ?? null };
+      }
+      if (typeof saved.filterQuery === 'string') filterQuery = saved.filterQuery;
+      if (typeof saved.currentPage === 'number') currentPage = saved.currentPage;
+      if (saved.colWidths && typeof saved.colWidths === 'object') {
+        colWidths = new Map(Object.entries(saved.colWidths as Record<string, number>));
+      }
+      if (Array.isArray(saved.columnOrder)) columnOrder = saved.columnOrder as string[];
+      if (Array.isArray(saved.hiddenColumns)) hiddenColumns = new Set(saved.hiddenColumns as string[]);
+    } catch { /* invalid JSON — ignore */ }
+  });
+
+  // ---------------------------------------------------------------------------
+  // persistKey: save state to localStorage (debounced 300ms) on any state change
+  // ---------------------------------------------------------------------------
+
+  $effect(() => {
+    if (!persistKey || typeof localStorage === 'undefined') return;
+    // Read all state that should be persisted (tracking dependencies)
+    const snapshot = {
+      v: 1,
+      sortState: { key: sortState.key, dir: sortState.dir },
+      filterQuery,
+      currentPage,
+      colWidths: Object.fromEntries(colWidths),
+      columnOrder: [...columnOrder],
+      hiddenColumns: Array.from(hiddenColumns),
+    };
+    const timer = setTimeout(() => {
+      try {
+        localStorage.setItem(persistKey!, JSON.stringify(snapshot));
+      } catch { /* quota exceeded or SSR — ignore */ }
+    }, 300);
+    return () => clearTimeout(timer);
+  });
+
+  // ---------------------------------------------------------------------------
   // Sort handler: unsorted → asc → desc → unsorted
   // ---------------------------------------------------------------------------
 
@@ -468,6 +537,7 @@
     class="tc-table-scroll"
     class:tc-table-scroll--virtual={isVirtualizing}
     bind:this={scrollEl}
+    style="--tc-row-height: {rowHeightMap[density]}px"
   >
     {#if isVirtualizing}
       <div style="height: {totalVirtualSize}px; position: relative;">
