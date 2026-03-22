@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 06-column-operations-advanced-features-03-PLAN.md
-last_updated: "2026-03-22T11:29:38.185Z"
+stopped_at: Completed 06-column-operations-advanced-features-04-PLAN.md
+last_updated: "2026-03-22T11:37:55.163Z"
 progress:
   total_phases: 10
   completed_phases: 5
   total_plans: 32
-  completed_plans: 30
+  completed_plans: 31
 ---
 
 # Project State
@@ -111,6 +111,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 06-column-operations-advanced-features P01 | 253 | 3 tasks | 5 files |
 | Phase 06-column-operations-advanced-features P02 | 208 | 2 tasks | 3 files |
 | Phase 06-column-operations-advanced-features P03 | 477 | 2 tasks | 3 files |
+| Phase 06-column-operations-advanced-features P04 | 480 | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -212,6 +213,9 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | handleColResize creates new Map(colWidths).set(key, width) not mutate (06-03) | Map mutation is not reactive in Svelte $state; new Map reference triggers reactivity detection |
 | setPointerCapture called on resize handle div in onpointerdown (06-03) | Without capture, pointer events stop firing when pointer moves off handle during fast drag |
 | stopPropagation in handleResizePointerDown prevents sort trigger during resize (06-03) | Resize drag and sort click share the same th; stopPropagation isolates resize from sort handler |
+| Native HTML drag API (ondragstart/ondragover/ondrop) for zero-dependency column reorder (06-04) | ondragover MUST call e.preventDefault() or ondrop never fires — browser default action blocks drop |
+| computePinnedOffset accumulates colWidths Map values for pixel-accurate sticky offsets (06-04) | Pinned cells need explicit background-color to prevent scroll transparency bleed during horizontal scroll |
+| test.skip(true, reason) not test.skip(title) for Playwright stubs in describe blocks (06-04) | Bare test.skip('title') inside describe causes sibling tests to be skipped in Playwright 1.58.2 |
 
 ### Active Todos
 
@@ -242,9 +246,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-22T11:29:38.183Z
+**Last session:** 2026-03-22T11:37:55.160Z
 
-**Stopped at:** Completed 06-column-operations-advanced-features-03-PLAN.md
+**Stopped at:** Completed 06-column-operations-advanced-features-04-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 

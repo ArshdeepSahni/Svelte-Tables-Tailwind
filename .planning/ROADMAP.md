@@ -176,7 +176,7 @@ Plans:
 4. After a page reload, a table with `persistKey="admin-users"` restores the previous column widths, sort state, and visibility state from localStorage automatically.
 5. Adding `density="compact"` reduces row height and padding visibly, and `density="spacious"` increases them — the three density modes are visually distinct.
 
-**Plans:** 3/5 plans executed
+**Plans:** 4/5 plans executed
 
 Plans:
 - [ ] 06-01-PLAN.md — Critical CSS fix + type extension + density + persistence: fix overflow:hidden→clip-path bug, add AggregateFunction type + ProcessedGroupRow, density prop, persistKey prop, Wave 0 Playwright stubs
@@ -216,7 +216,7 @@ Plans:
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 4     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 5     | 4/5 | Complete    | 2026-03-22 | Pending |
-| 6     | 3/5 | In Progress|  | Pending |
+| 6     | 4/5 | In Progress|  | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
 **Total: 64 requirements mapped across 7 phases — 100% coverage**
