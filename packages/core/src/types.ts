@@ -30,6 +30,9 @@ export type ColumnType =
 /** Short-form column override: { columnKey: ColumnType } */
 export type ColumnOverrideShort = Record<string, ColumnType>;
 
+/** Aggregate function type for footer computation */
+export type AggregateFunction = 'sum' | 'avg' | 'count' | 'min' | 'max' | ((values: unknown[]) => string);
+
 /**
  * Full column descriptor — used in the columns prop for detailed configuration.
  * Phase 1 defines the shape; Phase 2 implements the inference engine against it.
@@ -53,6 +56,8 @@ export interface ColumnDefinition<TRow = Record<string, unknown>> {
   maxWidth?: number;
   /** Pin this column to the left or right edge */
   pinned?: 'left' | 'right';
+  /** Aggregate computation for the footer row — only meaningful for numeric columns */
+  aggregate?: AggregateFunction;
 }
 
 /**

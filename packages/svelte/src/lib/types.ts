@@ -2,9 +2,12 @@
  * @tablecraft/svelte — Svelte-layer type definitions
  * Types specific to the Svelte component layer (not in @tablecraft/core).
  */
+import type { ProcessedRow } from '@tablecraft/core';
+
 export type {
   ColumnType,
   ColumnDefinition,
+  AggregateFunction,
   ResolvedColumn,
   ProcessedRow,
   CellDescriptor,
@@ -22,4 +25,13 @@ export interface SortState {
 export interface FocusedCell {
   rowIndex: number;
   colIndex: number;
+}
+
+/** A synthetic group header row inserted by the groupBy pipeline step */
+export interface ProcessedGroupRow {
+  isGroup: true;
+  key: string;       // groupBy column key
+  label: string;     // display value of the group (e.g. "active")
+  count: number;     // number of data rows in this group
+  rows: ProcessedRow[];
 }
