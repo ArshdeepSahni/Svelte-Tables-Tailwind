@@ -54,6 +54,9 @@
     // Virtual scrolling
     virtualizeAt?: number;  // default 200 — row count threshold to activate virtualizer
 
+    // Sort transition: row opacity fade on sort change (default true)
+    sortTransition?: boolean;
+
     // Advanced features (Phase 6)
     density?: 'compact' | 'comfortable' | 'spacious';
     persistKey?: string;
@@ -91,6 +94,7 @@
     bordered = false,
     emptyMessage = 'No data',
     virtualizeAt = 200,
+    sortTransition = true,
     density = 'comfortable' as 'compact' | 'comfortable' | 'spacious',
     persistKey,
     showAggregates = false,
@@ -250,25 +254,119 @@
   });
 
   // ---------------------------------------------------------------------------
+  // Tokenized search query parser
+  // Supports: `status:active salary:>80000 name:alice` plus free text
+  // ---------------------------------------------------------------------------
+
+  interface SearchToken {
+    field: string;
+    op: ':' | ':>' | ':<' | ':>=' | ':<=' | ':!=';
+    value: string;
+  }
+
+  interface ParsedQuery {
+    tokens: SearchToken[];
+    freeText: string;
+  }
+
+  function parseSearchQuery(query: string): ParsedQuery {
+    const tokens: SearchToken[] = [];
+    const freeTextParts: string[] = [];
+
+    // Match field:op:value patterns. Supports operators: :>=, :<=, :>, :<, :!=, :
+    const tokenRegex = /(\w+)(:>=|:<=|:>|:<|:!=|:)("([^"]*)"|\S+)/g;
+    let match: RegExpExecArray | null;
+    let lastIndex = 0;
+    const usedRanges: [number, number][] = [];
+
+    while ((match = tokenRegex.exec(query)) !== null) {
+      usedRanges.push([match.index, match.index + match[0].length]);
+      tokens.push({
+        field: match[1].toLowerCase(),
+        op: match[2] as SearchToken['op'],
+        value: match[4] ?? match[3], // use unquoted group if quoted, else raw value
+      });
+    }
+
+    // Everything outside token ranges is free text
+    let pos = 0;
+    for (const [start, end] of usedRanges) {
+      if (start > pos) freeTextParts.push(query.slice(pos, start));
+      pos = end;
+    }
+    if (pos < query.length) freeTextParts.push(query.slice(pos));
+    const freeText = freeTextParts.join(' ').trim();
+
+    return { tokens, freeText };
+  }
+
+  function getCellText(cell: unknown): string {
+    if (!cell || typeof cell !== 'object') return '';
+    const c = cell as Record<string, unknown>;
+    if ('value' in c) return String(c.value ?? '');
+    if ('label' in c) return String(c.label ?? '');
+    if ('formatted' in c) return String(c.formatted ?? '');
+    return '';
+  }
+
+  function matchToken(row: ProcessedRow, token: SearchToken): boolean {
+    // Find the column by field name (case-insensitive key match)
+    const colKey = Object.keys(row.cells).find(
+      (k) => k.toLowerCase() === token.field,
+    );
+    if (!colKey) return false;
+
+    const rawValue = row._original[colKey];
+    const cellText = getCellText(row.cells[colKey]).toLowerCase();
+    const tokenVal = token.value.toLowerCase();
+
+    if (token.op === ':') {
+      // Case-insensitive prefix match
+      return cellText.includes(tokenVal);
+    }
+
+    // Numeric operators
+    const numericRaw = typeof rawValue === 'number' ? rawValue : parseFloat(String(rawValue ?? ''));
+    const numericToken = parseFloat(tokenVal);
+    if (!isNaN(numericRaw) && !isNaN(numericToken)) {
+      if (token.op === ':>') return numericRaw > numericToken;
+      if (token.op === ':<') return numericRaw < numericToken;
+      if (token.op === ':>=') return numericRaw >= numericToken;
+      if (token.op === ':<=') return numericRaw <= numericToken;
+      if (token.op === ':!=') return numericRaw !== numericToken;
+    }
+
+    // String fallback for non-numeric operators
+    if (token.op === ':!=') return !cellText.includes(tokenVal);
+    return cellText.includes(tokenVal);
+  }
+
+  // ---------------------------------------------------------------------------
   // Derived pipeline: filter → sort → paginate → visibleRows
   // ---------------------------------------------------------------------------
 
   const filteredRows = $derived.by(() => {
     if (!filterQuery.trim()) return processedRows;
-    const q = filterQuery.toLowerCase();
-    return processedRows.filter((row) =>
-      Object.values(row.cells).some((cell) => {
-        const v =
-          'value' in cell
-            ? String((cell as { value: unknown }).value)
-            : 'label' in cell
-              ? (cell as { label: string }).label
-              : 'formatted' in cell
-                ? (cell as { formatted: string }).formatted
-                : '';
-        return v.toLowerCase().includes(q);
-      }),
-    );
+
+    const parsed = parseSearchQuery(filterQuery);
+
+    return processedRows.filter((row) => {
+      // All structured tokens must match
+      for (const token of parsed.tokens) {
+        if (!matchToken(row, token)) return false;
+      }
+
+      // Free text: match any column (existing behavior)
+      if (parsed.freeText) {
+        const q = parsed.freeText.toLowerCase();
+        const freeTextMatch = Object.values(row.cells).some((cell) => {
+          return getCellText(cell).toLowerCase().includes(q);
+        });
+        if (!freeTextMatch) return false;
+      }
+
+      return true;
+    });
   });
 
   // Group rows by groupBy column — inserts group headers before sort
@@ -578,15 +676,36 @@
 
   // ---------------------------------------------------------------------------
   // Sort handler: unsorted → asc → desc → unsorted
+  // Uses View Transitions API (Chrome 111+, Safari 18+) for smooth reorder animation.
+  // Falls back to instant update when API is unavailable.
   // ---------------------------------------------------------------------------
 
-  function handleSortChange(key: string) {
+  let sortTransitioning = $state(false);
+
+  function applySort(key: string) {
     if (sortState.key === key) {
       if (sortState.dir === null) sortState = { key, dir: 'asc' };
       else if (sortState.dir === 'asc') sortState = { key, dir: 'desc' };
       else sortState = { key: null, dir: null };
     } else {
       sortState = { key, dir: 'asc' };
+    }
+  }
+
+  async function handleSortChange(key: string) {
+    if (sortTransition && typeof document !== 'undefined' && 'startViewTransition' in document) {
+      sortTransitioning = true;
+      try {
+        // @ts-expect-error — startViewTransition is newer than TS lib types
+        const transition = document.startViewTransition(() => {
+          applySort(key);
+        });
+        await transition.ready;
+      } finally {
+        sortTransitioning = false;
+      }
+    } else {
+      applySort(key);
     }
   }
 
@@ -644,7 +763,10 @@
 <div class="tc-table-wrapper" role="region" aria-label={caption ?? 'Data table'}>
   {#if filterable}
     <div class="tc-toolbar">
-      <SearchInput onfilter={(val) => { filterQuery = val; }} />
+      <SearchInput
+        placeholder="Search or try: status:active salary:>70000"
+        onfilter={(val) => { filterQuery = val; }}
+      />
     </div>
   {/if}
 
@@ -848,6 +970,17 @@
     caption-side: top;
     color: var(--tc-color-text, #0f172a);
     letter-spacing: -0.01em;
+  }
+
+  /*
+   * View Transitions for sort/filter — browser captures before/after
+   * screenshots and cross-fades them. Zero JS animation code needed.
+   * Each row gets view-transition-name: row-{index} in TableBody.
+   */
+  :global(::view-transition-old(root)),
+  :global(::view-transition-new(root)) {
+    animation-duration: 0.18s;
+    animation-timing-function: ease;
   }
 
   @media (prefers-color-scheme: dark) {
