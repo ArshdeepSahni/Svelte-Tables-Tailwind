@@ -25,7 +25,11 @@ export type ColumnType =
   | 'badge' // colored pill/tag
   | 'status' // enum value → colored status indicator
   | 'code' // monospace code block (no at-html — uses <code> element)
-  | 'html'; // EXPLICIT OPT-IN ONLY: sanitized HTML (DOMPurify in Phase 2)
+  | 'html' // EXPLICIT OPT-IN ONLY: sanitized HTML (DOMPurify in Phase 2)
+  | 'rating' // star rating (0–5 by default)
+  | 'progress' // progress bar (0–100)
+  | 'relative-time' // date → "3 days ago"
+  | 'color'; // hex/rgb color swatch
 
 /** Short-form column override: { columnKey: ColumnType } */
 export type ColumnOverrideShort = Record<string, ColumnType>;
@@ -125,7 +129,15 @@ export type CellDescriptor =
   | { kind: 'boolean'; value: boolean }
   | { kind: 'code'; value: string }
   | { kind: 'html'; sanitized: string }
-  | { kind: 'raw'; value: unknown };
+  | { kind: 'raw'; value: unknown }
+  /** Star rating display (0–N stars filled) */
+  | { kind: 'rating'; value: number; max?: number }
+  /** Progress bar (0–100 percentage) */
+  | { kind: 'progress'; value: number }
+  /** Relative time ("3 days ago") with ISO and absolute fallback */
+  | { kind: 'relative-time'; relative: string; iso: string; absolute: string }
+  /** Color swatch with hex value */
+  | { kind: 'color'; hex: string };
 
 /**
  * Renderer function signature — all built-in and custom renderers implement this.
