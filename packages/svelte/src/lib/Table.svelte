@@ -254,91 +254,17 @@
   });
 
   // ---------------------------------------------------------------------------
-  // Tokenized search query parser
-  // Supports: `status:active salary:>80000 name:alice` plus free text
+  // Simple freetext search — matches any cell value across all columns
   // ---------------------------------------------------------------------------
 
-  interface SearchToken {
-    field: string;
-    op: ':' | ':>' | ':<' | ':>=' | ':<=' | ':!=';
-    value: string;
-  }
-
-  interface ParsedQuery {
-    tokens: SearchToken[];
-    freeText: string;
-  }
-
-  function parseSearchQuery(query: string): ParsedQuery {
-    const tokens: SearchToken[] = [];
-    const freeTextParts: string[] = [];
-
-    // Match field:op:value patterns. Supports operators: :>=, :<=, :>, :<, :!=, :
-    const tokenRegex = /(\w+)(:>=|:<=|:>|:<|:!=|:)("([^"]*)"|\S+)/g;
-    let match: RegExpExecArray | null;
-    let lastIndex = 0;
-    const usedRanges: [number, number][] = [];
-
-    while ((match = tokenRegex.exec(query)) !== null) {
-      usedRanges.push([match.index, match.index + match[0].length]);
-      tokens.push({
-        field: match[1].toLowerCase(),
-        op: match[2] as SearchToken['op'],
-        value: match[4] ?? match[3], // use unquoted group if quoted, else raw value
-      });
-    }
-
-    // Everything outside token ranges is free text
-    let pos = 0;
-    for (const [start, end] of usedRanges) {
-      if (start > pos) freeTextParts.push(query.slice(pos, start));
-      pos = end;
-    }
-    if (pos < query.length) freeTextParts.push(query.slice(pos));
-    const freeText = freeTextParts.join(' ').trim();
-
-    return { tokens, freeText };
-  }
-
-  function getCellText(cell: unknown): string {
+  function getCellSearchText(cell: unknown): string {
     if (!cell || typeof cell !== 'object') return '';
     const c = cell as Record<string, unknown>;
     if ('value' in c) return String(c.value ?? '');
     if ('label' in c) return String(c.label ?? '');
     if ('formatted' in c) return String(c.formatted ?? '');
+    if ('src' in c) return String((c as Record<string, unknown>).alt ?? '');
     return '';
-  }
-
-  function matchToken(row: ProcessedRow, token: SearchToken): boolean {
-    // Find the column by field name (case-insensitive key match)
-    const colKey = Object.keys(row.cells).find(
-      (k) => k.toLowerCase() === token.field,
-    );
-    if (!colKey) return false;
-
-    const rawValue = row._original[colKey];
-    const cellText = getCellText(row.cells[colKey]).toLowerCase();
-    const tokenVal = token.value.toLowerCase();
-
-    if (token.op === ':') {
-      // Case-insensitive prefix match
-      return cellText.includes(tokenVal);
-    }
-
-    // Numeric operators
-    const numericRaw = typeof rawValue === 'number' ? rawValue : parseFloat(String(rawValue ?? ''));
-    const numericToken = parseFloat(tokenVal);
-    if (!isNaN(numericRaw) && !isNaN(numericToken)) {
-      if (token.op === ':>') return numericRaw > numericToken;
-      if (token.op === ':<') return numericRaw < numericToken;
-      if (token.op === ':>=') return numericRaw >= numericToken;
-      if (token.op === ':<=') return numericRaw <= numericToken;
-      if (token.op === ':!=') return numericRaw !== numericToken;
-    }
-
-    // String fallback for non-numeric operators
-    if (token.op === ':!=') return !cellText.includes(tokenVal);
-    return cellText.includes(tokenVal);
   }
 
   // ---------------------------------------------------------------------------
@@ -347,26 +273,12 @@
 
   const filteredRows = $derived.by(() => {
     if (!filterQuery.trim()) return processedRows;
-
-    const parsed = parseSearchQuery(filterQuery);
-
-    return processedRows.filter((row) => {
-      // All structured tokens must match
-      for (const token of parsed.tokens) {
-        if (!matchToken(row, token)) return false;
-      }
-
-      // Free text: match any column (existing behavior)
-      if (parsed.freeText) {
-        const q = parsed.freeText.toLowerCase();
-        const freeTextMatch = Object.values(row.cells).some((cell) => {
-          return getCellText(cell).toLowerCase().includes(q);
-        });
-        if (!freeTextMatch) return false;
-      }
-
-      return true;
-    });
+    const q = filterQuery.toLowerCase().trim();
+    return processedRows.filter((row) =>
+      Object.values(row.cells).some((cell) =>
+        getCellSearchText(cell).toLowerCase().includes(q),
+      ),
+    );
   });
 
   // Group rows by groupBy column — inserts group headers before sort
