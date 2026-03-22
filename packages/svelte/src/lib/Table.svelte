@@ -241,6 +241,13 @@
     return () => cancel(idleId as number);
   });
 
+  // Initialize columnOrder from resolvedColumns on first inference completion
+  $effect(() => {
+    if (columnOrder.length === 0 && resolvedColumns.length > 0) {
+      columnOrder = resolvedColumns.map((c) => c.key);
+    }
+  });
+
   // ---------------------------------------------------------------------------
   // Derived pipeline: filter → sort → paginate → visibleRows
   // ---------------------------------------------------------------------------
@@ -294,6 +301,20 @@
   const visibleColumns = $derived(
     resolvedColumns.filter((c) => !hiddenColumns.has(c.key))
   );
+
+  // Apply column order: sort visibleColumns by their position in columnOrder array
+  const orderedColumns = $derived.by(() => {
+    if (columnOrder.length === 0) return visibleColumns;
+    return [...visibleColumns].sort((a, b) => {
+      const ai = columnOrder.indexOf(a.key);
+      const bi = columnOrder.indexOf(b.key);
+      // Columns not in columnOrder go to the end
+      if (ai === -1 && bi === -1) return 0;
+      if (ai === -1) return 1;
+      if (bi === -1) return -1;
+      return ai - bi;
+    });
+  });
 
   // isColumnVirtualizing: true when visible column count exceeds threshold
   const isColumnVirtualizing = $derived(visibleColumns.length > COL_VIRTUALIZE_THRESHOLD);
@@ -511,6 +532,17 @@
     colWidths = new Map(colWidths).set(key, width);
   }
 
+  function handleColReorder(fromKey: string, toKey: string) {
+    if (fromKey === toKey) return;
+    const newOrder = [...columnOrder];
+    const fromIdx = newOrder.indexOf(fromKey);
+    const toIdx = newOrder.indexOf(toKey);
+    if (fromIdx === -1 || toIdx === -1) return;
+    newOrder.splice(fromIdx, 1);
+    newOrder.splice(toIdx, 0, fromKey);
+    columnOrder = newOrder;
+  }
+
   const hasCustomWidths = $derived(colWidths.size > 0);
 
   // ---------------------------------------------------------------------------
@@ -571,7 +603,7 @@
           {/if}
 
           <TableHeader
-            columns={visibleColumns}
+            columns={orderedColumns}
             {sortState}
             {selectable}
             {allSelected}
@@ -581,7 +613,9 @@
             {totalColumnSize}
             {isColumnVirtualizing}
             {colWidths}
+            {columnOrder}
             oncolresize={handleColResize}
+            oncolreorder={handleColReorder}
             onsortchange={handleSortChange}
             onselectall={handleSelectAll}
           />
@@ -589,7 +623,7 @@
           <TableBody
             {virtualItems}
             {sortedRows}
-            columns={visibleColumns}
+            columns={orderedColumns}
             {loading}
             {skeletonRows}
             {selectable}
@@ -601,6 +635,7 @@
             {columnVirtualItems}
             {totalColumnSize}
             {isColumnVirtualizing}
+            {colWidths}
             {onrowclick}
             {oncellclick}
             onrowtoggle={handleRowToggle}
@@ -608,7 +643,7 @@
 
           {#if showAggregates}
             <AggregateRow
-              columns={visibleColumns}
+              columns={orderedColumns}
               rows={filteredRows}
               {selectable}
             />
@@ -632,7 +667,7 @@
         {/if}
 
         <TableHeader
-          columns={visibleColumns}
+          columns={orderedColumns}
           {sortState}
           {selectable}
           {allSelected}
@@ -642,14 +677,16 @@
           {totalColumnSize}
           {isColumnVirtualizing}
           {colWidths}
+          {columnOrder}
           oncolresize={handleColResize}
+          oncolreorder={handleColReorder}
           onsortchange={handleSortChange}
           onselectall={handleSelectAll}
         />
 
         <TableBody
           {visibleRows}
-          columns={visibleColumns}
+          columns={orderedColumns}
           {loading}
           {skeletonRows}
           {selectable}
@@ -661,6 +698,7 @@
           {columnVirtualItems}
           {totalColumnSize}
           {isColumnVirtualizing}
+          {colWidths}
           {onrowclick}
           {oncellclick}
           onrowtoggle={handleRowToggle}
@@ -668,7 +706,7 @@
 
         {#if showAggregates}
           <AggregateRow
-            columns={visibleColumns}
+            columns={orderedColumns}
             rows={filteredRows}
             {selectable}
           />
