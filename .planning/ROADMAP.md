@@ -216,7 +216,7 @@ Plans:
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 4     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 5     | 4/5 | Complete    | 2026-03-22 | Pending |
-| 6     | 5/5 | Complete   | 2026-03-22 | Pending |
+| 6     | 5/5 | Complete    | 2026-03-22 | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
 **Total: 64 requirements mapped across 7 phases — 100% coverage**
