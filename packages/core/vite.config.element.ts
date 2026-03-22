@@ -8,7 +8,8 @@ export default defineConfig({
     lib: {
       entry: resolve(__dirname, 'src/element.ts'),
       name: 'TcTable',
-      fileName: 'element',
+      // Use fileName function so UMD produces element.umd.js (not element.umd.cjs in Vite 8)
+      fileName: (format) => format === 'umd' ? 'element.umd.js' : 'element.js',
       // Single entry = UMD is supported
       formats: ['umd', 'es'],
     },

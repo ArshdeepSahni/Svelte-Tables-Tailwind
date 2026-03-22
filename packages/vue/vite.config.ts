@@ -27,7 +27,9 @@ export default defineConfig({
       fileName: 'index',
     },
     rolldownOptions: {
-      external: ['vue', '@tablecraft/core'],
+      // @tablecraft/core/element is a sub-path specifier — must be listed separately
+      // Rolldown does not auto-externalize sub-paths of externalized packages
+      external: ['vue', '@tablecraft/core', '@tablecraft/core/element'],
     },
     sourcemap: true,
     minify: false,
