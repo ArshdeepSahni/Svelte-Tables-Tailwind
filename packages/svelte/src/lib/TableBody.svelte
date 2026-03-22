@@ -41,6 +41,7 @@
     columnVirtualItems?: VirtualItem[];
     totalColumnSize?: number;
     isColumnVirtualizing?: boolean;
+    colWidths?: Map<string, number>;
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
     oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown; rowIndex: number }) => void;
     onrowtoggle?: (row: Row, selected: boolean) => void;
@@ -62,6 +63,7 @@
     columnVirtualItems = [],
     totalColumnSize = 0,
     isColumnVirtualizing = false,
+    colWidths,
     onrowclick,
     oncellclick,
     onrowtoggle,
@@ -72,6 +74,17 @@
 
   // Virtual mode is active when virtualItems has entries and sortedRows is provided
   const isVirtualMode = $derived(virtualItems.length > 0 && sortedRows.length > 0);
+
+  // Compute the sticky left/right offset for a pinned td
+  function computeTdPinnedOffset(targetCol: ResolvedColumn, cols: ResolvedColumn[], side: 'left' | 'right'): number {
+    const pinnedCols = cols.filter((c) => c.pinned === side);
+    const idx = pinnedCols.findIndex((c) => c.key === targetCol.key);
+    let offset = 0;
+    for (let i = 0; i < idx; i++) {
+      offset += colWidths?.get(pinnedCols[i].key) ?? pinnedCols[i].minWidth ?? 150;
+    }
+    return offset;
+  }
 
   function handleBodyClick(e: MouseEvent) {
     const tr = (e.target as Element).closest('[data-row]');
@@ -296,8 +309,11 @@
               <td
                 class="tc-td"
                 class:tc-td--bordered={bordered}
+                class:tc-td--pinned-left={col.pinned === 'left' && !isColumnVirtualizing}
+                class:tc-td--pinned-right={col.pinned === 'right' && !isColumnVirtualizing}
                 role="gridcell"
                 data-col={colIndex}
+                style={col.pinned && !isColumnVirtualizing ? (col.pinned === 'left' ? `left: ${computeTdPinnedOffset(col, columns, 'left')}px;` : `right: ${computeTdPinnedOffset(col, columns, 'right')}px;`) : undefined}
                 tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
               >
                 <Cell {descriptor} />
@@ -362,6 +378,25 @@
 
   .tc-tr:last-child .tc-td {
     border-bottom: none;
+  }
+
+  .tc-td--pinned-left,
+  .tc-td--pinned-right {
+    position: sticky;
+    z-index: 1;
+    background: var(--tc-color-bg, #ffffff);
+  }
+
+  .tc-td--pinned-left {
+    left: 0; /* overridden by inline style for computed offset */
+  }
+
+  .tc-td--pinned-right {
+    right: 0; /* overridden by inline style for computed offset */
+  }
+
+  .tc-td--pinned-left:not(:has(~ .tc-td--pinned-left)) {
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
   }
 
   .tc-skeleton-cell {

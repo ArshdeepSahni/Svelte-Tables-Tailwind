@@ -15,7 +15,9 @@
     totalColumnSize?: number;
     isColumnVirtualizing?: boolean;
     colWidths?: Map<string, number>;
+    columnOrder?: string[];
     oncolresize?: (key: string, width: number) => void;
+    oncolreorder?: (fromKey: string, toKey: string) => void;
     onsortchange?: (key: string) => void;
     onselectall?: (checked: boolean) => void;
   }
@@ -31,7 +33,9 @@
     totalColumnSize = 0,
     isColumnVirtualizing = false,
     colWidths = new Map<string, number>(),
+    columnOrder = [],
     oncolresize,
+    oncolreorder,
     onsortchange,
     onselectall,
   }: Props = $props();
@@ -79,6 +83,62 @@
     document.body.style.cursor = '';
     document.documentElement.style.userSelect = '';
   }
+
+  // Drag-to-reorder state
+  let dragoverKey = $state<string | null>(null);
+  let draggingKey = $state<string | null>(null);
+
+  function handleDragStart(e: DragEvent, col: ResolvedColumn, th: HTMLElement) {
+    if (isColumnVirtualizing) return;
+    // Prevent DnD when user is clicking on the resize handle
+    const target = e.target as HTMLElement;
+    if (target.classList.contains('tc-resize-handle')) {
+      e.preventDefault();
+      return;
+    }
+    draggingKey = col.key;
+    e.dataTransfer!.effectAllowed = 'move';
+    e.dataTransfer!.setData('text/plain', col.key);
+    th.style.opacity = '0.5';
+  }
+
+  function handleDragEnd(_e: DragEvent, th: HTMLElement) {
+    draggingKey = null;
+    dragoverKey = null;
+    th.style.opacity = '';
+  }
+
+  function handleDragOver(e: DragEvent, col: ResolvedColumn) {
+    if (isColumnVirtualizing) return;
+    e.preventDefault(); // CRITICAL: required for ondrop to fire
+    e.dataTransfer!.dropEffect = 'move';
+    dragoverKey = col.key;
+  }
+
+  function handleDrop(e: DragEvent, col: ResolvedColumn) {
+    e.preventDefault();
+    dragoverKey = null;
+    const fromKey = e.dataTransfer!.getData('text/plain');
+    if (fromKey && fromKey !== col.key) {
+      oncolreorder?.(fromKey, col.key);
+    }
+  }
+
+  function handleDragLeave() {
+    dragoverKey = null;
+  }
+
+  // Compute the sticky left/right offset for a pinned column
+  function computePinnedOffset(targetCol: ResolvedColumn, side: 'left' | 'right'): number {
+    const pinnedCols = columns.filter((c) => c.pinned === side);
+    const idx = pinnedCols.findIndex((c) => c.key === targetCol.key);
+    let offset = 0;
+    for (let i = 0; i < idx; i++) {
+      offset += colWidths.get(pinnedCols[i].key) ?? pinnedCols[i].minWidth ?? 150;
+    }
+    return offset;
+  }
+
 </script>
 
 <thead aria-busy={sortLoading ? 'true' : undefined}>
@@ -161,9 +221,13 @@
           class="tc-th"
           class:tc-th--sortable={col.sortable !== false}
           class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
+          class:tc-th--drag-target={dragoverKey === col.key && draggingKey !== col.key}
+          class:tc-th--pinned-left={col.pinned === 'left' && !isColumnVirtualizing}
+          class:tc-th--pinned-right={col.pinned === 'right' && !isColumnVirtualizing}
           role="columnheader"
           aria-sort={getAriaSortValue(col.key)}
-          style="width: {colWidths.get(col.key) ?? col.minWidth ?? 150}px; min-width: {col.minWidth ?? 60}px;"
+          draggable={!isColumnVirtualizing}
+          style="{colWidths.get(col.key) ? `width: ${colWidths.get(col.key)}px; min-width: ${col.minWidth ?? 60}px;` : `width: ${col.minWidth ?? 150}px; min-width: ${col.minWidth ?? 60}px;`}{col.pinned === 'left' && !isColumnVirtualizing ? ` left: ${computePinnedOffset(col, 'left')}px;` : ''}{col.pinned === 'right' && !isColumnVirtualizing ? ` right: ${computePinnedOffset(col, 'right')}px;` : ''}"
           onclick={() => handleHeaderClick(col)}
           onkeydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -171,6 +235,11 @@
               handleHeaderClick(col);
             }
           }}
+          ondragstart={(e) => handleDragStart(e, col, e.currentTarget)}
+          ondragend={(e) => handleDragEnd(e, e.currentTarget)}
+          ondragover={(e) => handleDragOver(e, col)}
+          ondrop={(e) => handleDrop(e, col)}
+          ondragleave={handleDragLeave}
           tabindex={col.sortable !== false ? 0 : undefined}
         >
           <span class="tc-th-content">
@@ -297,5 +366,34 @@
 
   .tc-th:hover .tc-resize-handle::after {
     opacity: 1;
+  }
+
+  .tc-th--drag-target {
+    border-left: 3px solid var(--tc-color-primary, #6366f1);
+  }
+
+  .tc-th--pinned-left,
+  .tc-th--pinned-right {
+    position: sticky;
+    z-index: 3;
+    background: var(--tc-header-bg, #f8fafc);
+  }
+
+  .tc-th--pinned-left {
+    left: 0; /* overridden by inline style for computed offset */
+  }
+
+  .tc-th--pinned-right {
+    right: 0; /* overridden by inline style for computed offset */
+  }
+
+  /* Separator shadow: rightmost left-pinned column */
+  .tc-th--pinned-left:not(:has(~ .tc-th--pinned-left)) {
+    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+  }
+
+  /* Separator shadow: leftmost right-pinned column */
+  .tc-th--pinned-right:first-of-type {
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.08);
   }
 </style>
