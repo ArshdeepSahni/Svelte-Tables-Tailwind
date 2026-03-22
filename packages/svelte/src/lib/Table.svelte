@@ -29,6 +29,7 @@
   import TableBody from './TableBody.svelte';
   import TableFooter from './TableFooter.svelte';
   import SearchInput from './SearchInput.svelte';
+  import AggregateRow from './AggregateRow.svelte';
 
   type ColumnOverrideShort = Record<string, ColumnType>;
 
@@ -595,6 +596,14 @@
             {oncellclick}
             onrowtoggle={handleRowToggle}
           />
+
+          {#if showAggregates}
+            <AggregateRow
+              columns={visibleColumns}
+              rows={filteredRows}
+              {selectable}
+            />
+          {/if}
         </table>
       </div>
     {:else}
@@ -644,6 +653,14 @@
           {oncellclick}
           onrowtoggle={handleRowToggle}
         />
+
+        {#if showAggregates}
+          <AggregateRow
+            columns={visibleColumns}
+            rows={filteredRows}
+            {selectable}
+          />
+        {/if}
       </table>
     {/if}
   </div>
