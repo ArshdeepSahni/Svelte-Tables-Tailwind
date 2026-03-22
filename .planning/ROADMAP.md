@@ -15,7 +15,7 @@
 - [x] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end (completed 2026-03-21)
 - [x] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation (completed 2026-03-21)
 - [x] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper (completed 2026-03-22)
-- [ ] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence
+- [x] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence (completed 2026-03-22)
 - [ ] **Phase 7: Docs Site + Release** - SvelteKit docs, live REPL playground, npm publish, v1 deprecation notice
 
 ---
@@ -176,7 +176,7 @@ Plans:
 4. After a page reload, a table with `persistKey="admin-users"` restores the previous column widths, sort state, and visibility state from localStorage automatically.
 5. Adding `density="compact"` reduces row height and padding visibly, and `density="spacious"` increases them — the three density modes are visually distinct.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 06-01-PLAN.md — Critical CSS fix + type extension + density + persistence: fix overflow:hidden→clip-path bug, add AggregateFunction type + ProcessedGroupRow, density prop, persistKey prop, Wave 0 Playwright stubs
@@ -216,7 +216,7 @@ Plans:
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 4     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 5     | 4/5 | Complete    | 2026-03-22 | Pending |
-| 6     | 4/5 | In Progress|  | Pending |
+| 6     | 5/5 | Complete   | 2026-03-22 | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
 **Total: 64 requirements mapped across 7 phases — 100% coverage**

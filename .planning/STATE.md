@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 06-column-operations-advanced-features-04-PLAN.md
-last_updated: "2026-03-22T11:37:55.163Z"
+stopped_at: Completed 06-column-operations-advanced-features-05-PLAN.md
+last_updated: "2026-03-22T11:45:33.891Z"
 progress:
   total_phases: 10
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 32
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # Project State
@@ -112,6 +112,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 06-column-operations-advanced-features P02 | 208 | 2 tasks | 3 files |
 | Phase 06-column-operations-advanced-features P03 | 477 | 2 tasks | 3 files |
 | Phase 06-column-operations-advanced-features P04 | 480 | 2 tasks | 4 files |
+| Phase 06-column-operations-advanced-features P05 | ~5min | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -216,6 +217,10 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Native HTML drag API (ondragstart/ondragover/ondrop) for zero-dependency column reorder (06-04) | ondragover MUST call e.preventDefault() or ondrop never fires — browser default action blocks drop |
 | computePinnedOffset accumulates colWidths Map values for pixel-accurate sticky offsets (06-04) | Pinned cells need explicit background-color to prevent scroll transparency bleed during horizontal scroll |
 | test.skip(true, reason) not test.skip(title) for Playwright stubs in describe blocks (06-04) | Bare test.skip('title') inside describe causes sibling tests to be skipped in Playwright 1.58.2 |
+| groupedRows inserted BEFORE sort so sort runs within each group independently (06-05) | Per 06-RESEARCH.md research finding: filter → group → sort-per-group → flatten → paginate |
+| collapsedGroups = new Set(prev) replaces Set not mutates for Svelte $state reactivity (06-05) | Direct Set mutation is not detected by Svelte $state; must replace the reference |
+| Worker sort disabled when groupBy active: Worker receives flat _original arrays not mixed group structure (06-05) | Worker postMessage receives plain objects; mixing ProcessedGroupRow into the array would break Worker sort |
+| TableBody visibleRows/sortedRows typed as (ProcessedRow | ProcessedGroupRow)[] with isGroup discriminant (06-05) | isGroup branch in {#each} loops routes to GroupRow.svelte vs data cell rendering; no separate prop needed |
 
 ### Active Todos
 
@@ -246,9 +251,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-22T11:37:55.160Z
+**Last session:** 2026-03-22T11:45:33.888Z
 
-**Stopped at:** Completed 06-column-operations-advanced-features-04-PLAN.md
+**Stopped at:** Completed 06-column-operations-advanced-features-05-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 

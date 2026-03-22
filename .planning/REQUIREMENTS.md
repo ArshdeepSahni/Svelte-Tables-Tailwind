@@ -97,7 +97,7 @@ What v1.0.6 ships today. These are the baselines, not goals.
 - [x] **ADV-03**: Column pinning — `pinned: 'left' | 'right'` on column definition; pinned columns stay fixed during horizontal scroll
 - [x] **ADV-04**: Sticky header — column headers fixed at top during vertical scroll (always on when virtualisation is active)
 - [x] **ADV-05**: Column visibility toggle — `hideable` prop enables column show/hide UI; hidden columns excluded from rendering
-- [ ] **ADV-06**: Row grouping — auto-detect groupable columns (status/enum types); grouped rows with expand/collapse
+- [x] **ADV-06**: Row grouping — auto-detect groupable columns (status/enum types); grouped rows with expand/collapse
 - [x] **ADV-07**: Aggregate footer row — sum, avg, count, min, max for numeric columns; configurable per column
 - [x] **ADV-08**: Column state persistence — opt-in `persistKey` prop saves sort, filter, column widths, visibility to localStorage
 - [x] **ADV-09**: Density control — `density: 'compact' | 'comfortable' | 'spacious'` prop adjusts row height and padding
@@ -222,7 +222,7 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | ADV-03      | Phase 6 | Complete |
 | ADV-04      | Phase 6 | Complete |
 | ADV-05      | Phase 6 | Complete |
-| ADV-06      | Phase 6 | Pending  |
+| ADV-06      | Phase 6 | Complete |
 | ADV-07      | Phase 6 | Complete |
 | ADV-08      | Phase 6 | Complete |
 | ADV-09      | Phase 6 | Complete |
