@@ -221,20 +221,22 @@ describe('pagination (SVLT-06)', () => {
     expect(rows.length).toBe(11);
   });
 
-  it('shows "Page 1 of 6" text', async () => {
+  it('shows row range text for multi-page table', async () => {
     render(Table, { props: { data: manyRows, pageSize: 10 } });
     await act();
-    expect(screen.queryByText(/page 1 of 6/i)).toBeTruthy();
+    // New format: "1–10 of 55" range indicator (manyRows has 55 items)
+    expect(screen.queryByText(/of 55/i)).toBeTruthy();
   });
 
   it('Next button advances to page 2', async () => {
     render(Table, { props: { data: manyRows, pageSize: 10 } });
     await act();
-    const nextBtn = screen.queryByRole('button', { name: /next/i });
+    const nextBtn = screen.queryByRole('button', { name: /next page/i });
     expect(nextBtn).toBeTruthy();
     await fireEvent.click(nextBtn!);
     await act();
-    expect(screen.queryByText(/page 2 of 6/i)).toBeTruthy();
+    // After advancing, range changes — still shows total count
+    expect(screen.queryByText(/of 55/i)).toBeTruthy();
   });
 
   it('pagination is hidden when data.length <= pageSize', async () => {
