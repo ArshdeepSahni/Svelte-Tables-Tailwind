@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 06-column-operations-advanced-features-01-PLAN.md
-last_updated: "2026-03-22T11:12:35.135Z"
+stopped_at: Completed 06-column-operations-advanced-features-02-PLAN.md
+last_updated: "2026-03-22T11:18:39.810Z"
 progress:
   total_phases: 10
   completed_phases: 5
   total_plans: 32
-  completed_plans: 28
+  completed_plans: 29
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 6: Column Operations + Advanced Features — In Progress (1/5 plans done)
+Phase 6: Column Operations + Advanced Features — In Progress (2/5 plans done)
 
 ---
 
@@ -43,7 +43,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
 | Phase    | 6 — Column Operations + Advanced Features — In Progress |
-| Plan     | 01 complete (CSS clip-path fix, types extended, density+persistKey props, Wave 0 stubs) |
+| Plan     | 02 complete (visibleColumns $derived, AggregateRow.svelte, showAggregates wired) |
 | Status   | Phase 6 In Progress (1/5 plans done)                |
 | Progress | 28/32 plans complete across phases 1-6               |
 
@@ -109,6 +109,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 05-web-components-core-framework-wrappers P03 | 266 | 2 tasks | 2 files |
 | Phase 05-web-components-core-framework-wrappers P05 | 25min | 2 tasks | 4 files |
 | Phase 06-column-operations-advanced-features P01 | 253 | 3 tasks | 5 files |
+| Phase 06-column-operations-advanced-features P02 | 208 | 2 tasks | 3 files |
 
 ## Accumulated Context
 
@@ -204,6 +205,9 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | clip-path:inset(0 round 0.75rem) replaces overflow:hidden on .tc-table-wrapper (06-01) | overflow:hidden blocks position:sticky for pinned columns; clip-path preserves border-radius visual without clipping stacking context |
 | test.skip(true, reason) for Wave 0 Playwright stubs (06-01) | test.todo is not a function inside test.describe in Playwright 1.58.2; test.skip(true) achieves same CI result — 0 failures |
 | rowHeightMap as const for density prop: compact=32px, comfortable=48px, spacious=64px (06-01) | Single source of truth for density→px mapping; TypeScript-safe via as const; applied via style attribute on .tc-table-scroll |
+| AggregateRow receives filteredRows not visibleRows (06-02) | Aggregates reflect full filtered dataset independent of pagination slice; sortedRows/visibleRows would truncate to current page |
+| Test mock resolveColumns spreads ...override fields including aggregate (06-02) | Standard pattern: mock must preserve all ColumnDefinition fields through resolveColumns to pass aggregate field to AggregateRow |
+| visibleColumns $derived + isColumnVirtualizing both use visibleColumns.length (06-02) | Virtualizer tracks visible columns only; hidden columns should not consume virtual scroll slots |
 
 ### Active Todos
 
@@ -234,9 +238,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-22T11:12:35.132Z
+**Last session:** 2026-03-22T11:18:39.802Z
 
-**Stopped at:** Completed 06-column-operations-advanced-features-01-PLAN.md
+**Stopped at:** Completed 06-column-operations-advanced-features-02-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 
