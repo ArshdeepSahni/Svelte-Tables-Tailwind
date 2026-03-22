@@ -16,17 +16,18 @@
 
   import type { ProcessedRow, ResolvedColumn } from '@tablecraft/core';
   import type { VirtualItem } from '@tanstack/svelte-virtual';
-  import type { Row, FocusedCell } from './types.js';
+  import type { Row, FocusedCell, ProcessedGroupRow } from './types.js';
   import type { Snippet } from 'svelte';
   import Cell from './Cell.svelte';
   import Checkbox from './Checkbox.svelte';
+  import GroupRow from './GroupRow.svelte';
 
   interface Props {
     // Normal mode (non-virtual)
-    visibleRows?: ProcessedRow[];
+    visibleRows?: (ProcessedRow | ProcessedGroupRow)[];
     // Virtual mode
     virtualItems?: VirtualItem[];
-    sortedRows?: ProcessedRow[];  // full sorted dataset (virtual indexes into this)
+    sortedRows?: (ProcessedRow | ProcessedGroupRow)[];  // full sorted dataset (virtual indexes into this)
     // Shared
     columns: ResolvedColumn[];
     loading?: boolean;
@@ -42,6 +43,9 @@
     totalColumnSize?: number;
     isColumnVirtualizing?: boolean;
     colWidths?: Map<string, number>;
+    // Row grouping
+    collapsedGroups?: Set<string>;
+    ongroupToggle?: (label: string) => void;
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
     oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown; rowIndex: number }) => void;
     onrowtoggle?: (row: Row, selected: boolean) => void;
@@ -64,6 +68,8 @@
     totalColumnSize = 0,
     isColumnVirtualizing = false,
     colWidths,
+    collapsedGroups,
+    ongroupToggle,
     onrowclick,
     oncellclick,
     onrowtoggle,
@@ -94,9 +100,11 @@
     const td = (e.target as Element).closest('[data-col]');
 
     if (isVirtualMode) {
-      const processedRow = sortedRows[rowIndex];
-      if (!processedRow) return;
-      const row = processedRow._original as Row;
+      const item = sortedRows[rowIndex];
+      if (!item) return;
+      // Skip group rows — they handle their own click via GroupRow component
+      if ('isGroup' in item && item.isGroup) return;
+      const row = (item as ProcessedRow)._original as Row;
       if (td) {
         const colIndex = Number(td.getAttribute('data-col'));
         const col = columns[colIndex];
@@ -105,9 +113,11 @@
         onrowclick?.({ row, rowIndex });
       }
     } else {
-      const processedRow = visibleRows[rowIndex];
-      if (!processedRow) return;
-      const row = processedRow._original as Row;
+      const item = visibleRows[rowIndex];
+      if (!item) return;
+      // Skip group rows — they handle their own click via GroupRow component
+      if ('isGroup' in item && item.isGroup) return;
+      const row = (item as ProcessedRow)._original as Row;
       if (td) {
         const colIndex = Number(td.getAttribute('data-col'));
         const col = columns[colIndex];
@@ -184,27 +194,116 @@
   {:else}
     {#if isVirtualMode}
       {#each virtualItems as item, index}
-        {@const processedRow = sortedRows[item.index]}
-        {@const row = processedRow?._original}
-        {@const isSelected = row ? selectedRows.some((r) => r === row) : false}
-        <tr
-          class="tc-tr"
-          class:tc-tr--selected={isSelected}
-          role="row"
-          aria-selected={selectable ? isSelected : undefined}
-          data-row={item.index}
-          style="height: {item.size}px; transform: translateY({item.start - index * item.size}px);"
-        >
-          {#if selectable && row}
-            <td class="tc-td tc-td--checkbox" role="gridcell">
-              <Checkbox
-                checked={isSelected}
-                oncheckedchange={(checked) => onrowtoggle?.(row as Row, checked)}
-                aria-label={`Select row ${item.index + 1}`}
-              />
-            </td>
-          {/if}
-          {#if row}
+        {@const rowData = sortedRows[item.index]}
+        {#if rowData && 'isGroup' in rowData && rowData.isGroup}
+          <GroupRow
+            group={rowData}
+            columnCount={columns.length}
+            {selectable}
+            collapsed={collapsedGroups?.has(rowData.label) ?? false}
+            ontoggle={ongroupToggle}
+          />
+        {:else if rowData}
+          {@const processedRow = rowData as import('./types.js').ProcessedRow}
+          {@const row = processedRow._original}
+          {@const isSelected = row ? selectedRows.some((r) => r === row) : false}
+          <tr
+            class="tc-tr"
+            class:tc-tr--selected={isSelected}
+            role="row"
+            aria-selected={selectable ? isSelected : undefined}
+            data-row={item.index}
+            style="height: {item.size}px; transform: translateY({item.start - index * item.size}px);"
+          >
+            {#if selectable && row}
+              <td class="tc-td tc-td--checkbox" role="gridcell">
+                <Checkbox
+                  checked={isSelected}
+                  oncheckedchange={(checked) => onrowtoggle?.(row as Row, checked)}
+                  aria-label={`Select row ${item.index + 1}`}
+                />
+              </td>
+            {/if}
+            {#if row}
+              {#if isColumnVirtualizing && columnVirtualItems.length > 0}
+                <!-- Left cell spacer -->
+                {#if columnVirtualItems[0]?.start > 0}
+                  <td style="width: {columnVirtualItems[0].start}px; padding: 0;" aria-hidden="true"></td>
+                {/if}
+                <!-- Virtual column cells -->
+                {#each columnVirtualItems as colItem}
+                  {@const col = columns[colItem.index]}
+                  {#if col}
+                    {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+                    <td
+                      class="tc-td"
+                      class:tc-td--bordered={bordered}
+                      role="gridcell"
+                      data-col={colItem.index}
+                      style="width: {colItem.size}px; min-width: {colItem.size}px;"
+                      tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colItem.index ? 0 : -1}
+                    >
+                      <Cell {descriptor} />
+                    </td>
+                  {/if}
+                {/each}
+                <!-- Right cell spacer -->
+                {#if columnVirtualItems.at(-1)}
+                  {@const lastItem = columnVirtualItems.at(-1)!}
+                  {@const rightSpace = totalColumnSize - lastItem.end}
+                  {#if rightSpace > 0}
+                    <td style="width: {rightSpace}px; padding: 0;" aria-hidden="true"></td>
+                  {/if}
+                {/if}
+              {:else}
+                {#each columns as col, colIndex (col.key)}
+                  {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
+                  <td
+                    class="tc-td"
+                    class:tc-td--bordered={bordered}
+                    role="gridcell"
+                    data-col={colIndex}
+                    tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
+                  >
+                    <Cell {descriptor} />
+                  </td>
+                {/each}
+              {/if}
+            {/if}
+          </tr>
+        {/if}
+      {/each}
+    {:else}
+      {#each visibleRows as item, rowIndex (rowIndex)}
+        {#if 'isGroup' in item && item.isGroup}
+          <GroupRow
+            group={item}
+            columnCount={columns.length}
+            {selectable}
+            collapsed={collapsedGroups?.has(item.label) ?? false}
+            ontoggle={ongroupToggle}
+          />
+        {:else}
+          {@const processedRow = item as import('./types.js').ProcessedRow}
+          {@const row = processedRow._original}
+          {@const isSelected = selectedRows.some((r) => r === row)}
+          <tr
+            class="tc-tr"
+            class:tc-tr--striped={striped && rowIndex % 2 === 1}
+            class:tc-tr--selected={isSelected}
+            role="row"
+            aria-selected={selectable ? isSelected : undefined}
+            data-row={rowIndex}
+          >
+            {#if selectable}
+              <td class="tc-td tc-td--checkbox" role="gridcell">
+                <Checkbox
+                  checked={isSelected}
+                  oncheckedchange={(checked) => onrowtoggle?.(row, checked)}
+                  aria-label={`Select row ${rowIndex + 1}`}
+                />
+              </td>
+            {/if}
             {#if isColumnVirtualizing && columnVirtualItems.length > 0}
               <!-- Left cell spacer -->
               {#if columnVirtualItems[0]?.start > 0}
@@ -221,7 +320,7 @@
                     role="gridcell"
                     data-col={colItem.index}
                     style="width: {colItem.size}px; min-width: {colItem.size}px;"
-                    tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colItem.index ? 0 : -1}
+                    tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colItem.index ? 0 : -1}
                   >
                     <Cell {descriptor} />
                   </td>
@@ -241,86 +340,19 @@
                 <td
                   class="tc-td"
                   class:tc-td--bordered={bordered}
+                  class:tc-td--pinned-left={col.pinned === 'left' && !isColumnVirtualizing}
+                  class:tc-td--pinned-right={col.pinned === 'right' && !isColumnVirtualizing}
                   role="gridcell"
                   data-col={colIndex}
-                  tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
+                  style={col.pinned && !isColumnVirtualizing ? (col.pinned === 'left' ? `left: ${computeTdPinnedOffset(col, columns, 'left')}px;` : `right: ${computeTdPinnedOffset(col, columns, 'right')}px;`) : undefined}
+                  tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
                 >
                   <Cell {descriptor} />
                 </td>
               {/each}
             {/if}
-          {/if}
-        </tr>
-      {/each}
-    {:else}
-      {#each visibleRows as processedRow, rowIndex (rowIndex)}
-        {@const row = processedRow._original}
-        {@const isSelected = selectedRows.some((r) => r === row)}
-        <tr
-          class="tc-tr"
-          class:tc-tr--striped={striped && rowIndex % 2 === 1}
-          class:tc-tr--selected={isSelected}
-          role="row"
-          aria-selected={selectable ? isSelected : undefined}
-          data-row={rowIndex}
-        >
-          {#if selectable}
-            <td class="tc-td tc-td--checkbox" role="gridcell">
-              <Checkbox
-                checked={isSelected}
-                oncheckedchange={(checked) => onrowtoggle?.(row, checked)}
-                aria-label={`Select row ${rowIndex + 1}`}
-              />
-            </td>
-          {/if}
-          {#if isColumnVirtualizing && columnVirtualItems.length > 0}
-            <!-- Left cell spacer -->
-            {#if columnVirtualItems[0]?.start > 0}
-              <td style="width: {columnVirtualItems[0].start}px; padding: 0;" aria-hidden="true"></td>
-            {/if}
-            <!-- Virtual column cells -->
-            {#each columnVirtualItems as colItem}
-              {@const col = columns[colItem.index]}
-              {#if col}
-                {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
-                <td
-                  class="tc-td"
-                  class:tc-td--bordered={bordered}
-                  role="gridcell"
-                  data-col={colItem.index}
-                  style="width: {colItem.size}px; min-width: {colItem.size}px;"
-                  tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colItem.index ? 0 : -1}
-                >
-                  <Cell {descriptor} />
-                </td>
-              {/if}
-            {/each}
-            <!-- Right cell spacer -->
-            {#if columnVirtualItems.at(-1)}
-              {@const lastItem = columnVirtualItems.at(-1)!}
-              {@const rightSpace = totalColumnSize - lastItem.end}
-              {#if rightSpace > 0}
-                <td style="width: {rightSpace}px; padding: 0;" aria-hidden="true"></td>
-              {/if}
-            {/if}
-          {:else}
-            {#each columns as col, colIndex (col.key)}
-              {@const descriptor = processedRow.cells[col.key] ?? { kind: 'text', value: '' }}
-              <td
-                class="tc-td"
-                class:tc-td--bordered={bordered}
-                class:tc-td--pinned-left={col.pinned === 'left' && !isColumnVirtualizing}
-                class:tc-td--pinned-right={col.pinned === 'right' && !isColumnVirtualizing}
-                role="gridcell"
-                data-col={colIndex}
-                style={col.pinned && !isColumnVirtualizing ? (col.pinned === 'left' ? `left: ${computeTdPinnedOffset(col, columns, 'left')}px;` : `right: ${computeTdPinnedOffset(col, columns, 'right')}px;`) : undefined}
-                tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
-              >
-                <Cell {descriptor} />
-              </td>
-            {/each}
-          {/if}
-        </tr>
+          </tr>
+        {/if}
       {/each}
     {/if}
   {/if}

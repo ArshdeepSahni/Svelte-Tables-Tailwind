@@ -22,7 +22,7 @@
     ProcessedRow,
   } from '@tablecraft/core';
   import { createTableEngine, adaptV1Props } from '@tablecraft/core';
-  import type { Row, SortState } from './types.js';
+  import type { Row, SortState, ProcessedGroupRow } from './types.js';
   import type { VirtualItem } from '@tanstack/svelte-virtual';
   import { createVirtualizer } from '@tanstack/svelte-virtual';
   import TableHeader from './TableHeader.svelte';
@@ -190,6 +190,7 @@
   // Phase 6 state
   let colWidths = $state(new Map<string, number>());
   let columnOrder = $state<string[]>([]);
+  let collapsedGroups = $state(new Set<string>());
 
   // ---------------------------------------------------------------------------
   // Two-phase inference $effect
@@ -270,11 +271,70 @@
     );
   });
 
+  // Group rows by groupBy column — inserts group headers before sort
+  const groupedRows = $derived.by((): (ProcessedRow | ProcessedGroupRow)[] => {
+    if (!groupBy) return filteredRows;
+    // Group into buckets
+    const buckets = new Map<string, ProcessedRow[]>();
+    for (const row of filteredRows) {
+      const val = String(row._original[groupBy] ?? '');
+      if (!buckets.has(val)) buckets.set(val, []);
+      buckets.get(val)!.push(row);
+    }
+    // Build flat output: group header + (non-collapsed) data rows
+    const result: (ProcessedRow | ProcessedGroupRow)[] = [];
+    for (const [label, rows] of buckets) {
+      const groupRow: ProcessedGroupRow = { isGroup: true, key: groupBy, label, count: rows.length, rows };
+      result.push(groupRow);
+      if (!collapsedGroups.has(label)) {
+        result.push(...rows);
+      }
+    }
+    return result;
+  });
+
   const mainThreadSortedRows = $derived.by(() => {
-    if (!sortState.key || !sortState.dir) return filteredRows;
+    const rows = groupedRows; // was: filteredRows
+    if (!sortState.key || !sortState.dir) return rows;
     const col = resolvedColumns.find((c) => c.key === sortState.key);
-    if (!col) return filteredRows;
-    return [...filteredRows].sort((a, b) => {
+    if (!col) return rows;
+
+    // When groupBy is active, sort within groups only (preserve group structure)
+    if (groupBy) {
+      const result: typeof rows = [];
+      let i = 0;
+      while (i < rows.length) {
+        const item = rows[i];
+        if ('isGroup' in item && item.isGroup) {
+          result.push(item); // keep group header
+          // Collect following data rows for this group
+          const groupDataRows: ProcessedRow[] = [];
+          i++;
+          while (i < rows.length && !('isGroup' in rows[i] && (rows[i] as ProcessedGroupRow).isGroup)) {
+            groupDataRows.push(rows[i] as ProcessedRow);
+            i++;
+          }
+          // Sort this group's rows
+          groupDataRows.sort((a, b) => {
+            const av = a._original[sortState.key!];
+            const bv = b._original[sortState.key!];
+            const dir = sortState.dir === 'asc' ? 1 : -1;
+            if (av == null) return dir;
+            if (bv == null) return -dir;
+            if (typeof av === 'number' && typeof bv === 'number') return (av - bv) * dir;
+            return String(av).localeCompare(String(bv)) * dir;
+          });
+          result.push(...groupDataRows);
+        } else {
+          result.push(item);
+          i++;
+        }
+      }
+      return result;
+    }
+
+    // Normal (non-grouped) sort — same as before but using groupedRows (= filteredRows when no groupBy)
+    return [...(rows as ProcessedRow[])].sort((a, b) => {
       const av = a._original[sortState.key!];
       const bv = b._original[sortState.key!];
       const dir = sortState.dir === 'asc' ? 1 : -1;
@@ -286,9 +346,10 @@
   });
 
   // Final sortedRows: uses Worker result when available, falls back to main-thread
+  // When groupBy is active, always use mainThreadSortedRows (Worker receives flat arrays, not mixed group structure)
   const sortedRows = $derived(
-    workerSortedRows.length > 0 && sortState.key !== null
-      ? workerSortedRows
+    !groupBy && workerSortedRows.length > 0 && sortState.key !== null
+      ? (workerSortedRows as (ProcessedRow | ProcessedGroupRow)[])
       : mainThreadSortedRows,
   );
 
@@ -320,7 +381,7 @@
   const isColumnVirtualizing = $derived(visibleColumns.length > COL_VIRTUALIZE_THRESHOLD);
 
   const totalPages = $derived(Math.max(1, Math.ceil(filteredRows.length / pageSize)));
-  const visibleRows = $derived(
+  const visibleRows = $derived<(ProcessedRow | ProcessedGroupRow)[]>(
     sortedRows.slice((currentPage - 1) * pageSize, currentPage * pageSize),
   );
 
@@ -436,8 +497,9 @@
     const dir = sortState.dir;
     const rows = filteredRows;
 
-    // Only use Worker for large datasets when sort is active
-    if (!key || !dir || rows.length <= USE_WORKER_THRESHOLD || !sortWorker) {
+    // Only use Worker for large datasets when sort is active and no grouping
+    // Worker receives flat _original arrays, not the mixed group structure
+    if (!key || !dir || rows.length <= USE_WORKER_THRESHOLD || !sortWorker || groupBy) {
       // Clear worker result when sort is cleared or dataset is small
       if (!key || !dir) {
         workerSortedRows = [];
@@ -526,6 +588,13 @@
     } else {
       sortState = { key, dir: 'asc' };
     }
+  }
+
+  function handleGroupToggle(label: string) {
+    const next = new Set(collapsedGroups);
+    if (next.has(label)) next.delete(label);
+    else next.add(label);
+    collapsedGroups = next;
   }
 
   function handleColResize(key: string, width: number) {
@@ -636,6 +705,8 @@
             {totalColumnSize}
             {isColumnVirtualizing}
             {colWidths}
+            {collapsedGroups}
+            ongroupToggle={handleGroupToggle}
             {onrowclick}
             {oncellclick}
             onrowtoggle={handleRowToggle}
@@ -699,6 +770,8 @@
           {totalColumnSize}
           {isColumnVirtualizing}
           {colWidths}
+          {collapsedGroups}
+          ongroupToggle={handleGroupToggle}
           {onrowclick}
           {oncellclick}
           onrowtoggle={handleRowToggle}
