@@ -14,6 +14,8 @@
     columnVirtualItems?: VirtualItem[];
     totalColumnSize?: number;
     isColumnVirtualizing?: boolean;
+    colWidths?: Map<string, number>;
+    oncolresize?: (key: string, width: number) => void;
     onsortchange?: (key: string) => void;
     onselectall?: (checked: boolean) => void;
   }
@@ -28,6 +30,8 @@
     columnVirtualItems = [],
     totalColumnSize = 0,
     isColumnVirtualizing = false,
+    colWidths = new Map<string, number>(),
+    oncolresize,
     onsortchange,
     onselectall,
   }: Props = $props();
@@ -43,6 +47,37 @@
   function handleHeaderClick(col: ResolvedColumn) {
     if (col.sortable === false) return;
     onsortchange?.(col.key);
+  }
+
+  // Resize state
+  let resizingKey = $state<string | null>(null);
+  let resizeStartX = $state(0);
+  let resizeStartWidth = $state(0);
+
+  function handleResizePointerDown(e: PointerEvent, col: ResolvedColumn, th: HTMLElement) {
+    e.stopPropagation(); // prevent sort from triggering
+    e.preventDefault();
+    resizingKey = col.key;
+    resizeStartX = e.clientX;
+    resizeStartWidth = colWidths.get(col.key) ?? col.minWidth ?? th.offsetWidth ?? 150;
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+    document.body.style.cursor = 'col-resize';
+    document.documentElement.style.userSelect = 'none';
+  }
+
+  function handleResizePointerMove(e: PointerEvent, col: ResolvedColumn) {
+    if (resizingKey !== col.key) return;
+    const delta = e.clientX - resizeStartX;
+    const minW = col.minWidth ?? 60;
+    const maxW = col.maxWidth ?? Infinity;
+    const newWidth = Math.max(minW, Math.min(maxW, resizeStartWidth + delta));
+    oncolresize?.(col.key, newWidth);
+  }
+
+  function handleResizePointerUp() {
+    resizingKey = null;
+    document.body.style.cursor = '';
+    document.documentElement.style.userSelect = '';
   }
 </script>
 
@@ -74,7 +109,7 @@
             class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
             role="columnheader"
             aria-sort={getAriaSortValue(col.key)}
-            style="width: {colItem.size}px; min-width: {colItem.size}px;"
+            style="width: {colWidths.get(col.key) ?? colItem.size}px; min-width: {col.minWidth ?? 60}px;"
             onclick={() => handleHeaderClick(col)}
             onkeydown={(e) => {
               if (e.key === 'Enter' || e.key === ' ') {
@@ -98,6 +133,15 @@
                 </span>
               {/if}
             </span>
+            <div
+              class="tc-resize-handle"
+              role="separator"
+              aria-label="Resize {col.label} column"
+              onpointerdown={(e) => handleResizePointerDown(e, col, e.currentTarget.closest('th')!)}
+              onpointermove={(e) => handleResizePointerMove(e, col)}
+              onpointerup={handleResizePointerUp}
+              onpointercancel={handleResizePointerUp}
+            ></div>
           </th>
         {/if}
       {/each}
@@ -119,6 +163,7 @@
           class:tc-th--sorted={sortState.key === col.key && sortState.dir !== null}
           role="columnheader"
           aria-sort={getAriaSortValue(col.key)}
+          style="width: {colWidths.get(col.key) ?? col.minWidth ?? 150}px; min-width: {col.minWidth ?? 60}px;"
           onclick={() => handleHeaderClick(col)}
           onkeydown={(e) => {
             if (e.key === 'Enter' || e.key === ' ') {
@@ -142,6 +187,15 @@
               </span>
             {/if}
           </span>
+          <div
+            class="tc-resize-handle"
+            role="separator"
+            aria-label="Resize {col.label} column"
+            onpointerdown={(e) => handleResizePointerDown(e, col, e.currentTarget.closest('th')!)}
+            onpointermove={(e) => handleResizePointerMove(e, col)}
+            onpointerup={handleResizePointerUp}
+            onpointercancel={handleResizePointerUp}
+          ></div>
         </th>
       {/each}
     {/if}
@@ -215,5 +269,33 @@
   .tc-th--sortable:focus-visible {
     outline: 2px solid var(--tc-color-primary, #6366f1);
     outline-offset: -2px;
+  }
+
+  .tc-resize-handle {
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 8px;
+    cursor: col-resize;
+    background: transparent;
+    z-index: 1;
+  }
+
+  .tc-resize-handle::after {
+    content: '';
+    position: absolute;
+    right: 3px;
+    top: 20%;
+    height: 60%;
+    width: 2px;
+    background: var(--tc-border-color, #e2e8f0);
+    border-radius: 1px;
+    opacity: 0;
+    transition: opacity 0.15s ease;
+  }
+
+  .tc-th:hover .tc-resize-handle::after {
+    opacity: 1;
   }
 </style>
