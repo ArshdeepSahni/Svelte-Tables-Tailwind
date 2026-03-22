@@ -249,7 +249,7 @@
           class:tc-th--pinned-right={col.pinned === 'right' && !isColumnVirtualizing}
           role="columnheader"
           aria-sort={getAriaSortValue(col.key)}
-          draggable={!isColumnVirtualizing}
+          draggable={!isColumnVirtualizing ? "true" : "false"}
           style="{colWidths.get(col.key) ? `width: ${colWidths.get(col.key)}px; min-width: ${col.minWidth ?? 60}px;` : `width: ${col.minWidth ?? 150}px; min-width: ${col.minWidth ?? 60}px;`}{col.pinned === 'left' && !isColumnVirtualizing ? ` left: ${computePinnedOffset(col, 'left')}px;` : ''}{col.pinned === 'right' && !isColumnVirtualizing ? ` right: ${computePinnedOffset(col, 'right')}px;` : ''}"
           onclick={() => handleHeaderClick(col)}
           onkeydown={(e) => {
