@@ -764,7 +764,7 @@
   {#if filterable}
     <div class="tc-toolbar">
       <SearchInput
-        placeholder="Search or try: status:active salary:>70000"
+        placeholder="Search..."
         onfilter={(val) => { filterQuery = val; }}
       />
     </div>
@@ -915,6 +915,8 @@
       {currentPage}
       {totalPages}
       totalRows={filteredRows.length}
+      totalAllRows={processedRows.length}
+      {filterQuery}
       onpagechange={(page) => { currentPage = page; }}
     />
   {/if}
@@ -923,23 +925,23 @@
 <style>
   .tc-table-wrapper {
     font-family: var(--tc-font-family, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif);
-    font-size: var(--tc-font-size, 0.875rem);
-    line-height: 1.5;
-    color: var(--tc-color-text, #0f172a);
+    font-size: var(--tc-font-size, 13px);
+    line-height: var(--tc-line-height, 1.5);
+    color: var(--tc-color-text, #0a0a0a);
     background: var(--tc-color-bg, #ffffff);
-    border: 1px solid var(--tc-border-color, #e2e8f0);
-    border-radius: var(--tc-border-radius, 0.75rem);
-    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.07), 0 1px 2px -1px rgba(0, 0, 0, 0.07);
-    clip-path: inset(0 round 0.75rem);
+    border: var(--tc-border-width, 1px) solid var(--tc-color-border, #f0f0f0);
+    border-radius: var(--tc-border-radius, 12px);
+    box-shadow: var(--tc-shadow-wrapper, 0 1px 3px rgba(0,0,0,0.04), 0 1px 2px rgba(0,0,0,0.02));
+    overflow: hidden;
   }
 
   .tc-toolbar {
     display: flex;
     align-items: center;
     justify-content: flex-end;
-    padding: 0.625rem 1rem;
-    border-bottom: 1px solid var(--tc-border-color, #e2e8f0);
-    background: var(--tc-toolbar-bg, #f8fafc);
+    padding: var(--tc-toolbar-padding, 8px 12px);
+    border-bottom: var(--tc-border-width, 1px) solid var(--tc-color-border, #f0f0f0);
+    background: var(--tc-color-bg-toolbar, #fafafa);
   }
 
   .tc-table-scroll {
@@ -964,11 +966,11 @@
 
   .tc-caption {
     text-align: left;
-    font-weight: 700;
+    font-weight: var(--tc-font-weight-semibold, 600);
     font-size: 0.9375rem;
-    padding: 0.875rem 1rem 0;
+    padding: 12px 16px 0;
     caption-side: top;
-    color: var(--tc-color-text, #0f172a);
+    color: var(--tc-color-text, #0a0a0a);
     letter-spacing: -0.01em;
   }
 
@@ -981,21 +983,5 @@
   :global(::view-transition-new(root)) {
     animation-duration: 0.18s;
     animation-timing-function: ease;
-  }
-
-  @media (prefers-color-scheme: dark) {
-    .tc-table-wrapper {
-      --tc-color-text: #f1f5f9;
-      --tc-color-bg: #0f172a;
-      --tc-border-color: #1e293b;
-      --tc-toolbar-bg: #0f172a;
-      --tc-header-bg: #0f172a;
-      --tc-header-border: #1e293b;
-      --tc-color-bg-hover: #1e293b;
-      --tc-color-selected-bg: #172554;
-      --tc-color-muted: #64748b;
-      --tc-skeleton-from: #1e293b;
-      --tc-skeleton-to: #334155;
-    }
   }
 </style>

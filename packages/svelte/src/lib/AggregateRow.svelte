@@ -60,20 +60,22 @@
 
 <style>
   .tc-aggregate-row {
-    background: var(--tc-header-bg, #f8fafc);
-    font-weight: 600;
-    border-top: 2px solid var(--tc-border-color, #e2e8f0);
+    background: var(--tc-color-bg-aggregate, #fafafa);
+    font-weight: var(--tc-font-weight-semibold, 600);
+    border-top: var(--tc-border-width-accent, 2px) solid var(--tc-color-border, #f0f0f0);
   }
 
   .tc-aggregate {
-    color: var(--tc-color-text, #0f172a);
-    font-size: 0.8125rem;
+    color: var(--tc-color-text, #0a0a0a);
+    font-size: var(--tc-font-size, 13px);
+    padding: var(--tc-cell-padding-y, 8px) var(--tc-cell-padding-x, 12px);
+    font-variant-numeric: tabular-nums;
   }
 
   .tc-aggregate--label {
-    font-size: 0.6875rem;
+    font-size: var(--tc-font-size-sm, 11px);
     text-transform: uppercase;
-    letter-spacing: 0.06em;
-    color: var(--tc-color-muted, #64748b);
+    letter-spacing: var(--tc-letter-spacing-header, 0.04em);
+    color: var(--tc-color-text-muted, #a3a3a3);
   }
 </style>

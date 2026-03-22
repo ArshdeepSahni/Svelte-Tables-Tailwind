@@ -309,20 +309,20 @@
 
 <style>
   .tc-th {
-    padding: 0.5rem 1rem;
+    padding: var(--tc-header-padding-y, 10px) var(--tc-header-padding-x, 12px);
     text-align: left;
-    font-size: 0.6875rem;
-    font-weight: 600;
-    letter-spacing: 0.06em;
+    font-size: var(--tc-font-size-header, 11px);
+    font-weight: var(--tc-font-weight-medium, 500);
+    letter-spacing: var(--tc-letter-spacing-header, 0.04em);
     text-transform: uppercase;
-    background: var(--tc-header-bg, #f8fafc);
-    color: var(--tc-header-color, #64748b);
-    border-bottom: 1px solid var(--tc-header-border, #e2e8f0);
+    background: var(--tc-color-bg-header, #fafafa);
+    color: var(--tc-color-text-header, #737373);
+    border-bottom: var(--tc-border-width, 1px) solid var(--tc-color-border-header, #f0f0f0);
     white-space: nowrap;
     position: sticky;
     top: 0;
     z-index: 1;
-    transition: background 0.15s ease;
+    transition: background var(--tc-transition-sort, 0.18s ease);
   }
 
   .tc-th-content {
@@ -345,7 +345,7 @@
   .tc-sort-icon--active {
     opacity: 1;
     transform: scale(1);
-    color: var(--tc-color-primary, #6366f1);
+    color: var(--tc-color-accent, #0a0a0a);
   }
 
   /* The SVG arrow itself */
@@ -384,8 +384,10 @@
     opacity: 1;
   }
 
+  /* Sorted column: near-black text, heavier weight — NO color change */
   .tc-th--sorted {
-    color: var(--tc-color-primary, #6366f1);
+    color: var(--tc-color-text, #0a0a0a);
+    font-weight: var(--tc-font-weight-semibold, 600);
   }
 
   .tc-th--sortable {
@@ -394,8 +396,8 @@
   }
 
   .tc-th--sortable:hover {
-    background: var(--tc-header-bg-hover, #f1f5f9);
-    color: var(--tc-color-text, #0f172a);
+    background: var(--tc-color-bg-row-hover, #f5f5f5);
+    color: var(--tc-color-text, #0a0a0a);
   }
 
   .tc-th--sortable:hover .tc-sort-icon {
@@ -409,11 +411,11 @@
 
   .tc-th--checkbox {
     width: 2.75rem;
-    padding-left: 1rem;
+    padding-left: 12px;
   }
 
   .tc-th--sortable:focus-visible {
-    outline: 2px solid var(--tc-color-primary, #6366f1);
+    outline: 2px solid var(--tc-color-focus-ring, rgba(10,10,10,0.15));
     outline-offset: -2px;
   }
 
@@ -434,8 +436,8 @@
     right: 3px;
     top: 20%;
     height: 60%;
-    width: 2px;
-    background: var(--tc-border-color, #e2e8f0);
+    width: 1px;
+    background: var(--tc-color-border, #f0f0f0);
     border-radius: 1px;
     opacity: 0;
     transition: opacity 0.15s ease;
@@ -446,14 +448,14 @@
   }
 
   .tc-th--drag-target {
-    border-left: 3px solid var(--tc-color-primary, #6366f1);
+    border-left: var(--tc-border-width-accent, 2px) solid var(--tc-color-accent, #0a0a0a);
   }
 
   .tc-th--pinned-left,
   .tc-th--pinned-right {
     position: sticky;
     z-index: 3;
-    background: var(--tc-header-bg, #f8fafc);
+    background: var(--tc-color-bg-header, #fafafa);
   }
 
   .tc-th--pinned-left {
@@ -466,11 +468,11 @@
 
   /* Separator shadow: rightmost left-pinned column */
   .tc-th--pinned-left:not(:has(~ .tc-th--pinned-left)) {
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--tc-shadow-pin, 2px 0 4px rgba(0,0,0,0.06));
   }
 
   /* Separator shadow: leftmost right-pinned column */
   .tc-th--pinned-right:first-of-type {
-    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.08);
+    box-shadow: -2px 0 4px rgba(0, 0, 0, 0.06);
   }
 </style>

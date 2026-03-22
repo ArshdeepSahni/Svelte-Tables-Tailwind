@@ -365,7 +365,8 @@
 
 <style>
   .tc-tr {
-    transition: background 0.1s ease, opacity 0.12s ease;
+    transition: var(--tc-transition-row, background 0.08s ease);
+    border-bottom: var(--tc-border-width, 1px) solid var(--tc-color-border-row, #f7f7f7);
     contain: layout style;
     /*
      * content-visibility: auto — browser skips rendering off-screen rows.
@@ -373,7 +374,7 @@
      * contain-intrinsic-size provides a size hint so scroll bar remains accurate.
      */
     content-visibility: auto;
-    contain-intrinsic-size: 0 var(--tc-row-height, 48px);
+    contain-intrinsic-size: 0 var(--tc-row-height, 44px);
   }
 
   /* During sort transitions: briefly fade rows to signal change */
@@ -382,47 +383,46 @@
   }
 
   .tc-tr:hover {
-    background: var(--tc-color-bg-hover, #f8fafc);
+    background: var(--tc-color-bg-row-hover, #fafafa);
   }
 
   .tc-tr--selected {
-    background: var(--tc-color-selected-bg, #eef2ff) !important;
-    box-shadow: inset 3px 0 0 var(--tc-color-primary, #6366f1);
+    background: var(--tc-color-bg-row-selected, #f5f5f5) !important;
+    box-shadow: inset 2px 0 0 var(--tc-color-selection-accent, #0a0a0a);
   }
 
   .tc-tr--striped {
-    background: var(--tc-color-bg-alt, #f8fafc);
+    background: var(--tc-color-bg-row-striped, #fafafa);
   }
 
   .tc-td {
-    padding: 0.6875rem 1rem;
-    border-bottom: 1px solid var(--tc-border-color, #e2e8f0);
-    height: var(--tc-row-height, 3rem);
+    padding: var(--tc-cell-padding-y, 8px) var(--tc-cell-padding-x, 12px);
+    height: var(--tc-row-height, 44px);
     vertical-align: middle;
-    color: var(--tc-color-text, #0f172a);
+    color: var(--tc-color-text, #0a0a0a);
     contain: layout style paint;
   }
 
   .tc-td--bordered {
-    border-right: 1px solid var(--tc-border-color, #e2e8f0);
+    border-right: var(--tc-border-width, 1px) solid var(--tc-color-border, #f0f0f0);
   }
 
   .tc-td--empty {
     text-align: center;
-    color: var(--tc-color-muted, #94a3b8);
+    color: var(--tc-color-text-muted, #a3a3a3);
     padding: 3rem 1rem;
     font-size: 0.9375rem;
   }
 
   .tc-td:focus-visible {
-    outline: 2px solid var(--tc-color-primary, #6366f1);
+    outline: 2px solid var(--tc-color-focus-ring, rgba(10,10,10,0.15));
     outline-offset: -2px;
     border-radius: 2px;
   }
 
   .tc-td--checkbox {
     width: 2.75rem;
-    padding-left: 1rem;
+    padding-left: 12px;
   }
 
   .tc-tr:last-child .tc-td {
@@ -433,7 +433,7 @@
   .tc-td--pinned-right {
     position: sticky;
     z-index: 1;
-    background: var(--tc-color-bg, #ffffff);
+    background: var(--tc-color-bg-row, #ffffff);
   }
 
   .tc-td--pinned-left {
@@ -445,17 +445,17 @@
   }
 
   .tc-td--pinned-left:not(:has(~ .tc-td--pinned-left)) {
-    box-shadow: 2px 0 4px rgba(0, 0, 0, 0.08);
+    box-shadow: var(--tc-shadow-pin, 2px 0 4px rgba(0,0,0,0.06));
   }
 
   .tc-skeleton-cell {
     height: 0.875rem;
-    border-radius: 0.375rem;
+    border-radius: var(--tc-border-radius-xs, 4px);
     background: linear-gradient(
       90deg,
-      #e2e8f0 0%,
-      #f1f5f9 40%,
-      #e2e8f0 80%
+      var(--tc-color-bg-skeleton-from, #f0f0f0) 0%,
+      var(--tc-color-bg-skeleton-to, #f7f7f7) 40%,
+      var(--tc-color-bg-skeleton-from, #f0f0f0) 80%
     );
     background-size: 300% 100%;
     animation: tc-shimmer 2.5s ease-in-out infinite;
