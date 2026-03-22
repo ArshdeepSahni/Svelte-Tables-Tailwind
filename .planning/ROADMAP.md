@@ -14,7 +14,7 @@
 - [x] **Phase 2: Core Engine + Type Inference + Renderer Registry** - Pure-JS inference engine, renderer plugin registry, and all Tier 1 cell renderers (completed 2026-03-21)
 - [x] **Phase 3: Svelte 5 Component + Zero-Config API** - Primary delivery vehicle — `<Table data={rows} />` working end-to-end (completed 2026-03-21)
 - [x] **Phase 4: Virtual Scrolling + Performance** - 100k-row virtual scrolling, CSS containment, Web Worker sort, and benchmark validation (completed 2026-03-21)
-- [ ] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper
+- [x] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper (completed 2026-03-22)
 - [ ] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence
 - [ ] **Phase 7: Docs Site + Release** - SvelteKit docs, live REPL playground, npm publish, v1 deprecation notice
 
@@ -149,7 +149,7 @@ Plans:
 4. Setting `document.querySelector('tc-table').data = rows` in the browser console of a plain HTML file (no framework) updates the rendered table — the Web Component property API works in vanilla JS.
 5. Playwright smoke tests pass for both the React wrapper and the Vue wrapper rendering 100 rows — tables are visible, headers are present, cells contain expected values.
 
-**Plans:** 4/5 plans executed
+**Plans:** 5/5 plans complete
 
 Plans:
 - [ ] 05-01-PLAN.md — Infrastructure + Wave 0 stubs: install lit in @tablecraft/core, install @lit/react in @tablecraft/react, switch @tablecraft/vue to Vite + @vitejs/plugin-vue, create vite.config.element.ts (UMD), create element.test.ts and wc-smoke.spec.ts Wave 0 stubs
@@ -208,7 +208,7 @@ Plans:
 | 2     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 3     | 6/6 | Complete    | 2026-03-21 | Pending |
 | 4     | 6/6 | Complete    | 2026-03-21 | Pending |
-| 5     | 4/5 | In Progress|  | Pending |
+| 5     | 4/5 | Complete    | 2026-03-22 | Pending |
 | 6     | Column Operations + Advanced Features            | Resize, reorder, pin, group, persist, density       | ADV-01–09 (9 reqs)   | Pending |
 | 7     | Docs Site + Release                              | Live playground, npm publish, v1 deprecation        | DOCS-01–08 (8 reqs)  | Pending |
 
