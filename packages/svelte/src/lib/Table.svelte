@@ -507,6 +507,12 @@
     }
   }
 
+  function handleColResize(key: string, width: number) {
+    colWidths = new Map(colWidths).set(key, width);
+  }
+
+  const hasCustomWidths = $derived(colWidths.size > 0);
+
   // ---------------------------------------------------------------------------
   // Selection helpers
   // ---------------------------------------------------------------------------
@@ -553,6 +559,7 @@
           class="tc-table"
           class:tc-table--bordered={bordered}
           class:tc-table--striped={striped}
+          class:tc-table--fixed-layout={hasCustomWidths}
           role="grid"
           aria-colcount={visibleColumns.length + (selectable ? 1 : 0)}
           aria-rowcount={effectiveData.length}
@@ -573,6 +580,8 @@
             {columnVirtualItems}
             {totalColumnSize}
             {isColumnVirtualizing}
+            {colWidths}
+            oncolresize={handleColResize}
             onsortchange={handleSortChange}
             onselectall={handleSelectAll}
           />
@@ -611,6 +620,7 @@
         class="tc-table"
         class:tc-table--bordered={bordered}
         class:tc-table--striped={striped}
+        class:tc-table--fixed-layout={hasCustomWidths}
         role="grid"
         aria-colcount={visibleColumns.length + (selectable ? 1 : 0)}
         aria-rowcount={effectiveData.length}
@@ -631,6 +641,8 @@
           {columnVirtualItems}
           {totalColumnSize}
           {isColumnVirtualizing}
+          {colWidths}
+          oncolresize={handleColResize}
           onsortchange={handleSortChange}
           onselectall={handleSelectAll}
         />
@@ -711,6 +723,10 @@
     width: 100%;
     border-collapse: collapse;
     min-width: max-content;
+  }
+
+  .tc-table--fixed-layout {
+    table-layout: fixed;
   }
 
   .tc-caption {
