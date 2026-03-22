@@ -139,6 +139,16 @@
     return offset;
   }
 
+  // Sort icon direction: true = desc (arrow points down), false = asc (arrow points up)
+  function getSortRotation(colKey: string): string {
+    if (sortState.key !== colKey) return '';
+    return sortState.dir === 'desc' ? 'tc-sort-arrow--desc' : 'tc-sort-arrow--asc';
+  }
+
+  function isSortActive(colKey: string): boolean {
+    return sortState.key === colKey && sortState.dir !== null;
+  }
+
 </script>
 
 <thead aria-busy={sortLoading ? 'true' : undefined}>
@@ -182,14 +192,27 @@
             <span class="tc-th-content">
               {col.label}
               {#if col.sortable !== false}
-                <span class="tc-sort-icon" aria-hidden="true">
-                  {#if sortState.key === col.key && sortState.dir === 'asc'}
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 1L7 6H1L4 1Z"/></svg>
-                  {:else if sortState.key === col.key && sortState.dir === 'desc'}
-                    <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 7L1 2H7L4 7Z"/></svg>
-                  {:else}
-                    <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" opacity="0.4"><path d="M4 0L7 4H1L4 0Z"/><path d="M4 10L1 6H7L4 10Z"/></svg>
-                  {/if}
+                <span
+                  class="tc-sort-icon"
+                  class:tc-sort-icon--active={isSortActive(col.key)}
+                  aria-hidden="true"
+                >
+                  <svg
+                    class="tc-sort-arrow {getSortRotation(col.key)}"
+                    width="10"
+                    height="10"
+                    viewBox="0 0 10 10"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="1.5"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  >
+                    <!-- Up arrow path -->
+                    <path class="tc-sort-arrow-up" d="M5 8.5V1.5M2 4L5 1.5L8 4"/>
+                    <!-- Down arrow path -->
+                    <path class="tc-sort-arrow-down" d="M5 1.5V8.5M2 6L5 8.5L8 6"/>
+                  </svg>
                 </span>
               {/if}
             </span>
@@ -245,14 +268,27 @@
           <span class="tc-th-content">
             {col.label}
             {#if col.sortable !== false}
-              <span class="tc-sort-icon" aria-hidden="true">
-                {#if sortState.key === col.key && sortState.dir === 'asc'}
-                  <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 1L7 6H1L4 1Z"/></svg>
-                {:else if sortState.key === col.key && sortState.dir === 'desc'}
-                  <svg width="8" height="8" viewBox="0 0 8 8" fill="currentColor"><path d="M4 7L1 2H7L4 7Z"/></svg>
-                {:else}
-                  <svg width="8" height="10" viewBox="0 0 8 10" fill="currentColor" opacity="0.4"><path d="M4 0L7 4H1L4 0Z"/><path d="M4 10L1 6H7L4 10Z"/></svg>
-                {/if}
+              <span
+                class="tc-sort-icon"
+                class:tc-sort-icon--active={isSortActive(col.key)}
+                aria-hidden="true"
+              >
+                <svg
+                  class="tc-sort-arrow {getSortRotation(col.key)}"
+                  width="10"
+                  height="10"
+                  viewBox="0 0 10 10"
+                  fill="none"
+                  stroke="currentColor"
+                  stroke-width="1.5"
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                >
+                  <!-- Bi-directional sort icon: shows both up and down when unsorted,
+                       morphs to single direction when active -->
+                  <path class="tc-sort-arrow-up" d="M5 8.5V1.5M2 4L5 1.5L8 4"/>
+                  <path class="tc-sort-arrow-down" d="M5 1.5V8.5M2 6L5 8.5L8 6"/>
+                </svg>
               </span>
             {/if}
           </span>
@@ -295,25 +331,61 @@
     gap: 0.375rem;
   }
 
+  /* Sort icon container */
   .tc-sort-icon {
     display: inline-flex;
-    flex-direction: column;
-    gap: 1px;
-    opacity: 0.35;
-    transition: opacity 0.15s ease;
+    align-items: center;
+    justify-content: center;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+    transform: scale(0.85);
+    opacity: 0.3;
   }
 
-  .tc-th--sorted .tc-sort-icon {
+  /* Active state: scale in with smooth animation */
+  .tc-sort-icon--active {
     opacity: 1;
+    transform: scale(1);
     color: var(--tc-color-primary, #6366f1);
+  }
+
+  /* The SVG arrow itself */
+  .tc-sort-arrow {
+    display: block;
+    transition: transform 0.2s ease;
+  }
+
+  /* Unsorted: show both up and down arrow paths at half opacity */
+  .tc-sort-arrow .tc-sort-arrow-up,
+  .tc-sort-arrow .tc-sort-arrow-down {
+    transition: opacity 0.2s ease, stroke-dashoffset 0.2s ease;
+  }
+
+  /* Default (unsorted): both paths visible but faded */
+  .tc-sort-arrow:not(.tc-sort-arrow--asc):not(.tc-sort-arrow--desc) .tc-sort-arrow-up {
+    opacity: 0.5;
+  }
+  .tc-sort-arrow:not(.tc-sort-arrow--asc):not(.tc-sort-arrow--desc) .tc-sort-arrow-down {
+    opacity: 0.5;
+  }
+
+  /* Ascending: show up arrow vivid, fade down arrow */
+  .tc-sort-arrow--asc .tc-sort-arrow-up {
+    opacity: 1;
+  }
+  .tc-sort-arrow--asc .tc-sort-arrow-down {
+    opacity: 0;
+  }
+
+  /* Descending: show down arrow vivid, fade up arrow */
+  .tc-sort-arrow--desc .tc-sort-arrow-up {
+    opacity: 0;
+  }
+  .tc-sort-arrow--desc .tc-sort-arrow-down {
+    opacity: 1;
   }
 
   .tc-th--sorted {
     color: var(--tc-color-primary, #6366f1);
-  }
-
-  .tc-sort-icon svg {
-    display: block;
   }
 
   .tc-th--sortable {
@@ -328,6 +400,11 @@
 
   .tc-th--sortable:hover .tc-sort-icon {
     opacity: 0.7;
+    transform: scale(1);
+  }
+
+  .tc-th--sortable:hover .tc-sort-icon--active {
+    opacity: 1;
   }
 
   .tc-th--checkbox {
