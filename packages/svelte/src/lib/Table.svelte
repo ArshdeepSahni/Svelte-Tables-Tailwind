@@ -354,13 +354,12 @@
       return;
     }
 
-    worker.addEventListener('message', (e: MessageEvent<{ sorted: Record<string, unknown>[] }>) => {
-      const sortedOriginals = e.data.sorted;
-      // Map sorted originals back to their ProcessedRow without re-processing
-      const origToProcessed = new Map(processedRows.map((pr) => [pr._original, pr]));
-      workerSortedRows = sortedOriginals
-        .map((orig) => origToProcessed.get(orig))
-        .filter((pr): pr is ProcessedRow => pr !== undefined);
+    worker.addEventListener('message', (e: MessageEvent<{ sortedIndices: number[] }>) => {
+      // Worker returns sorted indices — use them to reorder filteredRows directly.
+      // This avoids building a 100k-entry Map over Svelte's reactive proxy (major perf win).
+      const { sortedIndices } = e.data;
+      const snap = filteredRows; // stable reference, no per-element proxy access
+      workerSortedRows = sortedIndices.map((i) => snap[i]).filter(Boolean) as ProcessedRow[];
       sortLoading = false;
     });
 
@@ -610,7 +609,7 @@
   }
 
   .tc-table-scroll--virtual {
-    height: var(--tc-virtual-height, 600px);
+    height: var(--tc-virtual-height, min(600px, 70vh));
     overflow-y: auto;
   }
 

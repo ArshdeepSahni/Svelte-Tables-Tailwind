@@ -1,9 +1,8 @@
 /// <reference lib="webworker" />
 /**
  * sort.worker.ts — Web Worker for non-blocking sort of large datasets.
+ * Returns sorted indices (not sorted rows) to avoid re-serializing ProcessedRow objects.
  * Imported in Table.svelte via: new Worker(new URL('./sort.worker.ts', import.meta.url), { type: 'module' })
- * For the published npm package, vite.config.ts must pre-compile this.
- * SSR guard lives in Table.svelte — this file never runs in Node.
  */
 
 export interface SortMessage {
@@ -13,7 +12,8 @@ export interface SortMessage {
 }
 
 export interface SortResult {
-  sorted: Record<string, unknown>[];
+  /** Sorted indices into the original data array — avoids re-serializing row objects */
+  sortedIndices: number[];
 }
 
 // Extracted comparator — also importable directly in unit tests (no Worker needed)
@@ -34,6 +34,8 @@ export function sortComparator(
 
 self.addEventListener('message', (e: MessageEvent<SortMessage>) => {
   const { data, key, dir } = e.data;
-  const sorted = [...data].sort((a, b) => sortComparator(a, b, key, dir));
-  self.postMessage({ sorted } satisfies SortResult);
+  // Sort indices rather than copying the full array — avoids a redundant structured-clone on postMessage
+  const indices = Array.from({ length: data.length }, (_, i) => i);
+  indices.sort((a, b) => sortComparator(data[a], data[b], key, dir));
+  self.postMessage({ sortedIndices: indices } satisfies SortResult);
 });

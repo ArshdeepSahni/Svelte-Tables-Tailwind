@@ -263,11 +263,15 @@ export function detectPhone(samples: unknown[], _columnKey: string): DetectorRes
 // Detector 11 — image
 // ---------------------------------------------------------------------------
 
-const IMAGE_EXTENSION_RE = /\.(jpg|jpeg|png|gif|svg|webp)(\?.*)?$/i;
-const IMAGE_PATH_RE = /\/images?\/|\/img\/|cdn\./i;
+const IMAGE_EXTENSION_RE = /\.(jpg|jpeg|png|gif|svg|webp|avif|bmp|ico|tiff?)(\?.*)?$/i;
+const IMAGE_PATH_RE = /\/images?\/|\/img\/|\/photos?\/|\/avatars?\/|\/thumbnails?\/|cdn\./i;
+// Known image CDN hostnames (no extension in URL but always serve images)
+const IMAGE_CDN_RE =
+  /(?:pravatar\.cc|dicebear\.com|gravatar\.com|ui-avatars\.com|randomuser\.me|picsum\.photos|unsplash\.com|images\.unsplash\.com|cloudinary\.com|imgix\.net|imagekit\.io|res\.cloudinary\.com|twimg\.com|pbs\.twimg\.com|github\.com\/identicons)/i;
 
 function isImageUrl(s: string): boolean {
-  return IMAGE_EXTENSION_RE.test(s) || IMAGE_PATH_RE.test(s);
+  if (s.startsWith('data:image/')) return true;
+  return IMAGE_EXTENSION_RE.test(s) || IMAGE_PATH_RE.test(s) || IMAGE_CDN_RE.test(s);
 }
 
 export function detectImage(samples: unknown[], _columnKey: string): DetectorResult {
