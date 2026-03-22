@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 05-05-PLAN.md
-last_updated: "2026-03-22T10:38:25.582Z"
+stopped_at: Completed 06-column-operations-advanced-features-01-PLAN.md
+last_updated: "2026-03-22T11:12:35.135Z"
 progress:
   total_phases: 10
   completed_phases: 5
-  total_plans: 27
-  completed_plans: 27
+  total_plans: 32
+  completed_plans: 28
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 5: Web Components Core + Framework Wrappers — COMPLETE (5/5 plans done)
+Phase 6: Column Operations + Advanced Features — In Progress (1/5 plans done)
 
 ---
 
@@ -42,10 +42,10 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
-| Phase    | 5 — Web Components Core + Framework Wrappers — COMPLETE |
-| Plan     | 05 complete (builds verified, 5 Playwright smoke tests GREEN: vanilla, React, Vue, UMD global) |
-| Status   | Phase 5 COMPLETE (5/5 plans done)                    |
-| Progress | 27/27 plans complete across phases 1-5               |
+| Phase    | 6 — Column Operations + Advanced Features — In Progress |
+| Plan     | 01 complete (CSS clip-path fix, types extended, density+persistKey props, Wave 0 stubs) |
+| Status   | Phase 6 In Progress (1/5 plans done)                |
+| Progress | 28/32 plans complete across phases 1-6               |
 
 ```
 Phase progress: [███████] 7/7
@@ -108,6 +108,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 05-web-components-core-framework-wrappers P04 | 158 | 2 tasks | 6 files |
 | Phase 05-web-components-core-framework-wrappers P03 | 266 | 2 tasks | 2 files |
 | Phase 05-web-components-core-framework-wrappers P05 | 25min | 2 tasks | 4 files |
+| Phase 06-column-operations-advanced-features P01 | 253 | 3 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -200,6 +201,9 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | rolldown sub-path external (05-05) | @tablecraft/core/element sub-path must be listed explicitly in rolldownOptions.external — rolldown does not auto-externalize sub-paths of externalized packages |
 | CDN imports in Playwright via page.evaluate (05-05) | page.addScriptTag({ content, type: 'module' }) with CDN imports times out; page.evaluate(async () => { await import('cdn') }) runs in full browser fetch context |
 | playwright.smoke.config.ts without webServer (05-05) | Smoke tests use page.setContent(); dedicated config avoids requiring the svelte bench server (port 5174) |
+| clip-path:inset(0 round 0.75rem) replaces overflow:hidden on .tc-table-wrapper (06-01) | overflow:hidden blocks position:sticky for pinned columns; clip-path preserves border-radius visual without clipping stacking context |
+| test.skip(true, reason) for Wave 0 Playwright stubs (06-01) | test.todo is not a function inside test.describe in Playwright 1.58.2; test.skip(true) achieves same CI result — 0 failures |
+| rowHeightMap as const for density prop: compact=32px, comfortable=48px, spacious=64px (06-01) | Single source of truth for density→px mapping; TypeScript-safe via as const; applied via style attribute on .tc-table-scroll |
 
 ### Active Todos
 
@@ -230,9 +234,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-22T10:34:51.041Z
+**Last session:** 2026-03-22T11:12:35.132Z
 
-**Stopped at:** Completed 05-05-PLAN.md
+**Stopped at:** Completed 06-column-operations-advanced-features-01-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 

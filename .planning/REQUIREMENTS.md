@@ -95,12 +95,12 @@ What v1.0.6 ships today. These are the baselines, not goals.
 - [ ] **ADV-01**: Column resizing — drag handle on column divider; `minWidth` and `maxWidth` constrainable; ResizeObserver updates layout
 - [ ] **ADV-02**: Column reordering — drag-and-drop column headers using native HTML drag events (no DnD library dependency)
 - [ ] **ADV-03**: Column pinning — `pinned: 'left' | 'right'` on column definition; pinned columns stay fixed during horizontal scroll
-- [ ] **ADV-04**: Sticky header — column headers fixed at top during vertical scroll (always on when virtualisation is active)
+- [x] **ADV-04**: Sticky header — column headers fixed at top during vertical scroll (always on when virtualisation is active)
 - [ ] **ADV-05**: Column visibility toggle — `hideable` prop enables column show/hide UI; hidden columns excluded from rendering
 - [ ] **ADV-06**: Row grouping — auto-detect groupable columns (status/enum types); grouped rows with expand/collapse
 - [ ] **ADV-07**: Aggregate footer row — sum, avg, count, min, max for numeric columns; configurable per column
-- [ ] **ADV-08**: Column state persistence — opt-in `persistKey` prop saves sort, filter, column widths, visibility to localStorage
-- [ ] **ADV-09**: Density control — `density: 'compact' | 'comfortable' | 'spacious'` prop adjusts row height and padding
+- [x] **ADV-08**: Column state persistence — opt-in `persistKey` prop saves sort, filter, column widths, visibility to localStorage
+- [x] **ADV-09**: Density control — `density: 'compact' | 'comfortable' | 'spacious'` prop adjusts row height and padding
 
 ### DOCS SITE + RELEASE (Phase 7)
 
@@ -220,12 +220,12 @@ What v1.0.6 ships today. These are the baselines, not goals.
 | ADV-01      | Phase 6 | Pending  |
 | ADV-02      | Phase 6 | Pending  |
 | ADV-03      | Phase 6 | Pending  |
-| ADV-04      | Phase 6 | Pending  |
+| ADV-04      | Phase 6 | Complete |
 | ADV-05      | Phase 6 | Pending  |
 | ADV-06      | Phase 6 | Pending  |
 | ADV-07      | Phase 6 | Pending  |
-| ADV-08      | Phase 6 | Pending  |
-| ADV-09      | Phase 6 | Pending  |
+| ADV-08      | Phase 6 | Complete |
+| ADV-09      | Phase 6 | Complete |
 | DOCS-01     | Phase 7 | Pending  |
 | DOCS-02     | Phase 7 | Pending  |
 | DOCS-03     | Phase 7 | Pending  |
