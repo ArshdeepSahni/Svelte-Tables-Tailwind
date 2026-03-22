@@ -176,7 +176,14 @@ Plans:
 4. After a page reload, a table with `persistKey="admin-users"` restores the previous column widths, sort state, and visibility state from localStorage automatically.
 5. Adding `density="compact"` reduces row height and padding visibly, and `density="spacious"` increases them — the three density modes are visually distinct.
 
-**Plans:** TBD
+**Plans:** 5 plans
+
+Plans:
+- [ ] 06-01-PLAN.md — Critical CSS fix + type extension + density + persistence: fix overflow:hidden→clip-path bug, add AggregateFunction type + ProcessedGroupRow, density prop, persistKey prop, Wave 0 Playwright stubs
+- [ ] 06-02-PLAN.md — Column visibility + aggregate footer: hiddenColumns $bindable + visibleColumns $derived, AggregateRow.svelte, showAggregates prop wiring
+- [ ] 06-03-PLAN.md — Column resize: colWidths $state Map, resize handle in TableHeader, pointer events + setPointerCapture, table-layout:fixed, Playwright ADV-01 tests
+- [ ] 06-04-PLAN.md — Column reorder + pinning: columnOrder $state + orderedColumns $derived, native HTML DnD in TableHeader, position:sticky pinning in TableHeader + TableBody, Playwright ADV-02/03 tests
+- [ ] 06-05-PLAN.md — Row grouping + full verification: groupBy prop + groupedRows pipeline step, GroupRow.svelte, TableBody mixed-row rendering, all tests + build + human visual checkpoint
 
 ---
 
@@ -327,4 +334,4 @@ Plans:
 ---
 
 _Created: 2026-03-20_
-_Last updated: 2026-03-22 — Phase 5 plans created (5 plans, 4 waves)_
+_Last updated: 2026-03-22 — Phase 6 plans created (5 plans, 5 waves)_
