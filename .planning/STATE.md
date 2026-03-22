@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
 status: planning
-stopped_at: Completed 05-03-PLAN.md
-last_updated: "2026-03-21T20:34:39.367Z"
+stopped_at: Completed 05-05-PLAN.md
+last_updated: "2026-03-22T10:34:51.044Z"
 progress:
   total_phases: 10
-  completed_phases: 4
+  completed_phases: 5
   total_plans: 27
-  completed_plans: 26
+  completed_plans: 27
 ---
 
 # Project State
@@ -22,7 +22,7 @@ progress:
 
 ## Current Phase
 
-Phase 4: Virtual Scrolling + Performance — COMPLETE (6/6 plans done)
+Phase 5: Web Components Core + Framework Wrappers — COMPLETE (5/5 plans done)
 
 ---
 
@@ -32,7 +32,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 **Core value:** Zero-config data display with smart type inference — `<Table data={rows} />` just works, and when you need more, one prop does it.
 
-**Current focus:** Phase 5: Web Components Core + Framework Wrappers
+**Current focus:** Phase 6: Column Operations + Advanced Features
 
 **Milestone:** v2.0.0 — Industry-Standard Zero-Config Table Library
 
@@ -42,10 +42,10 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
-| Phase    | 4 — Virtual Scrolling + Performance — COMPLETE |
-| Plan     | 06 complete (Playwright benchmarks: 6/6 pass, 48 unit tests green, build clean, Phase 4 acceptance gate passed) |
-| Status   | Phase 4 COMPLETE (6/6 plans done)                    |
-| Progress | 22/22 plans complete across phases 1-4               |
+| Phase    | 5 — Web Components Core + Framework Wrappers — COMPLETE |
+| Plan     | 05 complete (builds verified, 5 Playwright smoke tests GREEN: vanilla, React, Vue, UMD global) |
+| Status   | Phase 5 COMPLETE (5/5 plans done)                    |
+| Progress | 27/27 plans complete across phases 1-5               |
 
 ```
 Phase progress: [███████] 7/7
@@ -62,7 +62,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
 | 4     | Virtual Scrolling + Performance                  | In Progress | 5/6   |
-| 5     | Web Components Core + Framework Wrappers         | Pending  | 0/0   |
+| 5     | Web Components Core + Framework Wrappers         | Complete | 5/5   |
 | 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
 | 7     | Docs Site + Release                              | Pending  | 0/0   |
 
@@ -107,6 +107,7 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase 05-web-components-core-framework-wrappers P02 | 339 | 3 tasks | 8 files |
 | Phase 05-web-components-core-framework-wrappers P04 | 158 | 2 tasks | 6 files |
 | Phase 05-web-components-core-framework-wrappers P03 | 266 | 2 tasks | 2 files |
+| Phase 05-web-components-core-framework-wrappers P05 | 25min | 2 tasks | 4 files |
 
 ## Accumulated Context
 
@@ -195,6 +196,10 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Row typed locally as Record<string,unknown> in Table.vue (05-04) | Row is not a named export from @tablecraft/core; element.ts defines it locally; Vue SFC mirrors the same local type definition |
 | vue-shim.d.ts added for plain tsc support (05-04) | declare module '*.vue' with DefineComponent; required because project uses tsc not vue-tsc; tsconfig extended to include .vue and .d.ts |
 | @vitejs/plugin-vue added to vitest.config.ts (05-04) | Required to transform .vue files during test runs; already in devDependencies from Plan 01; compilerOptions.isCustomElement mirrors vite.config.ts |
+| Vite 8 UMD fileName function (05-05) | rolldown changed UMD extension to .umd.cjs with string fileName; use (format) => format === 'umd' ? 'element.umd.js' : 'element.js' to force .js extension |
+| rolldown sub-path external (05-05) | @tablecraft/core/element sub-path must be listed explicitly in rolldownOptions.external — rolldown does not auto-externalize sub-paths of externalized packages |
+| CDN imports in Playwright via page.evaluate (05-05) | page.addScriptTag({ content, type: 'module' }) with CDN imports times out; page.evaluate(async () => { await import('cdn') }) runs in full browser fetch context |
+| playwright.smoke.config.ts without webServer (05-05) | Smoke tests use page.setContent(); dedicated config avoids requiring the svelte bench server (port 5174) |
 
 ### Active Todos
 
@@ -225,9 +230,9 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-21T20:34:39.364Z
+**Last session:** 2026-03-22T10:34:51.041Z
 
-**Stopped at:** Completed 05-03-PLAN.md
+**Stopped at:** Completed 05-05-PLAN.md
 
 **Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
 
