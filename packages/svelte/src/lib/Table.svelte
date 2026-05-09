@@ -14,6 +14,7 @@
    * FOUND-04: Svelte 5 runes ($props, $state, $derived, $effect) only
    */
 
+  import { untrack } from 'svelte';
   import type { Snippet } from 'svelte';
   import type {
     ColumnDefinition,
@@ -22,6 +23,10 @@
     ProcessedRow,
   } from '@tablecraft/core';
   import { createTableEngine, adaptV1Props } from '@tablecraft/core';
+  import { parseNaturalLanguage, applyNLFilter, generateColumnSummary } from './nl-filter.js';
+  import type { NLFilterSpec, ColumnMeta, ColumnSummary } from './nl-filter.js';
+  import { connectStream } from './stream.svelte.js';
+  import type { StreamSource, StreamState, StreamStatus } from './stream.svelte.js';
   import type { Row, SortState, ProcessedGroupRow } from './types.js';
   import type { VirtualItem } from '@tanstack/svelte-virtual';
   import { createVirtualizer } from '@tanstack/svelte-virtual';
@@ -30,6 +35,19 @@
   import TableFooter from './TableFooter.svelte';
   import SearchInput from './SearchInput.svelte';
   import AggregateRow from './AggregateRow.svelte';
+  import ColumnMenu from './ColumnMenu.svelte';
+  import BulkActionsBar from './BulkActionsBar.svelte';
+  import ExportButton from './ExportButton.svelte';
+  import CellEditor from './CellEditor.svelte';
+  import CommandPalette from './CommandPalette.svelte';
+  import ViewSwitcher from './ViewSwitcher.svelte';
+  import KanbanView from './KanbanView.svelte';
+  import GalleryView from './GalleryView.svelte';
+  import ListView from './ListView.svelte';
+  import TimelineView from './TimelineView.svelte';
+  import { createHistoryManager, bindHistoryShortcuts } from './history.svelte.js';
+  import { evaluateConditionalFormats } from './conditional-format.js';
+  import type { ConditionalFormatRule, ConditionalFormatPreset, FormatStyle } from './conditional-format.js';
 
   type ColumnOverrideShort = Record<string, ColumnType>;
 
@@ -57,12 +75,23 @@
     // Sort transition: row opacity fade on sort change (default true)
     sortTransition?: boolean;
 
+    // Real-time streaming (Phase 9)
+    stream?: StreamSource;
+
     // Advanced features (Phase 6)
     density?: 'compact' | 'comfortable' | 'spacious';
     persistKey?: string;
     showAggregates?: boolean;
     showGroupAggregates?: boolean;
     groupBy?: string | null;
+
+    // Editing (Phase 12)
+    editable?: boolean;
+    exportable?: boolean;
+
+    // Conditional formatting (Phase 12)
+    conditionalFormats?: ConditionalFormatRule[];
+    formatPresets?: ConditionalFormatPreset[];
 
     // v1 backward compat (typed as unknown to avoid TS errors for existing consumers)
     colname?: unknown;
@@ -76,6 +105,7 @@
     onselect?: (event: { rows: Row[]; allSelected: boolean }) => void;
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
     oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown }) => void;
+    oncelledit?: (event: { row: Row; column: ResolvedColumn; key: string; oldValue: unknown; newValue: unknown }) => void;
 
     // Snippets (Svelte 5 — not slots)
     empty?: Snippet;
@@ -95,6 +125,11 @@
     emptyMessage = 'No data',
     virtualizeAt = 200,
     sortTransition = true,
+    editable = false,
+    exportable = false,
+    conditionalFormats = [],
+    formatPresets = [],
+    stream,
     density = 'comfortable' as 'compact' | 'comfortable' | 'spacious',
     persistKey,
     showAggregates = false,
@@ -107,8 +142,12 @@
     onselect,
     onrowclick,
     oncellclick,
+    oncelledit,
     empty,
   }: Props = $props();
+
+  // View mode for switching between table, kanban, gallery, list, and timeline views
+  let viewMode = $state<'table' | 'kanban' | 'gallery' | 'list' | 'timeline'>('table');
 
   // ---------------------------------------------------------------------------
   // v1 backward compat: detect colname/rowdata and adapt to v2 format
@@ -196,60 +235,99 @@
   let columnOrder = $state<string[]>([]);
   let collapsedGroups = $state(new Set<string>());
 
-  // ---------------------------------------------------------------------------
-  // Two-phase inference $effect
-  // ---------------------------------------------------------------------------
+  // Phase 12: Command palette
+  let commandPaletteVisible = $state(false);
+
+  // Phase 12: Inline editing state
+  let editingCell = $state<{ rowIndex: number; colKey: string } | null>(null);
+
+  // Phase 12: History manager (undo/redo)
+  const history = createHistoryManager(50);
+
+  // Edit version counter — bump to force re-derivation after cell edits
+  let editVersion = $state(0);
+
+  // Phase 9: Stream state
+  let streamState = $state<StreamState | null>(null);
 
   $effect(() => {
-    // Snapshot raw data to avoid proxy identity issues with selectedRows comparison
-    const rawData: Row[] = Array.isArray(effectiveData) ? effectiveData : [];
+    // Track only the `stream` prop as a dependency
+    const src = stream;
+    if (src) {
+      // Use untrack to avoid reading streamState as a dependency
+      untrack(() => {
+        streamState?.disconnect();
+        streamState = connectStream(src, data);
+      });
+    } else {
+      untrack(() => {
+        streamState?.disconnect();
+        streamState = null;
+      });
+    }
+    return () => {
+      untrack(() => {
+        streamState?.disconnect();
+      });
+    };
+  });
 
+  // Merge stream rows into effective data
+  const streamAwareData = $derived<Row[]>(
+    streamState && streamState.status !== 'idle' && streamState.status !== 'closed'
+      ? streamState.rows
+      : (Array.isArray(effectiveData) ? effectiveData : []),
+  );
+
+  // ---------------------------------------------------------------------------
+  // Column/row inference — pure $derived.by(), no $effect cascade
+  // ---------------------------------------------------------------------------
+
+  function applyLabelOverrides(cols: ResolvedColumn[]): ResolvedColumn[] {
+    if (!Array.isArray(effectiveColumns) || effectiveColumns.length === 0) return cols;
+    const overrideMap = new Map<string, string>();
+    for (const colDef of effectiveColumns as ColumnDefinition<Row>[]) {
+      if (colDef.label) overrideMap.set(colDef.key, colDef.label);
+    }
+    if (overrideMap.size === 0) return cols;
+    return cols.map((col) =>
+      overrideMap.has(col.key) ? { ...col, label: overrideMap.get(col.key)! } : col,
+    );
+  }
+
+  const inferredState = $derived.by(() => {
+    const rawData: Row[] = streamAwareData;
+    // Read editVersion to force re-derivation when a cell is edited in place
+    void editVersion;
     const engine = createTableEngine({
       data: rawData,
       columns: effectiveColumns,
     });
+    // Full inference in a single pass — no async two-phase to avoid effect cascades
+    const schema = engine.inferSchema(rawData);
+    const typedCols = engine.resolveColumns(rawData, effectiveColumns ?? undefined, schema);
+    const finalCols = applyLabelOverrides(typedCols);
+    const rows = engine.processRows(rawData, typedCols);
+    return { columns: finalCols, rows };
+  });
 
-    // Phase 1: immediate text columns (no inference — fast path)
-    const textCols = engine.resolveColumns(rawData, effectiveColumns ?? undefined);
-
-    // Apply label overrides from long-form columns prop (mock compatibility)
-    const applyLabelOverrides = (cols: ResolvedColumn[]): ResolvedColumn[] => {
-      if (!Array.isArray(effectiveColumns) || effectiveColumns.length === 0) return cols;
-      const overrideMap = new Map<string, string>();
-      for (const colDef of effectiveColumns as ColumnDefinition<Row>[]) {
-        if (colDef.label) overrideMap.set(colDef.key, colDef.label);
-      }
-      if (overrideMap.size === 0) return cols;
-      return cols.map((col) =>
-        overrideMap.has(col.key) ? { ...col, label: overrideMap.get(col.key)! } : col,
-      );
-    };
-
-    resolvedColumns = applyLabelOverrides(textCols);
-    processedRows = engine.processRows(rawData, textCols);
-
-    // Phase 2: async typed columns via requestIdleCallback
-    const schedule =
-      typeof requestIdleCallback !== 'undefined'
-        ? requestIdleCallback
-        : (cb: () => void) => setTimeout(cb, 1);
-    const cancel =
-      typeof cancelIdleCallback !== 'undefined' ? cancelIdleCallback : clearTimeout;
-
-    const idleId = schedule(() => {
-      const schema = engine.inferSchema(rawData);
-      const typedCols = engine.resolveColumns(rawData, effectiveColumns ?? undefined, schema);
-      resolvedColumns = applyLabelOverrides(typedCols);
-      processedRows = engine.processRows(rawData, typedCols);
+  // Sync inferredState into $state — single effect, no cascade since inferredState is $derived
+  $effect(() => {
+    const { columns: cols, rows } = inferredState;
+    untrack(() => {
+      resolvedColumns = cols;
+      processedRows = rows;
     });
-
-    return () => cancel(idleId as number);
   });
 
   // Initialize columnOrder from resolvedColumns on first inference completion
   $effect(() => {
-    if (columnOrder.length === 0 && resolvedColumns.length > 0) {
-      columnOrder = resolvedColumns.map((c) => c.key);
+    if (resolvedColumns.length > 0) {
+      untrack(() => {
+        if (columnOrder.length === 0) {
+          columnOrder = resolvedColumns.map((c) => c.key);
+        }
+      });
     }
   });
 
@@ -268,11 +346,46 @@
   }
 
   // ---------------------------------------------------------------------------
+  // Phase 8: Natural Language filter parsing
+  // ---------------------------------------------------------------------------
+
+  // Build column metadata for the NL parser from resolved columns
+  const columnMeta = $derived<ColumnMeta[]>(
+    resolvedColumns.map(c => ({ key: c.key, type: c.type })),
+  );
+
+  // Parse the filter query using the NL parser
+  const nlFilterSpec = $derived<NLFilterSpec>(
+    parseNaturalLanguage(filterQuery, columnMeta),
+  );
+
+  // Column summaries (generated once on data load, memoized)
+  const columnSummaries = $derived.by(() => {
+    if (streamAwareData.length > 0 && resolvedColumns.length > 0) {
+      return resolvedColumns.map(col => {
+        const values = streamAwareData.map(r => r[col.key]);
+        return generateColumnSummary(col.key, col.type, values);
+      });
+    }
+    return [];
+  });
+
+  // ---------------------------------------------------------------------------
   // Derived pipeline: filter → sort → paginate → visibleRows
   // ---------------------------------------------------------------------------
 
   const filteredRows = $derived.by(() => {
     if (!filterQuery.trim()) return processedRows;
+
+    // If NL parser extracted structured conditions, use them
+    if (nlFilterSpec.parsed) {
+      const originals = processedRows.map(r => r._original);
+      const filtered = applyNLFilter(originals, nlFilterSpec);
+      const filteredSet = new Set(filtered);
+      return processedRows.filter(r => filteredSet.has(r._original));
+    }
+
+    // Fallback: simple text search across all cells
     const q = filterQuery.toLowerCase().trim();
     return processedRows.filter((row) =>
       Object.values(row.cells).some((cell) =>
@@ -401,8 +514,10 @@
 
   $effect(() => {
     if (!scrollEl || !isVirtualizing) {
-      virtualItems = [];
-      totalVirtualSize = 0;
+      untrack(() => {
+        if (virtualItems.length > 0) virtualItems = [];
+        if (totalVirtualSize !== 0) totalVirtualSize = 0;
+      });
       return;
     }
 
@@ -434,8 +549,10 @@
 
   $effect(() => {
     if (!scrollEl || !isColumnVirtualizing) {
-      columnVirtualItems = [];
-      totalColumnSize = 0;
+      untrack(() => {
+        if (columnVirtualItems.length > 0) columnVirtualItems = [];
+        if (totalColumnSize !== 0) totalColumnSize = 0;
+      });
       return;
     }
 
@@ -512,8 +629,10 @@
     if (!key || !dir || rows.length <= USE_WORKER_THRESHOLD || !sortWorker || groupBy) {
       // Clear worker result when sort is cleared or dataset is small
       if (!key || !dir) {
-        workerSortedRows = [];
-        sortLoading = false;
+        untrack(() => {
+          if (workerSortedRows.length > 0) workerSortedRows = [];
+          if (sortLoading !== false) sortLoading = false;
+        });
       }
       return;
     }
@@ -534,7 +653,9 @@
   $effect(() => {
     void effectiveData;
     void filterQuery;
-    currentPage = 1;
+    untrack(() => {
+      if (currentPage !== 1) currentPage = 1;
+    });
   });
 
   // ---------------------------------------------------------------------------
@@ -670,25 +791,395 @@
     }
     onselect?.({ rows: selectedRows, allSelected: allSelected });
   }
+
+  // ---------------------------------------------------------------------------
+  // Column Menu state (Phase 12)
+  // ---------------------------------------------------------------------------
+
+  let columnMenuVisible = $state(false);
+  let columnMenuPosition = $state({ x: 0, y: 0 });
+  let columnMenuColumn = $state<ResolvedColumn | null>(null);
+
+  function handleColumnMenu(col: ResolvedColumn, x: number, y: number) {
+    columnMenuColumn = col;
+    columnMenuPosition = { x, y };
+    columnMenuVisible = true;
+  }
+
+  function handleColumnMenuClose() {
+    columnMenuVisible = false;
+    columnMenuColumn = null;
+  }
+
+  function handleColumnMenuSort(key: string, dir: 'asc' | 'desc') {
+    sortState = { key, dir };
+    handleColumnMenuClose();
+  }
+
+  function handleColumnMenuHide(key: string) {
+    hiddenColumns = new Set([...hiddenColumns, key]);
+    handleColumnMenuClose();
+  }
+
+  function handleColumnMenuFreeze(key: string, side: 'left' | 'right' | null) {
+    // Update the column's pinned state by modifying resolvedColumns
+    resolvedColumns = resolvedColumns.map(c =>
+      c.key === key ? { ...c, pinned: side ?? undefined } : c,
+    );
+    handleColumnMenuClose();
+  }
+
+  function handleColumnMenuGroupBy(key: string) {
+    // groupBy is a prop, but we can toggle it internally for column menu
+    // This creates a local override — the parent can still control via prop
+    groupBy = groupBy === key ? null : key;
+    handleColumnMenuClose();
+  }
+
+  function handleColumnTrimWhitespace(key: string) {
+    for (const row of effectiveData) {
+      if (typeof row[key] === 'string') {
+        row[key] = (row[key] as string).trim();
+      }
+    }
+    // Trigger re-inference to update derived state
+    processedRows = [...processedRows];
+  }
+
+  function handleColumnCase(key: string, casing: 'upper' | 'lower' | 'title') {
+    for (const row of effectiveData) {
+      if (typeof row[key] === 'string') {
+        const val = row[key] as string;
+        row[key] =
+          casing === 'upper'
+            ? val.toUpperCase()
+            : casing === 'lower'
+              ? val.toLowerCase()
+              : val.replace(/\b\w/g, c => c.toUpperCase());
+      }
+    }
+    processedRows = [...processedRows];
+  }
+
+  function handleColumnStats(key: string) {
+    // Show a subtle notification or log (actual display would be in ColumnMenu)
+    console.log(`Stats for column ${key}`);
+  }
+
+  function handleQuickFilter(key: string, value: unknown) {
+    // Apply quick filter based on type
+    if (typeof value === 'string') {
+      // Date/time quick filters: today, week, month, overdue
+      filterQuery = `${key}:${value}`;
+    } else if (typeof value === 'boolean') {
+      // Boolean filter
+      filterQuery = `${key}:${value}`;
+    } else if (typeof value === 'number') {
+      // Rating/progress filters
+      filterQuery = `${key}:${value}`;
+    }
+    handleColumnMenuClose();
+  }
+
+  function handleColumnDuplicate(key: string) {
+    // Create a new column identical to the specified one
+    const colToDuplicate = resolvedColumns.find(c => c.key === key);
+    if (!colToDuplicate) return;
+
+    // Generate a new key
+    let newKey = `${key}_copy`;
+    let counter = 1;
+    while (resolvedColumns.some(c => c.key === newKey)) {
+      newKey = `${key}_copy_${counter}`;
+      counter++;
+    }
+
+    // Copy data from source column to new column
+    for (const row of effectiveData) {
+      row[newKey] = row[key];
+    }
+
+    // Add new column to the column order
+    columnOrder = [...columnOrder, newKey];
+    processedRows = [...processedRows];
+    handleColumnMenuClose();
+  }
+
+  // Calculate stats for numeric columns
+  function calculateColumnStats(key: string): { min: number; max: number; avg: number; sum: number; count: number } | undefined {
+    const col = resolvedColumns.find(c => c.key === key);
+    if (!col || (col.type !== 'number' && col.type !== 'currency' && col.type !== 'percentage')) {
+      return undefined;
+    }
+
+    const numbers: number[] = [];
+    for (const row of effectiveData) {
+      const val = row[key];
+      if (typeof val === 'number' && !isNaN(val)) {
+        numbers.push(val);
+      }
+    }
+
+    if (numbers.length === 0) {
+      return undefined;
+    }
+
+    const sum = numbers.reduce((a, b) => a + b, 0);
+    const avg = sum / numbers.length;
+    const min = Math.min(...numbers);
+    const max = Math.max(...numbers);
+
+    return { min, max, avg, sum, count: numbers.length };
+  }
+
+  // ---------------------------------------------------------------------------
+  // Export helpers (Phase 12)
+  // ---------------------------------------------------------------------------
+
+  function handleExport(format: 'csv' | 'json' | 'clipboard') {
+    const exportData = (selectedRows.length > 0 ? selectedRows : effectiveData) as Record<string, unknown>[];
+    const cols = orderedColumns.map(c => ({ key: c.key, label: c.label }));
+
+    if (format === 'csv') {
+      const header = cols.map(c => `"${c.label}"`).join(',');
+      const rows = exportData.map(row =>
+        cols.map(c => {
+          const val = row[c.key];
+          const str = val == null ? '' : String(val);
+          return `"${str.replace(/"/g, '""')}"`;
+        }).join(',')
+      );
+      const csv = [header, ...rows].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${caption ?? 'export'}.csv`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === 'json') {
+      const json = JSON.stringify(exportData, null, 2);
+      const blob = new Blob([json], { type: 'application/json' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${caption ?? 'export'}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    } else if (format === 'clipboard') {
+      const header = cols.map(c => c.label).join('\t');
+      const rows = exportData.map(row =>
+        cols.map(c => String(row[c.key] ?? '')).join('\t')
+      );
+      const tsv = [header, ...rows].join('\n');
+      navigator.clipboard.writeText(tsv);
+    }
+  }
+
+  function handleBulkDelete() {
+    // Remove selected rows from data — fire oncelledit for each
+    // Consumer should handle actual deletion via oncelledit callback
+    const toDelete = new Set(selectedRows);
+    selectedRows = [];
+    onselect?.({ rows: [], allSelected: false });
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 12: Command Palette keyboard shortcut
+  // ---------------------------------------------------------------------------
+
+  function handleGlobalKeyDown(e: KeyboardEvent) {
+    const isMac = typeof navigator !== 'undefined' && navigator.platform?.toUpperCase().indexOf('MAC') >= 0;
+    const isCtrlOrCmd = isMac ? e.metaKey : e.ctrlKey;
+
+    // Cmd+K → open command palette
+    if (isCtrlOrCmd && e.key === 'k') {
+      e.preventDefault();
+      commandPaletteVisible = !commandPaletteVisible;
+      return;
+    }
+
+    // Cmd+Z → undo
+    if (isCtrlOrCmd && e.key === 'z' && !e.shiftKey) {
+      e.preventDefault();
+      history.undo();
+      return;
+    }
+
+    // Cmd+Shift+Z → redo
+    if (isCtrlOrCmd && e.key === 'z' && e.shiftKey) {
+      e.preventDefault();
+      history.redo();
+      return;
+    }
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 12: Inline editing
+  // ---------------------------------------------------------------------------
+
+  function handleCellDoubleClick(row: Row, column: ResolvedColumn, rowIndex: number) {
+    if (!editable) return;
+    editingCell = { rowIndex, colKey: column.key };
+  }
+
+  function handleCellEditConfirm(row: Row, column: ResolvedColumn, newValue: unknown) {
+    const oldValue = row[column.key];
+    if (oldValue === newValue) {
+      editingCell = null;
+      return;
+    }
+
+    // Record in history
+    history.push({
+      type: 'cell-edit',
+      description: `Changed '${String(oldValue ?? '')}' to '${String(newValue ?? '')}' in ${column.label}`,
+      undo: () => {
+        row[column.key] = oldValue;
+        // Patch processedRows cell in-place for immediate UI update
+        patchProcessedCell(row, column.key, oldValue);
+      },
+      redo: () => {
+        row[column.key] = newValue;
+        patchProcessedCell(row, column.key, newValue);
+      },
+    });
+
+    // Apply the edit — mutates the original data object in place
+    row[column.key] = newValue;
+
+    // Patch the processedRow cell immediately so the UI updates synchronously
+    // (The $effect that syncs inferredState → processedRows runs AFTER DOM update,
+    // which is too late — Cell.svelte would read the OLD descriptor)
+    patchProcessedCell(row, column.key, newValue);
+
+    editingCell = null;
+    oncelledit?.({ row, column, key: column.key, oldValue, newValue });
+  }
+
+  /** Patch a single cell value in processedRows and force reactivity via new array ref */
+  function patchProcessedCell(row: Row, key: string, value: unknown) {
+    const pr = processedRows.find((r) => r._original === row);
+    if (pr && pr.cells[key]) {
+      pr.cells[key] = { ...pr.cells[key], value: String(value ?? '') };
+    }
+    // Force Svelte $state reactivity by creating a new array reference
+    processedRows = [...processedRows];
+  }
+
+  function handleCellEditCancel() {
+    editingCell = null;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Phase 12: Conditional formatting evaluation
+  // ---------------------------------------------------------------------------
+
+  // Pre-compute column value arrays for conditional formatting
+  const columnValues = $derived.by(() => {
+    if (conditionalFormats.length === 0 && formatPresets.length === 0) return new Map<string, unknown[]>();
+    const map = new Map<string, unknown[]>();
+    for (const col of resolvedColumns) {
+      map.set(col.key, streamAwareData.map(r => r[col.key]));
+    }
+    return map;
+  });
+
+  function getCellFormatStyle(row: Row, colKey: string): FormatStyle | null {
+    if (conditionalFormats.length === 0 && formatPresets.length === 0) return null;
+    const allValues = columnValues.get(colKey) ?? [];
+    return evaluateConditionalFormats(conditionalFormats, formatPresets, row, colKey, allValues);
+  }
+
+  function handleClearSort() {
+    sortState = { key: null, dir: null };
+  }
 </script>
 
+<svelte:window onkeydown={handleGlobalKeyDown} />
 <div class="tc-table-wrapper" role="region" aria-label={caption ?? 'Data table'}>
   {#if filterable}
     <div class="tc-toolbar">
+      <ViewSwitcher
+        mode={viewMode}
+        onchange={(m) => { viewMode = m; }}
+      />
       <SearchInput
-        placeholder="Search..."
+        placeholder="Search... try 'active users' or 'salary above 100k'"
         onfilter={(val) => { filterQuery = val; }}
       />
+      {#if exportable}
+        <ExportButton
+          data={selectedRows.length > 0 ? selectedRows : effectiveData}
+          columns={orderedColumns.map(c => ({ key: c.key, label: c.label }))}
+          filename={caption ?? 'export'}
+        />
+      {/if}
+      {#if nlFilterSpec.parsed && nlFilterSpec.interpretation}
+        <div class="tc-nl-hint">
+          <span class="tc-nl-hint-icon">&#9889;</span>
+          <span class="tc-nl-hint-text">Interpreted as: {nlFilterSpec.interpretation}</span>
+        </div>
+      {/if}
+      {#if streamState && streamState.status !== 'idle'}
+        <div class="tc-stream-indicator" class:tc-stream-live={streamState.status === 'connected'} class:tc-stream-error={streamState.status === 'error'}>
+          <span class="tc-stream-dot"></span>
+          <span class="tc-stream-label">
+            {#if streamState.status === 'connecting'}Connecting...
+            {:else if streamState.status === 'connected'}Live
+            {:else if streamState.status === 'error'}Error
+            {:else if streamState.status === 'closed'}Disconnected
+            {/if}
+          </span>
+          {#if streamState.status === 'connected' && streamState.throughput > 0}
+            <span class="tc-stream-throughput">{streamState.throughput}/s</span>
+          {/if}
+          {#if streamState.status === 'connected'}
+            <span class="tc-stream-count">{streamState.messageCount} msgs</span>
+          {/if}
+        </div>
+      {/if}
     </div>
   {/if}
 
-  <div
-    class="tc-table-scroll"
-    class:tc-table-scroll--virtual={isVirtualizing}
-    bind:this={scrollEl}
-    style="--tc-row-height: {rowHeightMap[density]}px"
-  >
-    {#if isVirtualizing}
+  {#if columnMenuVisible && columnMenuColumn}
+    <ColumnMenu
+      column={columnMenuColumn}
+      position={columnMenuPosition}
+      visible={columnMenuVisible}
+      {sortState}
+      frozenColumns={new Set(
+        resolvedColumns.filter(c => c.pinned).map(c => c.key)
+      )}
+      groupedBy={groupBy}
+      visibleColumnCount={resolvedColumns.length - hiddenColumns.size}
+      columnStats={calculateColumnStats(columnMenuColumn.key)}
+      onsort={handleColumnMenuSort}
+      onclearsort={() => {
+        sortState = { key: null, dir: null };
+        handleColumnMenuClose();
+      }}
+      onhide={handleColumnMenuHide}
+      onfreeze={handleColumnMenuFreeze}
+      ongroupby={handleColumnMenuGroupBy}
+      onfilter={handleQuickFilter}
+      ontrimwhitespace={handleColumnTrimWhitespace}
+      oncasechange={handleColumnCase}
+      onstats={handleColumnStats}
+      onquickfilter={handleQuickFilter}
+      onduplicate={handleColumnDuplicate}
+      onclose={handleColumnMenuClose}
+    />
+  {/if}
+
+  {#if viewMode === 'table'}
+    <div
+      class="tc-table-scroll"
+      class:tc-table-scroll--virtual={isVirtualizing}
+      bind:this={scrollEl}
+      style="--tc-row-height: {rowHeightMap[density]}px"
+    >
+      {#if isVirtualizing}
       <div style="height: {totalVirtualSize}px; position: relative;">
         <table
           class="tc-table"
@@ -721,6 +1212,7 @@
             oncolreorder={handleColReorder}
             onsortchange={handleSortChange}
             onselectall={handleSelectAll}
+            oncolumnmenu={handleColumnMenu}
           />
 
           <TableBody
@@ -744,6 +1236,11 @@
             {onrowclick}
             {oncellclick}
             onrowtoggle={handleRowToggle}
+            {editable}
+            {editingCell}
+            oncelldblclick={(e) => handleCellDoubleClick(e.row, e.column, e.rowIndex)}
+            oncelleditconfirm={(e) => handleCellEditConfirm(e.row, e.column, e.newValue)}
+            oncelleditcancel={handleCellEditCancel}
           />
 
           {#if showAggregates}
@@ -787,6 +1284,7 @@
           oncolreorder={handleColReorder}
           onsortchange={handleSortChange}
           onselectall={handleSelectAll}
+          oncolumnmenu={handleColumnMenu}
         />
 
         <TableBody
@@ -809,6 +1307,11 @@
           {onrowclick}
           {oncellclick}
           onrowtoggle={handleRowToggle}
+          {editable}
+          {editingCell}
+          oncelldblclick={(e) => handleCellDoubleClick(e.row, e.column, e.rowIndex)}
+          oncelleditconfirm={(e) => handleCellEditConfirm(e.row, e.column, e.newValue)}
+          oncelleditcancel={handleCellEditCancel}
         />
 
         {#if showAggregates}
@@ -820,9 +1323,18 @@
         {/if}
       </table>
     {/if}
-  </div>
+    </div>
+  {:else if viewMode === 'kanban'}
+    <KanbanView data={effectiveData} columns={orderedColumns} oncelledit={oncelledit} />
+  {:else if viewMode === 'gallery'}
+    <GalleryView data={effectiveData} columns={orderedColumns} oncelledit={oncelledit} />
+  {:else if viewMode === 'list'}
+    <ListView data={effectiveData} columns={orderedColumns} oncelledit={oncelledit} />
+  {:else if viewMode === 'timeline'}
+    <TimelineView data={effectiveData} columns={orderedColumns} oncelledit={oncelledit} />
+  {/if}
 
-  {#if !isVirtualizing}
+  {#if !isVirtualizing && viewMode === 'table'}
     <TableFooter
       {currentPage}
       {totalPages}
@@ -832,10 +1344,51 @@
       onpagechange={(page) => { currentPage = page; }}
     />
   {/if}
+
+  {#if selectable && selectedRows.length > 0}
+    <BulkActionsBar
+      selectedCount={selectedRows.length}
+      totalCount={effectiveData.length}
+      ondelete={handleBulkDelete}
+      onexport={handleExport}
+      onclearselection={() => { selectedRows = []; onselect?.({ rows: [], allSelected: false }); }}
+    />
+  {/if}
+
+  {#if commandPaletteVisible}
+    <CommandPalette
+      visible={commandPaletteVisible}
+      columns={orderedColumns}
+      onclose={() => { commandPaletteVisible = false; }}
+      onsort={(key, dir) => { sortState = { key, dir }; commandPaletteVisible = false; }}
+      onfilter={(q) => { filterQuery = q; commandPaletteVisible = false; }}
+      ongroupby={(key) => { groupBy = key; commandPaletteVisible = false; }}
+      ondensity={(d) => { density = d; commandPaletteVisible = false; }}
+      onexport={(fmt) => { handleExport(fmt); commandPaletteVisible = false; }}
+      onhidecolumn={(key) => { hiddenColumns = new Set([...hiddenColumns, key]); commandPaletteVisible = false; }}
+      onshowallcolumns={() => { hiddenColumns = new Set(); commandPaletteVisible = false; }}
+      onselectall={() => { handleSelectAll(true); commandPaletteVisible = false; }}
+      ondeselectall={() => { handleSelectAll(false); commandPaletteVisible = false; }}
+      onclearfilters={() => { filterQuery = ''; commandPaletteVisible = false; }}
+      onclearsort={() => { sortState = { key: null, dir: null }; commandPaletteVisible = false; }}
+    />
+  {/if}
+
+  {#if history.canUndo || history.canRedo}
+    <div class="tc-history-indicator">
+      <button class="tc-history-btn" disabled={!history.canUndo} onclick={() => history.undo()} title="Undo (⌘Z)">
+        ↩
+      </button>
+      <button class="tc-history-btn" disabled={!history.canRedo} onclick={() => history.redo()} title="Redo (⌘⇧Z)">
+        ↪
+      </button>
+    </div>
+  {/if}
 </div>
 
 <style>
   .tc-table-wrapper {
+    position: relative;
     font-family: var(--tc-font-family, -apple-system, BlinkMacSystemFont, 'Inter', 'Segoe UI', system-ui, sans-serif);
     font-size: var(--tc-font-size, 13px);
     line-height: var(--tc-line-height, 1.5);
@@ -850,10 +1403,87 @@
   .tc-toolbar {
     display: flex;
     align-items: center;
-    justify-content: flex-end;
-    padding: var(--tc-toolbar-padding, 8px 12px);
+    justify-content: flex-start;
+    padding: var(--tc-toolbar-padding, 12px 16px);
     border-bottom: var(--tc-border-width, 1px) solid var(--tc-color-border, #f0f0f0);
     background: var(--tc-color-bg-toolbar, #fafafa);
+    flex-wrap: wrap;
+    gap: 16px;
+  }
+
+  .tc-nl-hint {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+    font-size: 11px;
+    color: var(--tc-color-text-muted, #a3a3a3);
+    font-family: var(--tc-font-family-mono, ui-monospace, monospace);
+    padding: 2px 8px;
+    background: var(--tc-color-bg, #ffffff);
+    border-radius: 4px;
+    border: 1px solid var(--tc-color-border, #f0f0f0);
+    animation: tc-hint-fade 0.2s ease-out;
+  }
+
+  .tc-nl-hint-icon {
+    font-size: 10px;
+    color: var(--tc-color-accent, #0a0a0a);
+  }
+
+  @keyframes tc-hint-fade {
+    from { opacity: 0; transform: translateY(-2px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* Phase 9: Stream indicator */
+  .tc-stream-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 11px;
+    font-family: var(--tc-font-family-mono, ui-monospace, monospace);
+    padding: 2px 10px;
+    border-radius: 9999px;
+    border: 1px solid var(--tc-color-border, #f0f0f0);
+    background: var(--tc-color-bg, #ffffff);
+    color: var(--tc-color-text-muted, #a3a3a3);
+    margin-left: auto;
+  }
+  .tc-stream-indicator.tc-stream-live {
+    border-color: rgba(34, 197, 94, 0.3);
+    background: rgba(34, 197, 94, 0.05);
+    color: #16a34a;
+  }
+  .tc-stream-indicator.tc-stream-error {
+    border-color: rgba(239, 68, 68, 0.3);
+    background: rgba(239, 68, 68, 0.05);
+    color: #dc2626;
+  }
+  .tc-stream-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: currentColor;
+    flex-shrink: 0;
+  }
+  .tc-stream-live .tc-stream-dot {
+    animation: tc-stream-pulse 1.5s ease-in-out infinite;
+  }
+  .tc-stream-label {
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .tc-stream-throughput {
+    opacity: 0.7;
+    font-size: 10px;
+  }
+  .tc-stream-count {
+    opacity: 0.5;
+    font-size: 10px;
+  }
+  @keyframes tc-stream-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.3; }
   }
 
   .tc-table-scroll {
@@ -895,5 +1525,56 @@
   :global(::view-transition-new(root)) {
     animation-duration: 0.18s;
     animation-timing-function: ease;
+  }
+
+  /* Phase 12: Undo/redo indicator */
+  .tc-history-indicator {
+    position: absolute;
+    bottom: 8px;
+    right: 8px;
+    display: flex;
+    gap: 2px;
+    z-index: 10;
+  }
+
+  .tc-history-btn {
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--tc-color-border, #f0f0f0);
+    border-radius: 6px;
+    background: var(--tc-color-bg, #ffffff);
+    color: var(--tc-color-text, #0a0a0a);
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.15s ease;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+
+  .tc-history-btn:hover:not(:disabled) {
+    background: var(--tc-color-bg-hover, #fafafa);
+    border-color: var(--tc-color-text-muted, #a3a3a3);
+  }
+
+  .tc-history-btn:disabled {
+    opacity: 0.3;
+    cursor: default;
+  }
+
+  /* Micro-interaction: smooth row hover */
+  :global(.tc-table-wrapper .tc-tr) {
+    transition: background-color 0.12s ease;
+  }
+
+  :global(.tc-table-wrapper .tc-tr:hover) {
+    background-color: var(--tc-color-bg-hover, #fafafa) !important;
+  }
+
+  /* Micro-interaction: sort column glow */
+  :global(.tc-table-wrapper .tc-th[aria-sort="ascending"]),
+  :global(.tc-table-wrapper .tc-th[aria-sort="descending"]) {
+    background-color: var(--tc-color-bg-sorted, rgba(10, 10, 10, 0.02));
   }
 </style>

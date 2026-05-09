@@ -18,6 +18,8 @@ export type {
   ResolvedColumn,
   ProcessedRow,
   BadgeVariant,
+  ActionDescriptor,
+  AggregateFunction,
 } from './types.js';
 
 export { defineColumns } from './types.js';
@@ -50,3 +52,7 @@ export type { TableEngine } from './engine/index.js';
 
 // Phase 2 Wave 4: v1 compatibility shim
 export { adaptV1Props } from './compat/v1.js';
+
+// Phase 8: Natural language filter + column analysis
+export { parseNaturalLanguage, applyNLFilter, generateColumnSummary } from './nl-filter.js';
+export type { NLFilterSpec, NLCondition, ColumnMeta, ColumnSummary } from './nl-filter.js';

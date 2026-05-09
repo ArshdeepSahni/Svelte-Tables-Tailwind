@@ -20,6 +20,7 @@
     oncolreorder?: (fromKey: string, toKey: string) => void;
     onsortchange?: (key: string) => void;
     onselectall?: (checked: boolean) => void;
+    oncolumnmenu?: (col: ResolvedColumn, x: number, y: number) => void;
   }
 
   let {
@@ -38,6 +39,7 @@
     oncolreorder,
     onsortchange,
     onselectall,
+    oncolumnmenu,
   }: Props = $props();
 
   function getAriaSortValue(colKey: string): 'ascending' | 'descending' | 'none' | undefined {
@@ -216,6 +218,23 @@
                 </span>
               {/if}
             </span>
+            {#if oncolumnmenu}
+              <button
+                class="tc-col-menu-trigger"
+                aria-label="Column menu for {col.label}"
+                onclick={(e) => {
+                  e.stopPropagation();
+                  const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                  oncolumnmenu!(col, rect.left, rect.bottom + 4);
+                }}
+              >
+                <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                  <circle cx="7" cy="3" r="1.2"/>
+                  <circle cx="7" cy="7" r="1.2"/>
+                  <circle cx="7" cy="11" r="1.2"/>
+                </svg>
+              </button>
+            {/if}
             <div
               class="tc-resize-handle"
               role="separator"
@@ -292,6 +311,23 @@
               </span>
             {/if}
           </span>
+          {#if oncolumnmenu}
+            <button
+              class="tc-col-menu-trigger"
+              aria-label="Column menu for {col.label}"
+              onclick={(e) => {
+                e.stopPropagation();
+                const rect = (e.currentTarget as HTMLElement).getBoundingClientRect();
+                oncolumnmenu!(col, rect.left, rect.bottom + 4);
+              }}
+            >
+              <svg width="14" height="14" viewBox="0 0 14 14" fill="currentColor">
+                <circle cx="7" cy="3" r="1.2"/>
+                <circle cx="7" cy="7" r="1.2"/>
+                <circle cx="7" cy="11" r="1.2"/>
+              </svg>
+            </button>
+          {/if}
           <div
             class="tc-resize-handle"
             role="separator"
@@ -326,9 +362,11 @@
   }
 
   .tc-th-content {
-    display: inline-flex;
+    display: flex;
     align-items: center;
     gap: 0.375rem;
+    flex: 1;
+    min-width: 0;
   }
 
   /* Sort icon container */
@@ -474,5 +512,40 @@
   /* Separator shadow: leftmost right-pinned column */
   .tc-th--pinned-right:first-of-type {
     box-shadow: -2px 0 4px rgba(0, 0, 0, 0.06);
+  }
+
+  /* Column menu trigger (⋮ kebab button) */
+  .tc-col-menu-trigger {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border: none;
+    background: transparent;
+    color: var(--tc-color-text-muted, #a3a3a3);
+    border-radius: 4px;
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.12s ease, background 0.12s ease, color 0.12s ease;
+    margin-left: auto;
+    margin-right: -6px;
+    flex-shrink: 0;
+    padding: 0;
+  }
+
+  .tc-th:hover .tc-col-menu-trigger {
+    opacity: 1;
+  }
+
+  .tc-col-menu-trigger:hover {
+    background: rgba(10, 10, 10, 0.08);
+    color: var(--tc-color-text, #0a0a0a);
+  }
+
+  .tc-col-menu-trigger:focus-visible {
+    opacity: 1;
+    outline: 2px solid var(--tc-color-focus-ring, rgba(10,10,10,0.15));
+    outline-offset: -2px;
   }
 </style>

@@ -19,6 +19,7 @@
   import type { Row, FocusedCell, ProcessedGroupRow } from './types.js';
   import type { Snippet } from 'svelte';
   import Cell from './Cell.svelte';
+  import CellEditor from './CellEditor.svelte';
   import Checkbox from './Checkbox.svelte';
   import GroupRow from './GroupRow.svelte';
 
@@ -49,6 +50,12 @@
     onrowclick?: (event: { row: Row; rowIndex: number }) => void;
     oncellclick?: (event: { row: Row; column: ResolvedColumn; value: unknown; rowIndex: number }) => void;
     onrowtoggle?: (row: Row, selected: boolean) => void;
+    // Inline editing (Phase 12)
+    editable?: boolean;
+    editingCell?: { rowIndex: number; colKey: string } | null;
+    oncelldblclick?: (event: { row: Row; column: ResolvedColumn; rowIndex: number }) => void;
+    oncelleditconfirm?: (event: { row: Row; column: ResolvedColumn; newValue: unknown }) => void;
+    oncelleditcancel?: () => void;
     // Sort transition: enables opacity fade + view-transition-name on rows
     sortTransitioning?: boolean;
   }
@@ -75,6 +82,11 @@
     onrowclick,
     oncellclick,
     onrowtoggle,
+    editable = false,
+    editingCell = null,
+    oncelldblclick,
+    oncelleditconfirm,
+    oncelleditcancel,
     sortTransitioning = false,
   }: Props = $props();
 
@@ -131,6 +143,23 @@
     }
   }
 
+  function handleBodyDblClick(e: MouseEvent) {
+    if (!editable) return;
+    const td = (e.target as Element).closest('[data-col]');
+    const tr = (e.target as Element).closest('[data-row]');
+    if (!td || !tr) return;
+    const rowIndex = Number(tr.getAttribute('data-row'));
+    const colIndex = Number(td.getAttribute('data-col'));
+    const col = columns[colIndex];
+    if (!col) return;
+
+    const rows = isVirtualMode ? sortedRows : visibleRows;
+    const item = rows[rowIndex];
+    if (!item || ('isGroup' in item && item.isGroup)) return;
+    const row = (item as ProcessedRow)._original as Row;
+    oncelldblclick?.({ row, column: col, rowIndex });
+  }
+
   function handleKeyDown(e: KeyboardEvent) {
     const maxRow = isVirtualMode ? sortedRows.length - 1 : visibleRows.length - 1;
     const maxCol = columns.length - 1;
@@ -169,7 +198,7 @@
   }
 </script>
 
-<tbody onkeydown={handleKeyDown} onclick={handleBodyClick}>
+<tbody onkeydown={handleKeyDown} onclick={handleBodyClick} ondblclick={handleBodyDblClick}>
   {#if loading}
     {#each { length: skeletonRows } as _}
       <tr class="tc-tr tc-tr--skeleton" role="row" data-skeleton aria-hidden="true">
@@ -246,7 +275,17 @@
                       style="width: {colItem.size}px; min-width: {colItem.size}px;"
                       tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colItem.index ? 0 : -1}
                     >
-                      <Cell {descriptor} />
+                      {#if editable && editingCell?.rowIndex === item.index && editingCell?.colKey === col.key}
+                        <CellEditor
+                          value={row[col.key]}
+                          column={col}
+                          {row}
+                          onconfirm={(newValue) => oncelleditconfirm?.({ row: row as Row, column: col, newValue })}
+                          oncancel={() => oncelleditcancel?.()}
+                        />
+                      {:else}
+                        <Cell {descriptor} />
+                      {/if}
                     </td>
                   {/if}
                 {/each}
@@ -268,7 +307,17 @@
                     data-col={colIndex}
                     tabindex={focusedCell.rowIndex === item.index && focusedCell.colIndex === colIndex ? 0 : -1}
                   >
-                    <Cell {descriptor} />
+                    {#if editable && editingCell?.rowIndex === item.index && editingCell?.colKey === col.key}
+                      <CellEditor
+                        value={row[col.key]}
+                        column={col}
+                        {row}
+                        onconfirm={(newValue) => oncelleditconfirm?.({ row: row as Row, column: col, newValue })}
+                        oncancel={() => oncelleditcancel?.()}
+                      />
+                    {:else}
+                      <Cell {descriptor} />
+                    {/if}
                   </td>
                 {/each}
               {/if}
@@ -327,7 +376,17 @@
                     style="width: {colItem.size}px; min-width: {colItem.size}px;"
                     tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colItem.index ? 0 : -1}
                   >
-                    <Cell {descriptor} />
+                    {#if editable && editingCell?.rowIndex === rowIndex && editingCell?.colKey === col.key}
+                      <CellEditor
+                        value={row[col.key]}
+                        column={col}
+                        {row}
+                        onconfirm={(newValue) => oncelleditconfirm?.({ row: row as Row, column: col, newValue })}
+                        oncancel={() => oncelleditcancel?.()}
+                      />
+                    {:else}
+                      <Cell {descriptor} />
+                    {/if}
                   </td>
                 {/if}
               {/each}
@@ -352,7 +411,17 @@
                   style={col.pinned && !isColumnVirtualizing ? (col.pinned === 'left' ? `left: ${computeTdPinnedOffset(col, columns, 'left')}px;` : `right: ${computeTdPinnedOffset(col, columns, 'right')}px;`) : undefined}
                   tabindex={focusedCell.rowIndex === rowIndex && focusedCell.colIndex === colIndex ? 0 : -1}
                 >
-                  <Cell {descriptor} />
+                  {#if editable && editingCell?.rowIndex === rowIndex && editingCell?.colKey === col.key}
+                    <CellEditor
+                      value={row[col.key]}
+                      column={col}
+                      {row}
+                      onconfirm={(newValue) => oncelleditconfirm?.({ row: row as Row, column: col, newValue })}
+                      oncancel={() => oncelleditcancel?.()}
+                    />
+                  {:else}
+                    <Cell {descriptor} />
+                  {/if}
                 </td>
               {/each}
             {/if}
@@ -389,6 +458,18 @@
   .tc-tr--selected {
     background: var(--tc-color-bg-row-selected, #f5f5f5) !important;
     box-shadow: inset 2px 0 0 var(--tc-color-selection-accent, #0a0a0a);
+    animation: tc-row-select 0.2s ease-out;
+  }
+
+  @keyframes tc-row-select {
+    from {
+      background: var(--tc-color-bg-row, #ffffff);
+      box-shadow: inset 0px 0 0 transparent;
+    }
+    to {
+      background: var(--tc-color-bg-row-selected, #f5f5f5);
+      box-shadow: inset 2px 0 0 var(--tc-color-selection-accent, #0a0a0a);
+    }
   }
 
   .tc-tr--striped {

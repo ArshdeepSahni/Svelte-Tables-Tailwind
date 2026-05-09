@@ -1,5 +1,6 @@
 <script lang="ts">
-  import { Table } from '@tablecraft/svelte';
+  import { Table, createSimulatedStream } from '@tablecraft/svelte';
+  import type { StreamSource } from '@tablecraft/svelte';
   import { fly } from 'svelte/transition';
 
   // --- Type Showcase dataset — one column per inferred type ---
@@ -21,6 +22,8 @@
       theme_color: '#6366f1',
       rating: 4.5,
       progress: 73,
+      sparkline: [23, 45, 67, 34, 89, 56, 78, 92, 45, 67],
+      actions: [{ id: 'view', label: 'View', variant: 'default' }, { id: 'edit', label: 'Edit', variant: 'primary' }],
     },
     {
       name: 'Bob Smith',
@@ -38,6 +41,8 @@
       theme_color: '#10b981',
       rating: 3.5,
       progress: 45,
+      sparkline: [56, 34, 78, 45, 23, 67, 89, 12, 34, 56],
+      actions: [{ id: 'view', label: 'View', variant: 'default' }, { id: 'edit', label: 'Edit', variant: 'primary' }],
     },
     {
       name: 'Carol White',
@@ -55,6 +60,8 @@
       theme_color: '#f59e0b',
       rating: 5,
       progress: 95,
+      sparkline: [12, 34, 56, 78, 90, 95, 92, 97, 98, 99],
+      actions: [{ id: 'view', label: 'View', variant: 'default' }, { id: 'edit', label: 'Edit', variant: 'primary' }],
     },
     {
       name: 'Dave Brown',
@@ -72,6 +79,8 @@
       theme_color: '#ef4444',
       rating: 4,
       progress: 62,
+      sparkline: [67, 72, 55, 80, 45, 60, 75, 82, 58, 63],
+      actions: [{ id: 'view', label: 'View', variant: 'default' }, { id: 'edit', label: 'Edit', variant: 'primary' }],
     },
     {
       name: 'Eve Davis',
@@ -89,6 +98,8 @@
       theme_color: '#8b5cf6',
       rating: 2,
       progress: 30,
+      sparkline: [89, 76, 54, 43, 32, 28, 25, 22, 20, 18],
+      actions: [{ id: 'view', label: 'View', variant: 'default' }, { id: 'edit', label: 'Edit', variant: 'primary' }],
     },
   ];
 
@@ -138,7 +149,43 @@
     { ticker: 'PG',    name: 'Procter & Gamble',       price: 163.90, change_pct: 0.31,  rating: 4.2, progress: 76, color: '#d946ef', sector: 'Consumer',    market_cap: '386B' },
   ];
 
-  type Dataset = 'showcase' | 'users' | 'products' | 'finance' | 'empty';
+  // --- Live Stream dataset (Phase 9) ---
+
+  const streamPool = [
+    { ticker: 'AAPL', company: 'Apple Inc.', price: 189.50, volume: 42310000, change: 1.24, sector: 'Technology' },
+    { ticker: 'MSFT', company: 'Microsoft', price: 415.20, volume: 28150000, change: 0.87, sector: 'Technology' },
+    { ticker: 'GOOGL', company: 'Alphabet', price: 172.80, volume: 19870000, change: -0.53, sector: 'Technology' },
+    { ticker: 'AMZN', company: 'Amazon', price: 198.30, volume: 35420000, change: 2.11, sector: 'Consumer' },
+    { ticker: 'NVDA', company: 'NVIDIA', price: 875.40, volume: 51230000, change: 3.44, sector: 'Technology' },
+    { ticker: 'META', company: 'Meta', price: 528.10, volume: 22890000, change: -1.20, sector: 'Technology' },
+    { ticker: 'TSLA', company: 'Tesla', price: 248.50, volume: 67450000, change: -2.33, sector: 'Automotive' },
+    { ticker: 'JPM', company: 'JPMorgan', price: 201.30, volume: 15670000, change: 0.44, sector: 'Financials' },
+  ];
+
+  // Column overrides for showcase — sparkline & actions need explicit type
+  const showcaseColumns = {
+    sparkline: 'sparkline' as const,
+    actions: 'actions' as const,
+  };
+
+  let activeStream = $state<StreamSource | undefined>(undefined);
+
+  function startStream() {
+    activeStream = createSimulatedStream({
+      pool: streamPool,
+      intervalMs: 800,
+      batchSize: 1,
+      maxRows: 50,
+      keyField: 'ticker',
+      operations: ['append', 'append', 'update'],
+    });
+  }
+
+  function stopStream() {
+    activeStream = undefined;
+  }
+
+  type Dataset = 'showcase' | 'users' | 'products' | 'finance' | 'stream' | 'empty';
 
   let dataset = $state<Dataset>('showcase');
   let loading = $state(false);
@@ -185,7 +232,8 @@
     dataset === 'showcase' ? typeShowcase :
     dataset === 'users'    ? users        :
     dataset === 'products' ? products     :
-    dataset === 'finance'  ? finance      : [],
+    dataset === 'finance'  ? finance      :
+    dataset === 'stream'   ? []           : [],
   );
 
   const groupByOptions = $derived(
@@ -199,6 +247,12 @@
     void dataset;
     groupBy = null;
     selectedRows = [];
+    // Auto-manage stream lifecycle
+    if (dataset === 'stream') {
+      startStream();
+    } else {
+      stopStream();
+    }
   });
 </script>
 
@@ -214,6 +268,7 @@
     <button onclick={() => (dataset = 'users')}    class:active={dataset === 'users'}>Users</button>
     <button onclick={() => (dataset = 'products')} class:active={dataset === 'products'}>Products</button>
     <button onclick={() => (dataset = 'finance')}  class:active={dataset === 'finance'}>Finance</button>
+    <button onclick={() => (dataset = 'stream')}   class:active={dataset === 'stream'} class:streaming={dataset === 'stream'}>&#9679; Live Stream</button>
     <button onclick={() => (dataset = 'empty')}    class:active={dataset === 'empty'}>Empty</button>
   </div>
 
@@ -247,6 +302,10 @@
   <p class="hint">
     <strong>Type Showcase</strong> — every column is a different inferred type: text, email, phone, URL, image, boolean, date, datetime, number, percentage, status, code, color, rating, progress.
   </p>
+{:else if dataset === 'stream'}
+  <p class="hint">
+    <strong>Live Stream</strong> — real-time data arriving via AsyncIterable. Rows append automatically, ticker prices update live. Watch the green "Live" indicator and throughput counter.
+  </p>
 {/if}
 
 <!-- Contextual action bar — appears on row selection -->
@@ -274,12 +333,16 @@
 
   <Table
     data={currentData}
+    columns={dataset === 'showcase' ? showcaseColumns : undefined}
+    stream={activeStream}
     {loading}
     {density}
     {groupBy}
     {showAggregates}
     selectable={dataset === 'users' || dataset === 'showcase'}
     bind:selectedRows
+    editable
+    exportable
     caption="Dev Playground Table"
   />
 </div>
@@ -344,6 +407,16 @@
   .btn-secondary {
     background: #fafafa;
     margin-left: 0.5rem;
+  }
+
+  .streaming {
+    background: rgba(34, 197, 94, 0.1) !important;
+    border-color: rgba(34, 197, 94, 0.3) !important;
+    color: #16a34a !important;
+  }
+  .streaming.active {
+    background: rgba(34, 197, 94, 0.15) !important;
+    font-weight: 600;
   }
 
   .hint {

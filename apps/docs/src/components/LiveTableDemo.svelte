@@ -48,7 +48,7 @@
   const inferenceResults = $derived.by(() => {
     if (activeDataset === 'users') {
       return [
-        { key: 'id', type: 'integer', confidence: 0.99, color: '#6366f1' },
+        { key: 'id', type: 'integer', confidence: 0.99, color: '#0a0a0a' },
         { key: 'name', type: 'text', confidence: 0.95, color: '#64748b' },
         { key: 'email', type: 'email', confidence: 0.99, color: '#ec4899' },
         { key: 'role', type: 'badge', confidence: 0.82, color: '#f59e0b' },
@@ -59,21 +59,21 @@
       ];
     } else if (activeDataset === 'products') {
       return [
-        { key: 'id', type: 'code', confidence: 0.85, color: '#6366f1' },
+        { key: 'id', type: 'code', confidence: 0.85, color: '#0a0a0a' },
         { key: 'name', type: 'text', confidence: 0.95, color: '#64748b' },
         { key: 'category', type: 'badge', confidence: 0.78, color: '#f59e0b' },
         { key: 'price', type: 'currency', confidence: 0.98, color: '#a78bfa' },
-        { key: 'stock', type: 'integer', confidence: 0.99, color: '#6366f1' },
+        { key: 'stock', type: 'integer', confidence: 0.99, color: '#0a0a0a' },
         { key: 'status', type: 'status', confidence: 0.91, color: '#22c55e' },
         { key: 'launched', type: 'date', confidence: 0.97, color: '#14b8a6' },
         { key: 'inStock', type: 'boolean', confidence: 0.99, color: '#22c55e' },
       ];
     } else {
       return [
-        { key: 'order', type: 'code', confidence: 0.92, color: '#6366f1' },
+        { key: 'order', type: 'code', confidence: 0.92, color: '#0a0a0a' },
         { key: 'customer', type: 'text', confidence: 0.95, color: '#64748b' },
         { key: 'total', type: 'currency', confidence: 0.98, color: '#a78bfa' },
-        { key: 'items', type: 'integer', confidence: 0.99, color: '#6366f1' },
+        { key: 'items', type: 'integer', confidence: 0.99, color: '#0a0a0a' },
         { key: 'status', type: 'status', confidence: 0.94, color: '#22c55e' },
         { key: 'date', type: 'datetime', confidence: 0.97, color: '#14b8a6' },
         { key: 'paid', type: 'boolean', confidence: 0.99, color: '#22c55e' },
@@ -202,9 +202,9 @@
   .section-tag {
     display: inline-block;
     padding: 0.25rem 0.75rem;
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(10, 10, 10, 0.15);
+    color: #0a0a0a;
+    border: 1px solid rgba(10, 10, 10, 0.3);
     border-radius: 9999px;
     font-size: 0.75rem;
     font-weight: 700;
@@ -233,11 +233,11 @@
   .section-desc code {
     font-family: ui-monospace, 'JetBrains Mono', monospace;
     font-size: 0.9em;
-    background: rgba(99, 102, 241, 0.1);
-    color: #818cf8;
+    background: rgba(10, 10, 10, 0.1);
+    color: #0a0a0a;
     padding: 0.1em 0.4em;
     border-radius: 0.25rem;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(10, 10, 10, 0.2);
   }
 
   .demo-controls {
@@ -287,7 +287,7 @@
     transition: all 0.15s;
   }
   .btn-tab.active {
-    background: #6366f1;
+    background: #0a0a0a;
     color: white;
     font-weight: 600;
   }
@@ -311,14 +311,14 @@
     cursor: pointer;
     user-select: none;
   }
-  .toggle-label input { cursor: pointer; accent-color: #6366f1; }
+  .toggle-label input { cursor: pointer; accent-color: #0a0a0a; }
   .toggle-label:hover span { color: var(--text-primary); }
 
   .btn-action {
     padding: 0.5rem 1.25rem;
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(10, 10, 10, 0.15);
+    color: #0a0a0a;
+    border: 1px solid rgba(10, 10, 10, 0.3);
     border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
@@ -326,9 +326,9 @@
     transition: all 0.15s;
   }
   .btn-action:hover {
-    background: rgba(99, 102, 241, 0.25);
-    border-color: rgba(99, 102, 241, 0.5);
-    color: #a5b4fc;
+    background: rgba(10, 10, 10, 0.25);
+    border-color: rgba(10, 10, 10, 0.5);
+    color: #525252;
   }
 
   .inference-panel {
@@ -400,7 +400,7 @@
     --tc-color-muted: #64748b;
     --tc-skeleton-from: #1e293b;
     --tc-skeleton-to: #334155;
-    --tc-color-primary: #818cf8;
+    --tc-color-primary: #0a0a0a;
     --tc-color-stripe: #090d18;
     --tc-footer-bg: #0a0e1a;
   }
@@ -413,7 +413,7 @@
   .inline-code {
     font-family: ui-monospace, 'JetBrains Mono', monospace;
     font-size: 0.875rem;
-    color: #818cf8;
+    color: #0a0a0a;
     background: var(--bg-secondary);
     padding: 0.375rem 0.875rem;
     border-radius: 0.375rem;

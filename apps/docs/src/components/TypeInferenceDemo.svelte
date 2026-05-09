@@ -88,13 +88,13 @@
         return { key, type: 'percentage', confidence: 0.85, color: '#c4b5fd', reason: 'All values between 0-1, likely percentage fractions', sample };
       }
       if (allInts) {
-        return { key, type: 'integer', confidence: 0.98, color: '#818cf8', reason: 'All values are whole integers', sample };
+        return { key, type: 'integer', confidence: 0.98, color: '#0a0a0a', reason: 'All values are whole integers', sample };
       }
       // Heuristic: key contains price/cost/salary/amount/fee
       if (/price|cost|salary|amount|fee|revenue|total|pay/.test(key.toLowerCase())) {
         return { key, type: 'currency', confidence: 0.91, color: '#a78bfa', reason: `Key name "${key}" suggests currency, values are decimal numbers`, sample };
       }
-      return { key, type: 'number', confidence: 0.95, color: '#6366f1', reason: 'All values are numbers', sample };
+      return { key, type: 'number', confidence: 0.95, color: '#0a0a0a', reason: 'All values are numbers', sample };
     }
 
     // Status / badge (low cardinality strings)
@@ -107,7 +107,7 @@
       }
       // Code/ID pattern
       if (/^[A-Z]+-\d+$|^[A-Z]{2,}-\d+$/.test(sample) || /id|sku|code|ref|ticket/.test(key.toLowerCase())) {
-        return { key, type: 'code', confidence: 0.87, color: '#7c3aed', reason: 'Matches code/ID pattern or key name indicates identifier', sample };
+        return { key, type: 'code', confidence: 0.87, color: '#0a0a0a', reason: 'Matches code/ID pattern or key name indicates identifier', sample };
       }
     }
 
@@ -158,12 +158,12 @@
   });
 
   const typeColors: Record<string, string> = {
-    text: '#64748b', number: '#6366f1', integer: '#818cf8',
+    text: '#64748b', number: '#0a0a0a', integer: '#0a0a0a',
     currency: '#a78bfa', percentage: '#c4b5fd', boolean: '#22c55e',
     date: '#14b8a6', datetime: '#06b6d4', time: '#38bdf8',
     email: '#ec4899', url: '#f43f5e', phone: '#fb7185',
     image: '#f59e0b', badge: '#fbbf24', status: '#34d399',
-    code: '#7c3aed', html: '#dc2626',
+    code: '#0a0a0a', html: '#dc2626',
   };
 </script>
 
@@ -366,7 +366,7 @@
     cursor: pointer;
     transition: all 0.1s;
   }
-  .ex-tab.active { background: #6366f1; color: white; }
+  .ex-tab.active { background: #0a0a0a; color: white; }
   .ex-tab:not(.active):hover { color: var(--text-primary); }
 
   .json-input {
@@ -395,7 +395,7 @@
   .infer-btn {
     margin: 0.75rem;
     padding: 0.625rem 1.25rem;
-    background: #6366f1;
+    background: #0a0a0a;
     color: white;
     border: none;
     border-radius: 0.5rem;
@@ -405,7 +405,7 @@
     transition: all 0.15s;
     letter-spacing: 0.01em;
   }
-  .infer-btn:hover:not(:disabled) { background: #4f46e5; }
+  .infer-btn:hover:not(:disabled) { background: #0a0a0a; }
   .infer-btn:disabled { opacity: 0.6; cursor: not-allowed; }
 
   .inferring-state {
@@ -422,7 +422,7 @@
     width: 20px;
     height: 20px;
     border: 2px solid var(--border-color);
-    border-top-color: #6366f1;
+    border-top-color: #0a0a0a;
     border-radius: 50%;
     animation: spin 0.8s linear infinite;
     flex-shrink: 0;
@@ -443,7 +443,7 @@
     border-bottom: 1px solid var(--border-color);
     transition: background 0.1s;
   }
-  .result-item:hover { background: rgba(99, 102, 241, 0.04); }
+  .result-item:hover { background: rgba(10, 10, 10, 0.04); }
   .result-item:last-child { border-bottom: none; }
 
   .result-header-row {

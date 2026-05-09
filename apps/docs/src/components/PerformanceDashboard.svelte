@@ -47,8 +47,8 @@
   const coverage: CoverageGauge[] = [
     { label: 'Core Engine', value: 82, color: '#22c55e' },
     { label: 'Inference', value: 90, color: '#4ade80' },
-    { label: 'Renderers', value: 78, color: '#6366f1' },
-    { label: 'Svelte Layer', value: 70, color: '#818cf8' },
+    { label: 'Renderers', value: 78, color: '#0a0a0a' },
+    { label: 'Svelte Layer', value: 70, color: '#0a0a0a' },
   ];
 
   // Virtual scroll visualization state
@@ -214,7 +214,7 @@
             <span class="vstat-label">Rows virtualized</span>
           </div>
           <div class="vstat">
-            <span class="vstat-num" style="color: #6366f1">{Math.round((viewportRows / totalRows) * 100 * 100) / 100}%</span>
+            <span class="vstat-num" style="color: #0a0a0a">{Math.round((viewportRows / totalRows) * 100 * 100) / 100}%</span>
             <span class="vstat-label">DOM usage</span>
           </div>
           <div class="vstat">
@@ -361,7 +361,7 @@
     border-radius: 0.875rem;
     transition: border-color 0.15s;
   }
-  .metric-card:hover { border-color: rgba(99, 102, 241, 0.4); }
+  .metric-card:hover { border-color: rgba(10, 10, 10, 0.4); }
 
   .metric-top {
     display: flex;
@@ -417,9 +417,9 @@
 
   .animate-btn {
     padding: 0.5rem 1.25rem;
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: rgba(10, 10, 10, 0.15);
+    color: #0a0a0a;
+    border: 1px solid rgba(10, 10, 10, 0.3);
     border-radius: 0.5rem;
     font-size: 0.875rem;
     font-weight: 600;
@@ -427,7 +427,7 @@
     transition: all 0.15s;
     white-space: nowrap;
   }
-  .animate-btn:hover:not(:disabled) { background: rgba(99, 102, 241, 0.25); color: #a5b4fc; }
+  .animate-btn:hover:not(:disabled) { background: rgba(10, 10, 10, 0.25); color: #525252; }
   .animate-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
   .virtual-viz {

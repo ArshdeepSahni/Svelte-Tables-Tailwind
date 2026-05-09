@@ -503,7 +503,7 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .details-toggle:hover { color: var(--text-primary); border-color: #6366f1; }
+  .details-toggle:hover { color: var(--text-primary); border-color: #0a0a0a; }
 
   .details-panel {
     margin-top: 1.5rem;
@@ -529,13 +529,13 @@
   }
 
   .details-panel strong { color: var(--text-primary); }
-  .details-panel em { color: #818cf8; }
+  .details-panel em { color: #0a0a0a; }
 
   .details-panel code {
     font-family: ui-monospace, monospace;
     font-size: 0.875em;
-    background: rgba(99, 102, 241, 0.1);
-    color: #818cf8;
+    background: rgba(10, 10, 10, 0.06);
+    color: #0a0a0a;
     padding: 0.1em 0.35em;
     border-radius: 0.25rem;
   }

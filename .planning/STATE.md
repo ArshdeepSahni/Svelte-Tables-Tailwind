@@ -2,12 +2,12 @@
 gsd_state_version: 1.0
 milestone: v2.0
 milestone_name: milestone
-status: planning
-stopped_at: Completed 06-column-operations-advanced-features-05-PLAN.md
-last_updated: "2026-03-22T11:47:07.906Z"
+status: active
+stopped_at: Phase 10 complete — Tier 2 renderers (sparkline, actions) + missing Tier 1 renderers shipped
+last_updated: "2026-03-28T21:00:00.000Z"
 progress:
-  total_phases: 10
-  completed_phases: 6
+  total_phases: 11
+  completed_phases: 10
   total_plans: 32
   completed_plans: 32
 ---
@@ -15,14 +15,15 @@ progress:
 # Project State
 
 **Project:** svelte-tables-tailwind v2.0.0
-**Updated:** 2026-03-21
-**Status:** Ready to plan
+**Updated:** 2026-03-28
+**Status:** Phases 1-6, 8-12 complete. Phase 7 (Docs + Release) remaining.
 
 ---
 
 ## Current Phase
 
-Phase 6: Column Operations + Advanced Features — In Progress (2/5 plans done)
+Phase 12: Paradigm Shift — Complete (inline editing, command palette, undo/redo, conditional formatting, 2D selection, clipboard)
+Phase 7: Docs Site + Release — Next up
 
 ---
 
@@ -32,7 +33,7 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 **Core value:** Zero-config data display with smart type inference — `<Table data={rows} />` just works, and when you need more, one prop does it.
 
-**Current focus:** Phase 6: Column Operations + Advanced Features
+**Current focus:** Phase 7: Docs Site + Release (only remaining phase)
 
 **Milestone:** v2.0.0 — Industry-Standard Zero-Config Table Library
 
@@ -42,14 +43,18 @@ See: `.planning/PROJECT.md` (updated 2026-03-20)
 
 | Field    | Value                                                |
 | -------- | ---------------------------------------------------- |
-| Phase    | 6 — Column Operations + Advanced Features — In Progress |
-| Plan     | 02 complete (visibleColumns $derived, AggregateRow.svelte, showAggregates wired) |
-| Status   | Phase 6 In Progress (1/5 plans done)                |
-| Progress | 28/32 plans complete across phases 1-6               |
+| Phase    | 7 — Docs Site + Release — Next                      |
+| Plan     | All prior phases complete                            |
+| Status   | 10/11 phases complete                               |
+| Progress | Phases 1-6, 8-11 complete                           |
 
 ```
-Phase progress: [███████] 7/7
-Plan progress:  [██████████] 100% (22/22 plans)
+Phase progress: [███████████] 11/12
+Features:       23 renderers, NL filter, live streams, inline editing, Cmd+K palette,
+                undo/redo, conditional formatting, 2D selection, clipboard interop
+Tests:          654 passing (82 core + 572 feature tests)
+New in Phase 12: CellEditor, CommandPalette, history.svelte.ts, selection.svelte.ts,
+                 clipboard.ts, conditional-format.ts (3001 lines of paradigm-shifting code)
 ```
 
 ---
@@ -59,12 +64,17 @@ Plan progress:  [██████████] 100% (22/22 plans)
 | Phase | Name                                             | Status   | Plans |
 | ----- | ------------------------------------------------ | -------- | ----- |
 | 1     | Foundation                                       | Complete | 4/4   |
-| 2     | Core Engine + Type Inference + Renderer Registry | Complete    | 6/6   |
+| 2     | Core Engine + Type Inference + Renderer Registry | Complete | 6/6   |
 | 3     | Svelte 5 Component + Zero-Config API             | Complete | 6/6   |
-| 4     | Virtual Scrolling + Performance                  | In Progress | 5/6   |
+| 4     | Virtual Scrolling + Performance                  | Complete | 6/6   |
 | 5     | Web Components Core + Framework Wrappers         | Complete | 5/5   |
-| 6     | Column Operations + Advanced Features            | Pending  | 0/0   |
+| 6     | Column Operations + Advanced Features            | Complete | 5/5   |
 | 7     | Docs Site + Release                              | Pending  | 0/0   |
+| 8     | AI-Augmented Intelligence (NL filter)            | Complete | —     |
+| 9     | Real-Time Data Streams                           | Complete | —     |
+| 10    | Developer Ecosystem (Tier 2 renderers)           | Complete | —     |
+| 11    | Critical Fixes + Polish                          | Complete | —     |
+| 12    | Paradigm Shift — iPhone of Tables                | Complete | —     |
 
 ---
 
@@ -251,13 +261,21 @@ None currently. Phase 1 has no dependencies.
 
 ## Session Continuity
 
-**Last session:** 2026-03-22T11:45:33.888Z
+**Last session:** 2026-03-28
 
-**Stopped at:** Completed 06-column-operations-advanced-features-05-PLAN.md
+**Stopped at:** Phase 12 complete — Paradigm Shift features shipped
 
-**Next action:** Phase 4: Virtual Scrolling + Performance — Plan 06 (Playwright performance benchmarks / PERF-05).
+**Next action:** Phase 7: Docs Site + Release — SvelteKit docs, live REPL playground, npm publish
 
-**Context to restore:** Phase 4 Plan 05 COMPLETE. Column virtualization implemented: createVirtualizer with horizontal:true activates at > 20 columns, isColumnVirtualizing derived, columnVirtualItems/totalColumnSize threaded to TableHeader and TableBody with left/right spacer th/td pattern. 48/48 tests pass, zero TypeScript errors, build clean.
+**Context to restore:** Phase 12 implemented breakthrough features:
+- Inline cell editing (CellEditor.svelte) — type-aware editors for 18 column types, F2/Enter/Escape/Tab
+- Cmd+K command palette (CommandPalette.svelte) — fuzzy search, 9 categories, keyboard nav, recent commands
+- Undo/redo time travel (history.svelte.ts) — 50-entry stack, Cmd+Z/Cmd+Shift+Z, async support
+- Conditional formatting (conditional-format.ts) — 14 conditions, color scales, data bars, icon sets
+- 2D range selection (selection.svelte.ts) — Excel-style, Shift+click extend, Cmd+click multi-select
+- Enhanced clipboard (clipboard.ts) — multi-format copy (TSV + HTML + JSON), auto-detect paste
+- Core problems research (CORE-PROBLEMS.md) — 10 fundamental table problems identified
+- 654 tests passing, all svelte tests green
 
 ---
 

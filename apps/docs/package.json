@@ -9,9 +9,9 @@
     "node": ">=20.19.0 || >=22.12.0"
   },
   "scripts": {
-    "dev": "vite --port 5175",
+    "dev": "vite --port 5176",
     "build": "vite build",
-    "preview": "vite preview --port 5175",
+    "preview": "vite preview --port 5176",
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {

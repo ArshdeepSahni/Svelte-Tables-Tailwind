@@ -27,14 +27,14 @@
       output: 'Locale-formatted number',
       example: { input: '1234567.89', display: '1,234,567.89', kind: 'number' },
       descriptor: { kind: 'number', value: 1234567.89, formatted: '1,234,567.89' },
-      color: '#6366f1',
+      color: '#0a0a0a',
     },
     {
       name: 'Integer', type: 'integer', inputType: 'number (whole)',
       output: 'Integer without decimals',
       example: { input: '42', display: '42', kind: 'integer' },
       descriptor: { kind: 'number', value: 42, formatted: '42' },
-      color: '#818cf8',
+      color: '#0a0a0a',
     },
     {
       name: 'Currency', type: 'currency', inputType: 'number',
@@ -125,7 +125,7 @@
       output: 'Monospace <code> block',
       example: { input: '"ORD-9001"', display: 'ORD-9001', kind: 'code' },
       descriptor: { kind: 'code', value: 'ORD-9001' },
-      color: '#7c3aed',
+      color: '#0a0a0a',
     },
     {
       name: 'HTML', type: 'html', inputType: 'HTML string (opt-in)',
@@ -372,16 +372,16 @@
     font-size: 0.75rem;
   }
 
-  .preview-link { color: #818cf8; text-decoration: underline; }
+  .preview-link { color: #0a0a0a; text-decoration: underline; }
 
   .preview-badge {
     padding: 0.15rem 0.45rem;
-    background: rgba(99, 102, 241, 0.15);
-    color: #818cf8;
+    background: rgba(10, 10, 10, 0.15);
+    color: #0a0a0a;
     border-radius: 9999px;
     font-size: 0.6875rem;
     font-weight: 700;
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    border: 1px solid rgba(10, 10, 10, 0.3);
   }
 
   .preview-status {
@@ -472,7 +472,7 @@
     transition: all 0.15s;
     white-space: nowrap;
   }
-  .descriptor-toggle:hover { color: var(--text-primary); border-color: #6366f1; }
+  .descriptor-toggle:hover { color: var(--text-primary); border-color: #0a0a0a; }
 
   .detail-grid {
     display: grid;
@@ -508,7 +508,7 @@
   code.detail-value {
     font-family: ui-monospace, monospace;
     font-size: 0.875rem;
-    color: #818cf8;
+    color: #0a0a0a;
   }
 
   .descriptor-block {
@@ -532,7 +532,7 @@
     font-size: 0.875rem;
     padding: 1rem 1.25rem;
     border-radius: 0.625rem;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(10, 10, 10, 0.2);
     overflow-x: auto;
     line-height: 1.6;
   }

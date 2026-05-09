@@ -3,8 +3,8 @@
 **Milestone:** v2.0.0 — Industry-Standard Zero-Config Table Library
 **Created:** 2026-03-20
 **Granularity:** Fine
-**Phases:** 7
-**Requirements:** 64 v1 requirements mapped
+**Phases:** 11
+**Requirements:** 64 v1 requirements mapped + 3 v2 expansion phases
 
 ---
 
@@ -17,6 +17,11 @@
 - [x] **Phase 5: Web Components Core + Framework Wrappers** - Lit 3 Custom Element, React wrapper, Vue wrapper (completed 2026-03-22)
 - [x] **Phase 6: Column Operations + Advanced Features** - Resizing, reordering, pinning, row grouping, aggregate footer, persistence (completed 2026-03-22)
 - [ ] **Phase 7: Docs Site + Release** - SvelteKit docs, live REPL playground, npm publish, v1 deprecation notice
+- [x] **Phase 8: AI-Augmented Intelligence** - Natural language filter (browser-side, zero network), smart column analysis, NL interpretation hints (completed 2026-03-28)
+- [x] **Phase 9: Real-Time Data Streams** - stream prop, AsyncIterable/WebSocket/EventSource/ReadableStream adapters, live indicator, throughput tracking (completed 2026-03-28)
+- [x] **Phase 10: Developer Ecosystem** - Tier 2 renderers (sparkline SVG, actions buttons), missing Tier 1 renderers (rating, progress, relative-time, color), 23 total renderer types (completed 2026-03-28)
+- [x] **Phase 11: Critical Fixes + Polish** - Effect loop fixes, NL filter residual text, Svelte 5 rune compatibility (completed 2026-03-28)
+- [x] **Phase 12: Paradigm Shift — iPhone of Tables** - Inline editing, Cmd+K command palette, undo/redo time travel, conditional formatting, 2D range selection, enhanced clipboard, micro-interactions (completed 2026-03-28)
 
 ---
 
@@ -330,6 +335,16 @@ Plans:
 
 Plans:
 - [ ] TBD (run /gsd:plan-phase 10 to break down)
+
+### Phase 11: UX Revolution — Design Overhaul + Critical Fixes
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 10
+**Plans:** 0 plans
+
+Plans:
+- [ ] TBD (run /gsd:plan-phase 11 to break down)
 
 ---
 

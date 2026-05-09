@@ -22,7 +22,7 @@
     {
       id: 'core', x: 300, y: 20, w: 200, h: 60,
       label: '@tablecraft/core', sublabel: 'Framework agnostic',
-      color: '#6366f1', textColor: '#fff',
+      color: '#0a0a0a', textColor: '#fff',
       description: 'The heart of tablecraft. Contains: type inference engine (17 types), renderer registry (plugin system), cell descriptor pipeline, v1 compat adapter, and the createTableEngine() factory. Ships as ESM + CJS. No framework dependencies.',
       size: '~30 KB',
     },
@@ -125,7 +125,7 @@
           <path
             d={getEdgePath(fromNode, toNode)}
             fill="none"
-            stroke="rgba(99,102,241,0.3)"
+            stroke="rgba(10,10,10,0.15)"
             stroke-width="1.5"
             stroke-dasharray="4 3"
           />
@@ -135,7 +135,7 @@
         {#each edges.slice(0, 3) as edge, i}
           {@const fromNode = nodes.find(n => n.id === edge.from)!}
           {@const toNode = nodes.find(n => n.id === edge.to)!}
-          <circle r="3" fill="#6366f1" opacity="0.8">
+          <circle r="3" fill="#0a0a0a" opacity="0.8">
             <animateMotion dur="{2 + i * 0.4}s" repeatCount="indefinite" calcMode="spline" keySplines="0.4 0 0.6 1">
               <mpath href="#edge-{i}" />
             </animateMotion>
@@ -325,8 +325,8 @@
   }
 
   .diagram-container {
-    background: #0a0e1a;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: #f8fafc;
+    border: 1px solid rgba(10, 10, 10, 0.12);
     border-radius: 1rem;
     padding: 1.5rem;
     margin-bottom: 1.5rem;
@@ -419,7 +419,7 @@
     cursor: pointer;
     transition: all 0.15s;
   }
-  .details-toggle:hover { color: var(--text-primary); border-color: #6366f1; }
+  .details-toggle:hover { color: var(--text-primary); border-color: #0a0a0a; }
 
   .flow-steps {
     display: flex;
@@ -447,7 +447,7 @@
     justify-content: center;
     width: 1.75rem;
     height: 1.75rem;
-    background: #6366f1;
+    background: #0a0a0a;
     color: white;
     border-radius: 50%;
     font-size: 0.8125rem;
@@ -472,8 +472,8 @@
   .step-content code {
     font-family: ui-monospace, monospace;
     font-size: 0.85em;
-    color: #818cf8;
-    background: rgba(99,102,241,0.1);
+    color: #0a0a0a;
+    background: rgba(10,10,10,0.06);
     padding: 0.1em 0.3em;
     border-radius: 0.25rem;
   }

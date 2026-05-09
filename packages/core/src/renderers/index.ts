@@ -27,3 +27,13 @@ export { badgeRenderer } from './badge.js';
 export { statusRenderer } from './status.js';
 export { codeRenderer } from './code.js';
 export { htmlRenderer, configure as configureHtmlRenderer } from './html.js';
+
+// Tier 1 v2 renderers (Phase 10)
+export { ratingRenderer } from './rating.js';
+export { progressRenderer } from './progress.js';
+export { relativeTimeRenderer } from './relative-time.js';
+export { colorRenderer } from './color.js';
+
+// Tier 2 renderers (Phase 10)
+export { sparklineRenderer } from './sparkline.js';
+export { actionsRenderer } from './actions.js';

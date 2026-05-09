@@ -29,7 +29,10 @@ export type ColumnType =
   | 'rating' // star rating (0–5 by default)
   | 'progress' // progress bar (0–100)
   | 'relative-time' // date → "3 days ago"
-  | 'color'; // hex/rgb color swatch
+  | 'color' // hex/rgb color swatch
+  // Tier 2 renderers (Phase 10)
+  | 'sparkline' // inline SVG sparkline from array of numbers
+  | 'actions'; // action buttons column
 
 /** Short-form column override: { columnKey: ColumnType } */
 export type ColumnOverrideShort = Record<string, ColumnType>;
@@ -114,6 +117,18 @@ export function defineColumns<TRow = Record<string, unknown>>() {
 /** Variant names shared by badge and status renderers */
 export type BadgeVariant = 'default' | 'success' | 'warning' | 'danger' | 'info';
 
+/** Descriptor for an individual action button in the actions column */
+export interface ActionDescriptor {
+  /** Unique action identifier — emitted on click */
+  id: string;
+  /** Button label text */
+  label: string;
+  /** Visual variant */
+  variant?: 'default' | 'primary' | 'danger';
+  /** Whether the action is disabled */
+  disabled?: boolean;
+}
+
 /**
  * Discriminated union returned by every renderer function.
  * The Svelte component (Phase 3) switches on `kind` — never uses the at-html directive on raw data.
@@ -137,7 +152,11 @@ export type CellDescriptor =
   /** Relative time ("3 days ago") with ISO and absolute fallback */
   | { kind: 'relative-time'; relative: string; iso: string; absolute: string }
   /** Color swatch with hex value */
-  | { kind: 'color'; hex: string };
+  | { kind: 'color'; hex: string }
+  /** Inline SVG sparkline from array of numbers */
+  | { kind: 'sparkline'; values: number[]; min: number; max: number; width: number; height: number }
+  /** Action buttons column */
+  | { kind: 'actions'; actions: ActionDescriptor[] };
 
 /**
  * Renderer function signature — all built-in and custom renderers implement this.

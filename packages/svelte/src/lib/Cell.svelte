@@ -63,6 +63,31 @@
     <span class="tc-color-dot" style="background: {descriptor.hex}"></span>
     {descriptor.hex}
   </span>
+{:else if descriptor.kind === 'sparkline'}
+  {@const range = descriptor.max - descriptor.min || 1}
+  {@const w = descriptor.width}
+  {@const h = descriptor.height}
+  {@const pts = descriptor.values}
+  {@const step = pts.length > 1 ? w / (pts.length - 1) : 0}
+  {@const pathD = pts.map((v, i) => `${i === 0 ? 'M' : 'L'}${(i * step).toFixed(1)},${(h - ((v - descriptor.min) / range) * h).toFixed(1)}`).join(' ')}
+  <svg class="tc-sparkline" width={w} height={h} viewBox="0 0 {w} {h}" aria-label="Sparkline chart">
+    <path d={pathD} fill="none" stroke="var(--tc-color-accent, #0a0a0a)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+    {#if pts.length > 0}
+      {@const lastX = (pts.length - 1) * step}
+      {@const lastY = h - ((pts[pts.length - 1] - descriptor.min) / range) * h}
+      <circle cx={lastX.toFixed(1)} cy={lastY.toFixed(1)} r="2" fill="var(--tc-color-accent, #0a0a0a)" />
+    {/if}
+  </svg>
+{:else if descriptor.kind === 'actions'}
+  <span class="tc-actions">
+    {#each descriptor.actions as action}
+      <button
+        class="tc-action-btn tc-action-btn--{action.variant ?? 'default'}"
+        disabled={action.disabled}
+        data-action={action.id}
+      >{action.label}</button>
+    {/each}
+  </span>
 {:else}
   <span>{String(descriptor.value)}</span>
 {/if}
@@ -274,5 +299,66 @@
     border-radius: 50%;
     border: 1px solid rgba(0, 0, 0, 0.1);
     flex-shrink: 0;
+  }
+
+  /* Sparkline — inline SVG chart */
+  .tc-sparkline {
+    display: block;
+    overflow: visible;
+  }
+
+  /* Action buttons */
+  .tc-actions {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+  }
+
+  .tc-action-btn {
+    appearance: none;
+    border: 1px solid var(--tc-color-border, #f0f0f0);
+    background: var(--tc-color-bg, #ffffff);
+    color: var(--tc-color-text, #0a0a0a);
+    font-size: var(--tc-font-size-sm, 11px);
+    font-weight: var(--tc-font-weight-medium, 500);
+    font-family: inherit;
+    padding: 0.2rem 0.5rem;
+    border-radius: var(--tc-border-radius-xs, 4px);
+    cursor: pointer;
+    transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    line-height: 1.25;
+  }
+
+  .tc-action-btn:hover:not(:disabled) {
+    background: var(--tc-color-neutral-bg, #f5f5f5);
+    border-color: var(--tc-color-text-muted, #a3a3a3);
+  }
+
+  .tc-action-btn--primary {
+    background: var(--tc-color-accent, #0a0a0a);
+    color: #ffffff;
+    border-color: var(--tc-color-accent, #0a0a0a);
+  }
+
+  .tc-action-btn--primary:hover:not(:disabled) {
+    opacity: 0.85;
+    background: var(--tc-color-accent, #0a0a0a);
+    border-color: var(--tc-color-accent, #0a0a0a);
+  }
+
+  .tc-action-btn--danger {
+    color: var(--tc-color-danger, #be123c);
+    border-color: transparent;
+    background: transparent;
+  }
+
+  .tc-action-btn--danger:hover:not(:disabled) {
+    background: var(--tc-color-danger-bg, #fff1f2);
+    border-color: var(--tc-color-danger, #be123c);
+  }
+
+  .tc-action-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
   }
 </style>

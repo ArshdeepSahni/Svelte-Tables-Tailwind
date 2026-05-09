@@ -111,14 +111,14 @@ describe('row grouping — groupBy prop (ADV-06)', () => {
     });
     await act();
 
-    const groupCounts = container.querySelectorAll('.tc-group-count');
+    const groupCounts = container.querySelectorAll('.tc-group-badge');
     const texts = Array.from(groupCounts).map((el) => el.textContent?.trim());
     // active group has 2, inactive has 1
-    expect(texts).toContain('(2)');
-    expect(texts).toContain('(1)');
+    expect(texts).toContain('2');
+    expect(texts).toContain('1');
   });
 
-  it('collapse indicator (▼) is visible on expanded groups', async () => {
+  it('collapse indicator (chevron) is visible on expanded groups', async () => {
     const data: Row[] = [
       { name: 'Alice', status: 'active' },
       { name: 'Bob', status: 'inactive' },
@@ -129,10 +129,13 @@ describe('row grouping — groupBy prop (ADV-06)', () => {
     });
     await act();
 
-    const indicators = container.querySelectorAll('.tc-group-indicator');
-    const texts = Array.from(indicators).map((el) => el.textContent?.trim());
-    // All groups start expanded — indicator is ▼
-    expect(texts.every((t) => t === '▼')).toBe(true);
+    // New design uses SVG chevron in .tc-group-chevron; expanded groups have aria-expanded="true"
+    const chevrons = container.querySelectorAll('.tc-group-chevron');
+    expect(chevrons.length).toBeGreaterThanOrEqual(2);
+    // All groups start expanded
+    const groupRows = container.querySelectorAll('.tc-group-row');
+    const allExpanded = Array.from(groupRows).every((row) => row.getAttribute('aria-expanded') === 'true');
+    expect(allExpanded).toBe(true);
   });
 
   it('renders data rows within each group', async () => {
@@ -219,7 +222,7 @@ describe('row grouping — collapse/expand (ADV-06)', () => {
     expect(dataCells).toContain('Carol');
   });
 
-  it('collapse indicator changes to ▶ when group is collapsed', async () => {
+  it('collapse indicator changes to collapsed state when group is collapsed', async () => {
     const data: Row[] = [
       { name: 'Alice', status: 'active' },
     ];
@@ -233,8 +236,8 @@ describe('row grouping — collapse/expand (ADV-06)', () => {
     groupRow!.dispatchEvent(new MouseEvent('click', { bubbles: true }));
     await act();
 
-    const indicator = container.querySelector('.tc-group-indicator');
-    expect(indicator?.textContent?.trim()).toBe('▶');
+    // After collapse, aria-expanded should be "false"
+    expect(groupRow!.getAttribute('aria-expanded')).toBe('false');
   });
 
   it('clicking collapsed group again expands its rows', async () => {

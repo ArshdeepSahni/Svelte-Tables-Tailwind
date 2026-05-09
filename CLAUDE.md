@@ -56,9 +56,16 @@ pnpm test                                      # all workspace tests
 
 ## Current Phase Status
 Read .planning/ROADMAP.md for current state.
-Phases 1-6 + Phase 11 (critical fixes) are complete.
-Phases 7-10 are next: Docs → AI Intelligence → Streams → Ecosystem.
-Run `/gsd:autonomous` to continue all remaining phases.
+Phases 1-6 + 8-11 are complete. 82/82 tests pass.
+Phase 7 (Docs Site + Release) is the only remaining phase.
+
+### What's shipped:
+- 23 renderer types (17 Tier 1 + 6 new: rating, progress, relative-time, color, sparkline, actions)
+- Natural language filter (browser-side, zero network calls)
+- Real-time data streaming (AsyncIterable, WebSocket, EventSource, ReadableStream)
+- Inline SVG sparkline charts
+- Row-level action buttons
+- Live stream indicator with throughput tracking
 
 ## User's Explicit Feedback (always keep in mind)
 - Search must feel natural — zero dev syntax exposed to users

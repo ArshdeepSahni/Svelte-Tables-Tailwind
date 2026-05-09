@@ -28,52 +28,79 @@
   aria-expanded={!collapsed}
 >
   <td class="tc-group-cell" colspan={colSpan} role="rowheader">
-    <span class="tc-group-indicator" aria-hidden="true">{collapsed ? '▶' : '▼'}</span>
+    <div class="tc-group-chevron" aria-hidden="true">
+      <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+        <path d="M6 5.5L10 8.5L6 11.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" />
+      </svg>
+    </div>
     <span class="tc-group-label">{group.label}</span>
-    <span class="tc-group-count">({group.count})</span>
+    <div class="tc-group-badge">{group.count}</div>
   </td>
 </tr>
 
 <style>
   .tc-group-row {
     cursor: pointer;
-    background: var(--tc-header-bg, #f8fafc);
+    background: var(--tc-bg-primary, #ffffff);
+    border-bottom: 1px solid var(--tc-border-color, #f0f0f0);
     user-select: none;
+    transition: background-color 0.08s ease-out;
   }
 
   .tc-group-row:hover {
-    background: var(--tc-header-bg-hover, #f1f5f9);
+    background: var(--tc-bg-hover, #fafafa);
   }
 
   .tc-group-row:focus-visible {
-    outline: 2px solid var(--tc-color-primary, #6366f1);
-    outline-offset: -2px;
+    outline: 1px solid var(--tc-border-color, #f0f0f0);
+    outline-offset: -1px;
   }
 
   .tc-group-cell {
-    padding: 0.5rem 1rem;
-    border-bottom: 1px solid var(--tc-border-color, #e2e8f0);
-    font-weight: 600;
-    font-size: 0.8125rem;
-    color: var(--tc-color-text, #0f172a);
+    padding: 12px 16px;
+    font-weight: 500;
+    font-size: 0.875rem;
+    color: var(--tc-text-primary, #0a0a0a);
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 10px;
   }
 
-  .tc-group-indicator {
-    font-size: 0.625rem;
-    color: var(--tc-color-muted, #94a3b8);
-    width: 1rem;
-    text-align: center;
+  .tc-group-chevron {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--tc-text-secondary, #666666);
+    flex-shrink: 0;
+    transition: transform 0.15s cubic-bezier(0.2, 0, 0.38, 0.9);
+  }
+
+  .tc-group-row[aria-expanded="false"] .tc-group-chevron {
+    transform: rotate(0deg);
+  }
+
+  .tc-group-row[aria-expanded="true"] .tc-group-chevron {
+    transform: rotate(90deg);
   }
 
   .tc-group-label {
-    text-transform: capitalize;
+    flex: 1;
+    font-weight: 500;
+    color: var(--tc-text-primary, #0a0a0a);
   }
 
-  .tc-group-count {
-    color: var(--tc-color-muted, #94a3b8);
-    font-weight: 400;
+  .tc-group-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 8px;
+    background: var(--tc-bg-secondary, #f0f0f0);
+    color: var(--tc-text-secondary, #666666);
+    border-radius: 12px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    flex-shrink: 0;
   }
 </style>

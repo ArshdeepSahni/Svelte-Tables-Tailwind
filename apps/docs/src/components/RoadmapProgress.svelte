@@ -322,14 +322,14 @@
   .phase-card.in-progress::before { background: #f59e0b; }
 
   .phase-card:hover {
-    border-color: rgba(99, 102, 241, 0.4);
+    border-color: rgba(10, 10, 10, 0.4);
     transform: translateY(-2px);
     box-shadow: 0 4px 16px rgba(0,0,0,0.2);
   }
 
   .phase-card.selected {
-    border-color: rgba(99, 102, 241, 0.6);
-    background: rgba(99, 102, 241, 0.05);
+    border-color: rgba(10, 10, 10, 0.6);
+    background: rgba(10, 10, 10, 0.05);
   }
 
   .phase-top {
@@ -477,7 +477,7 @@
     background: var(--bg-secondary);
     padding: 0.1em 0.4em;
     border-radius: 0.25rem;
-    color: #818cf8;
+    color: #0a0a0a;
   }
 
   @media (max-width: 640px) {

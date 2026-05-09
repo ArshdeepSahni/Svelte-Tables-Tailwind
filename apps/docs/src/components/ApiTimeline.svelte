@@ -278,13 +278,13 @@ import { Table, defineColumns } from '@tablecraft/svelte';
     width: 100%;
   }
   .timeline-card:hover {
-    border-color: rgba(99, 102, 241, 0.4);
+    border-color: rgba(10, 10, 10, 0.2);
     transform: translateX(4px);
   }
 
   .expanded .timeline-card {
-    border-color: rgba(99, 102, 241, 0.5);
-    background: rgba(99, 102, 241, 0.03);
+    border-color: rgba(10, 10, 10, 0.25);
+    background: rgba(10, 10, 10, 0.02);
   }
 
   .card-top {
@@ -330,13 +330,13 @@ import { Table, defineColumns } from '@tablecraft/svelte';
   }
 
   .timeline-code {
-    background: #0a0e1a;
-    color: #a5f3fc;
+    background: #f8fafc;
+    color: #0a0a0a;
     font-family: ui-monospace, 'JetBrains Mono', monospace;
     font-size: 0.8125rem;
     padding: 1rem 1.25rem;
     border-radius: 0.625rem;
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(10, 10, 10, 0.12);
     overflow-x: auto;
     line-height: 1.6;
     margin-top: 0.75rem;

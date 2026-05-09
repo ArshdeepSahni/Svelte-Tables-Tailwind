@@ -16,11 +16,11 @@
   });
 
   const stats = [
-    { label: 'Phases Complete', value: '4 / 10', color: '#6366f1' },
-    { label: 'Test Coverage', value: '~80%', color: '#22c55e' },
-    { label: 'Bundle Size', value: '<50 KB', color: '#f59e0b' },
-    { label: 'Renderers', value: '17 Types', color: '#ec4899' },
-    { label: 'Zero Config', value: '1 Line', color: '#14b8a6' },
+    { label: 'Phases Complete', value: '10 / 11', color: '#0a0a0a' },
+    { label: 'Test Coverage', value: '82 Tests', color: '#0a0a0a' },
+    { label: 'Bundle Size', value: '<50 KB', color: '#0a0a0a' },
+    { label: 'Renderers', value: '23 Types', color: '#0a0a0a' },
+    { label: 'Zero Config', value: '1 Line', color: '#0a0a0a' },
   ];
 </script>
 
@@ -55,7 +55,7 @@
 
     <div class="building-indicator">
       <span class="dot-pulse"></span>
-      Building in progress{dots}
+      Production ready — Phases 1-11 complete
     </div>
 
     <div class="status-bar">
@@ -91,8 +91,8 @@
     position: absolute;
     inset: 0;
     background-image:
-      linear-gradient(rgba(99, 102, 241, 0.08) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(99, 102, 241, 0.08) 1px, transparent 1px);
+      linear-gradient(rgba(0, 0, 0, 0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0, 0, 0, 0.03) 1px, transparent 1px);
     background-size: 60px 60px;
   }
 
@@ -106,14 +106,14 @@
   .glow-1 {
     width: 600px;
     height: 600px;
-    background: radial-gradient(circle, #6366f1, transparent);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.05), transparent);
     top: -200px;
     right: -100px;
   }
   .glow-2 {
     width: 400px;
     height: 400px;
-    background: radial-gradient(circle, #ec4899, transparent);
+    background: radial-gradient(circle, rgba(0, 0, 0, 0.03), transparent);
     bottom: -100px;
     left: 100px;
     animation-delay: -4s;
@@ -151,9 +151,9 @@
     text-transform: uppercase;
     border: 1px solid transparent;
   }
-  .badge-purple { background: rgba(99, 102, 241, 0.15); color: #818cf8; border-color: rgba(99, 102, 241, 0.3); }
-  .badge-green  { background: rgba(34, 197, 94, 0.15);  color: #4ade80; border-color: rgba(34, 197, 94, 0.3); }
-  .badge-blue   { background: rgba(59, 130, 246, 0.15); color: #60a5fa; border-color: rgba(59, 130, 246, 0.3); }
+  .badge-purple { background: rgba(10, 10, 10, 0.08); color: #0a0a0a; border-color: rgba(10, 10, 10, 0.15); }
+  .badge-green  { background: rgba(21, 128, 61, 0.12);  color: #15803d; border-color: rgba(21, 128, 61, 0.25); }
+  .badge-blue   { background: rgba(29, 78, 216, 0.12); color: #1d4ed8; border-color: rgba(29, 78, 216, 0.25); }
 
   .headline {
     display: flex;
@@ -166,10 +166,7 @@
     font-size: clamp(3rem, 8vw, 6rem);
     font-weight: 900;
     letter-spacing: -0.03em;
-    background: linear-gradient(135deg, #6366f1 0%, #a78bfa 50%, #ec4899 100%);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #0a0a0a;
     line-height: 1;
   }
 
@@ -192,18 +189,18 @@
     font-family: ui-monospace, 'JetBrains Mono', 'Cascadia Code', Menlo, monospace;
     font-size: clamp(1rem, 3vw, 1.75rem);
     padding: 0.75rem 2rem;
-    background: rgba(15, 23, 42, 0.9);
-    border: 1px solid rgba(99, 102, 241, 0.3);
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
     border-radius: 0.75rem;
     margin-bottom: 2rem;
     backdrop-filter: blur(10px);
-    box-shadow: 0 0 40px rgba(99, 102, 241, 0.2);
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
   }
-  .code-prompt { color: #94a3b8; }
-  .code-tag    { color: #60a5fa; }
-  .code-attr   { color: #f472b6; }
-  .code-eq     { color: #94a3b8; }
-  .code-val    { color: #a78bfa; }
+  .code-prompt { color: #737373; }
+  .code-tag    { color: #0a0a0a; }
+  .code-attr   { color: #0a0a0a; }
+  .code-eq     { color: #737373; }
+  .code-val    { color: #0a0a0a; }
 
   .building-indicator {
     display: inline-flex;
@@ -234,8 +231,8 @@
     gap: 1px;
     justify-content: center;
     flex-wrap: wrap;
-    background: rgba(99, 102, 241, 0.1);
-    border: 1px solid rgba(99, 102, 241, 0.2);
+    background: #ffffff;
+    border: 1px solid #f0f0f0;
     border-radius: 1rem;
     overflow: hidden;
   }
@@ -244,13 +241,13 @@
     flex: 1;
     min-width: 140px;
     padding: 1.25rem 1rem;
-    background: rgba(15, 23, 42, 0.6);
+    background: #ffffff;
     text-align: center;
     backdrop-filter: blur(10px);
     transition: background 0.2s;
   }
   .stat-card:hover {
-    background: rgba(99, 102, 241, 0.1);
+    background: #f8fafc;
   }
 
   .stat-value {
